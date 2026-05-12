@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Движок Forza Horizon 4: Технологии, Физика и Графика — Авто Гид</title>
+    <meta name="description" content="Полный анализ движка Forza Horizon 4. Разбор технологий, физики погоды и оптимизации. Как работает симуляция открытого мира и сезонности.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/d/dv/dvizhok-forza-horizon-4.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Движок Forza Horizon 4: Технологии, Физика и Графика">
+    <meta property="og:description" content="Полный анализ движка Forza Horizon 4. Разбор технологий, физики погоды и оптимизации. Как работает симуляция открытого мира и сезонности.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Движок Forza Horizon 4: Технологии, Физика и Графика</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Технологии движка Forza Horizon 4: Глубокий анализ</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-движка-и-графические-технологии">Архитектура движка и графические технологии</a></li><li><a href="#физическая-модель-и-симуляция-шин">Физическая модель и симуляция шин</a></li><li><a href="#технология-динамических-сезонов">Технология динамических сезонов</a></li><li><a href="#оптимизация-открытого-мира">Оптимизация открытого мира</a></li><li><a href="#аудио-движок-и-звуковой-дизайн">Аудио движок и звуковой дизайн</a></li><li><a href="#сетевая-архитектура-и-мультиплеер">Сетевая архитектура и мультиплеер</a></li><li><a href="#сравнение-с-конкурентами-и-итоговое-мнение">Сравнение с конкурентами и итоговое мнение</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>В мире гоночных симуляторов <strong>Forza Horizon 4</strong> стала эталоном не только благодаря разнообразию автомобилей, но и благодаря революционным технологиям, которые легли в её основу. Движок, разработанный студией Playground Games, представляет собой эволюцию технологий ForzaTech, адаптированную специально для условий открытого мира. Именно этот программный фундамент позволил реализовать динамическую смену сезонов, которая полностью меняет физику трасс и поведение <em>автомобилей</em>.</p>
+
+<p>Многие автолюбители интересуются, как именно компьютерная программа способна симулировать поведение реальных машин. Ответ кроется в сложнейшей системе расчета сцепления шин с поверхностью, учитывающей сотни параметров в секунду. В этой статье мы разберем технические аспекты, которые делают игру одной из самых красивых и реалистичных в жанре.</p>
+
+<p>Понимание того, как работает <strong>движок Forza Horizon 4</strong>, помогает лучше оценить масштаб проделанной разработчиками работы. Это не просто красивая картинка, а сложный математический аппарат, обрабатывающий колоссальные объемы данных в реальном времени. Мы рассмотрим, как технология справляется с рендерингом пейзажей Великобритании и симуляцией погодных явлений.</p>
+
+<h2 id="архитектура-движка-и-графические-технологии">Архитектура движка и графические технологии</h2>
+<p>Основой игры является <strong>ForzaTech</strong>, который был значительно доработан для нужд четвертой части серии. Главным нововведением стала поддержка разрешения 4K и HDR в 60 кадрах в секунду даже на консолях Xbox One X. Это потребовало внедрения передовых методов оптимизации рендеринга и управления памятью. Разработчики использовали <mark>адаптивную систему загрузки текстур</mark>, что позволяет миру выглядеть детализированным без видимых подгрузок.</p>
+
+<p>Графический движок оперирует сложной системой освещения, которая реагирует на время суток и погодные условия. Когда вы проезжаете по мокрому асфальту после дождя, отражения в лужах рассчитываются динамически, с учетом шероховатости поверхности. Это создает невероятный уровень <strong>иммерсивности</strong>, который редко встречается в гоночных проектах.</p>
+
+<p>Особое внимание уделено детализации моделей автомобилей. Каждая машина состоит из десятков тысяч полигонов, а материалы кузова реагируют на свет по технологии PBR (Physically Based Rendering). Это означает, что металлическая краска <em>Ferrari</em> будет бликовать иначе, чем матовое покрытие внедорожника.</p>
+
+<ul>
+<li>🌟 Динамическое глобальное освещение, меняющееся в реальном времени.</li>
+<li>🚗 Детализированные модели салонов с работающими приборами.</li>
+<li>🌧️ Реалистичные эффекты частиц для дождя, снега и тумана.</li>
+<li>💨 Система объемных облаков, влияющая на освещенность трассы.</li>
+</ul>
+
+<div class="poll-widget" id="poll-391f5fb3"><div class="poll-widget-question">📊 Какой аспект графики в Forza Horizon 4 впечатляет вас больше всего?</div><div class="poll-widget-option" data-poll="391f5fb3" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Реалистичные отражения в лужах:Детализация салона:Смена времен года:Освещение и тени</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="физическая-модель-и-симуляция-шин">Физическая модель и симуляция шин</h2>
+<p>Сердцем любого гоночного симулятора является физический движок. В <strong>Forza Horizon 4</strong> он был переработан с учетом новых требований к поведению автомобиля на разных поверхностях. Инженеры использовали данные телеметрии реальных автомобилей, чтобы воссоздать их характеристики с высокой точностью. Это касается не только разгона и торможения, но и работы подвески.</p>
+
+<p>Ключевым элементом является симуляция шин. Движок рассчитывает температуру резины, степень её износа и сцепление с дорогой в каждой точке контакта. При смене сезона на зимний, физика кардинально меняется: снег снижает коэффициент сцепления, а лед требует совершенно иного стиля вождения. Это делает управление <em>спорткаром</em> сложным и требующим навыков.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Физический движок игры обрабатывает параметры шин и подвески сотни раз в секунду, создавая ощущение реального вождения.</p></div>
+
+<p>Важно отметить работу системы повреждений. При столкновении деформируется не только визуальная модель, но и меняются физические параметры автомобиля. Помятое крыло может ухудшить аэродинамику, а поврежденная подвеска — вызвать увод машины в сторону. Это добавляет стратегический элемент в гонки, заставляя бережнее относиться к <strong>транспортному средству</strong>.</p>
+
+<blockquote>⚠️ Внимание: Агрессивная езда по бездорожью в режиме"Грязь" может привести к быстрому перегреву двигателя и потере мощности, что симулируется движком.</blockquote>
+
+<h2 id="технология-динамических-сезонов">Технология динамических сезонов</h2>
+<p>Самой революционной функцией стала система смены сезонов. Это не просто визуальный фильтр, а глубокое изменение игрового мира. Движок перестраивает ландшафт, меняя текстуры травы, покрытие дорог и даже растительность. Весной природа оживает, летом стоит жара, осень радует золотой листвой, а зима заковывает всё в лед.</p>
+
+<p>Каждый сезон длится одну неделю в реальном времени, после чего карта трансформируется. Летом озера доступны для купания и водных видов спорта, а зимой они замерзают, становясь ледяными трассами. Такая вариативность требует огромных вычислительных мощностей для потоковой подгрузки ассетов без остановки игрового процесса.</p>
+
+<ul>
+<li>🌸 Весна: Цветущие поля, сухие дороги, умеренная температура.</li>
+<li>☀️ Лето: Длинный световой день, возможность заездов на воде.</li>
+<li>🍂 Осень: Мокрая листва на дорогах, частые дожди, туманы.</li>
+<li>❄️ Зима: Снежный покров, лед на водоемах, сложные условия сцепления.</li>
+</ul>
+
+<p>Движок также адаптирует поведение искусственного интеллекта соперников. В зимний период"боты" едут аккуратнее, а их траектории проходят ближе к центру трассы, где меньше снега. Это создает ощущение живого мира, где все участники движения подчиняются одним и тем же законам физики.</p>
+
+<details class="faq-item"><summary>Как движок справляется с переходом между сезонами?</summary><div class="faq-answer"><p>Переход происходит постепенно в фоновом режиме. Пока вы находитесь в одной части карты, движок уже подгружает текстуры и модели для другой, чтобы смена времени года прошла незаметно для игрока.</p></div></details>
+
+<h2 id="оптимизация-открытого-мира">Оптимизация открытого мира</h2>
+<p>Открытый мир Великобритании в игре огромен и разнообразен. Чтобы обеспечить плавную работу, движок использует технологию Level of Detail (LOD). Объекты, находящиеся далеко от камеры игрока, отображаются с меньшим количеством полигонов. По мере приближения детализация увеличивается, что позволяет экономить ресурсы процессора и видеокарты.</p>
+
+<p>Система потоковой загрузки данных с жесткого диска (или SSD) играет критическую роль. Когда вы мчитесь на скорости 300 км/ч, движок должен мгновенно подгружать новые здания, деревья и текстуры дороги. Любая задержка привела бы к"поп-апу" объектов, но оптимизация <strong>ForzaTech</strong> сводит этот эффект к минимуму.</p>
+
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Разрешение</th>
+<th>Частота кадров</th>
+<th>Особенности рендеринга</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Xbox One X</td>
+<td>4K (нативное)</td>
+<td>30 FPS</td>
+<td>Высокая детализация, HDR</td>
+</tr>
+<tr>
+<td>Xbox One X (режим)</td>
+<td>1080p</td>
+<td>60 FPS</td>
+<td>Сглаженная динамика</td>
+</tr>
+<tr>
+<td>PC (High-End)</td>
+<td>4K и выше</td>
+<td>60+ FPS</td>
+<td>Ультра настройки, трассировка лучей (в модификациях)</td>
+</tr>
+<tr>
+<td>Xbox Series X</td>
+<td>4K</td>
+<td>60 FPS</td>
+<td>Быстрая загрузка, улучшенные тени</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="аудио-движок-и-звуковой-дизайн">Аудио движок и звуковой дизайн</h2>
+<p>Звук в автосимуляторах часто недооценивают, но в <strong>Forza Horizon 4</strong> ему уделено особое внимание. Аудио движок обрабатывает сотни звуковых дорожек одновременно: рев мотора, свист ветра, шум шин, звуки окружающей среды. Все это смешивается в реальном времени, создавая объемную звуковую картину.</p>
+
+<p>Каждый двигатель имеет уникальный звуковой профиль, записанный с реального автомобиля. При изменении оборотов или нагрузки на двигатель тон звука меняется соответствующим образом. Это помогает игроку чувствовать момент переключения передачи или наступление отсечки даже без визуального контроля приборной панели.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте наушники с поддержкой объемного звука, чтобы услышать все нюансы работы аудио движка, особенно шум ветра и окружения.</p></div>
+
+<p>Музыкальное сопровождение также интегрировано в движок динамически. Радиостанции меняют треки в зависимости от сезона и события. Зимой в эфире чаще звучат спокойные или новогодние треки, а во время гонок темп музыки ускоряется, подстраиваясь под ритм gameplay.</p>
+
+<h2 id="сетевая-архитектура-и-мультиплеер">Сетевая архитектура и мультиплеер</h2>
+<p>Реализация многопользовательского режима потребовала создания сложной сетевой архитектуры. Игроки видят друг друга в мире без экранов загрузки благодаря системе"Drone". Это позволяет seamlessly (без швов) входить в сессию с другими участниками. Движок синхронизирует положение автомобилей, их состояние и действия в реальном времени.</p>
+
+<p>Однако, физика в сетевом режиме имеет свои особенности. Для обеспечения стабильности соединения используется определенная степень интерполяции данных. Это может приводить к небольшим расхождениям в ощущениях от вождения по сравнению с одиночным режимом, особенно при плохом интернете.</p>
+
+<ul>
+<li>🌐 Поддержка до 72 игроков на сервере (включая призраков).</li>
+<li>🔄 Динамическое присоединение и выход из сессии.</li>
+<li>🏁 Синхронизация событий"Сезонного плейлиста".</li>
+<li>📸 Возможность делать совместные фотографии в режиме Forzavista.</li>
+</ul>
+
+<blockquote>⚠️ Внимание: Нестабильное соединение может вызывать"телепортацию" других игроков или их автомобилей в вашей игре из-за потери пакетов данных.</blockquote>
+
+<h2 id="сравнение-с-конкурентами-и-итоговое-мнение">Сравнение с конкурентами и итоговое мнение</h2>
+<p>На фоне таких конкурентов, как <em>Need for Speed</em> или <em>The Crew</em>, движок Forza Horizon 4 выделяется балансом между аркадностью и симулятором. Он не требует от игрока знаний механики переключения передач в ручном режиме, но и не прощает грубых ошибок на высокой скорости. Это"золотая середина", доступная широкой аудитории.</p>
+
+<p>Техническая реализация проекта задала новую планку для индустрии. Даже спустя годы после выхода, графика и оптимизация остаются эталонными. Движок доказал, что открытый мир может быть не просто большой декорацией, а живой, изменяемой средой, с которой можно взаимодействовать.</p>
+
+<div class="checklist-block"><h4>☑️ Ключевые технологические достижения движка</h4><label class="check-item"><input type="checkbox"><span>Динамическая смена сезонов:Физика шин и подвески:Оптимизация потоковой загрузки:Реалистичное освещение и отражения</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запустить движок Forza Horizon 4 на слабом ПК?</summary>
+<p>Официальные системные требования предполагают наличие минимум 8 ГБ оперативной памяти и видеокарты уровня GTX 650Ti или выше. На минимальных настройках и разрешении 720p игра может работать на бюджетных системах, но стабильность 60 FPS не гарантируется. Движок достаточно хорошо масштабируется, но старые процессоры могут стать узким местом.</p>
+</details>
+
+<details>
+<summary>Влияет ли тип накопителя (SSD vs HDD) на работу движка?</summary>
+<p>Да, влияние существенно. На твердотельном накопителе (SSD) потоковая подгрузка текстур происходит мгновенно, что исключает размытие объектов при быстром перемещении. На HDD возможны микро-задержки и менее детализированные текстуры в момент появления объектов на горизонте.</p>
+</details>
+
+<details>
+<summary>Почему в сетевом режиме физика ощущается иначе?</summary>
+<p>В сетевом режиме движок приоритизирует синхронизацию данных между игроками, что может вносить небольшую задержку (input lag) и сглаживание физики. Это сделано для предотвращения десинхронизации и"разрывов" в игровом процессе при нестабильном соединении.</p>
+</details>
+
+<details>
+<summary>Поддерживает ли движок моды на ПК?</summary>
+<p>Официально игра не поддерживает модификации движка. Однако, сообщество создало инструменты для замены текстур и моделей, хотя они не затрагивают (ядро) физического движка. Использование модов может привести к блокировке аккаунта в онлайн-режиме.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#архитектура-движка-и-графические-технологии">Архитектура движка и графические технологии</a></li><li><a href="#физическая-модель-и-симуляция-шин">Физическая модель и симуляция шин</a></li><li><a href="#технология-динамических-сезонов">Технология динамических сезонов</a></li><li><a href="#оптимизация-открытого-мира">Оптимизация открытого мира</a></li><li><a href="#аудио-движок-и-звуковой-дизайн">Аудио движок и звуковой дизайн</a></li><li><a href="#сетевая-архитектура-и-мультиплеер">Сетевая архитектура и мультиплеер</a></li><li><a href="#сравнение-с-конкурентами-и-итоговое-мнение">Сравнение с конкурентами и итоговое мнение</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/i/ig/igrushka-mashina-s-dymom.html" class="related-card">Игрушка машина с дымом: обзор лучших моделей и принцип работы</a></li><li><a href="/articles/r/ra/ramka-pod-nomernoj-znak-otkidnaya.html" class="related-card">Откидная рамка под номерной знак: выбор и установка</a></li><li><a href="/articles/k/ka/kartinki-devushka-s-mashinoj.html" class="related-card">Картинки девушка с машиной: фотосессии, позы и идеи для авто</a></li><li><a href="/articles/k/ka/kak-snyat-deflektory-s-okon-avtomobilya.html" class="related-card">Как снять дефлекторы с окон: полная инструкция</a></li><li><a href="/articles/k/ka/kak-ustanovit-telefon-v-mashine-bez-derzhatelya.html" class="related-card">Как установить телефон в машине без держателя: 6 способов</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/i/ig/igrushka-mashina-s-dymom.html" class="related-bottom-card"><span class="related-bottom-title">Игрушка машина с дымом: обзор лучших моделей и принцип работы</span><span class="related-bottom-desc">Полный гид по игрушечным машинам с эффектом дыма. Как работают, виды парогенераторов, безопасность и</span></a><a href="/articles/r/ra/ramka-pod-nomernoj-znak-otkidnaya.html" class="related-bottom-card"><span class="related-bottom-title">Откидная рамка под номерной знак: выбор и установка</span><span class="related-bottom-desc">Как правильно выбрать откидную рамку под номерной знак? Обзор видов, советы по установке, защита от </span></a><a href="/articles/k/ka/kartinki-devushka-s-mashinoj.html" class="related-bottom-card"><span class="related-bottom-title">Картинки девушка с машиной: фотосессии, позы и идеи для авто</span><span class="related-bottom-desc">Подборка лучших идей для фото: девушка с машиной. Позы, ракурсы, выбор локации и секреты профессиона</span></a><a href="/articles/k/ka/kak-snyat-deflektory-s-okon-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Как снять дефлекторы с окон: полная инструкция</span><span class="related-bottom-desc">Подробная инструкция, как снять дефлекторы с окон автомобиля без повреждения краски. Методы удаления</span></a><a href="/articles/k/ka/kak-ustanovit-telefon-v-mashine-bez-derzhatelya.html" class="related-bottom-card"><span class="related-bottom-title">Как установить телефон в машине без держателя: 6 способов</span><span class="related-bottom-desc">Узнайте, как надежно закрепить смартфон в авто без использования держателя. Обзор липучек, присосок,</span></a><a href="/articles/n/ne/nero-burning-rom-kak-zapisat-mp3-disk-v-mashinu.html" class="related-bottom-card"><span class="related-bottom-title">Как записать MP3 диск в машину через Nero Burning ROM</span><span class="related-bottom-desc">Пошаговая инструкция: запись музыки MP3 на CD-R для автомагнитолы в Nero Burning ROM. Настройки скор</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

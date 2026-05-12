@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как работает GPS трекер с SIM-картой: принцип действия и настройки — Авто Гид</title>
+    <meta name="description" content="Подробный разбор принципа работы GPS трекера с SIM-картой. Разбор протоколов передачи, частот GSM и алгоритмов позиционирования для авто.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-rabotaet-gps-treker-s-sim-kartoj.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как работает GPS трекер с SIM-картой: принцип действия и настройки">
+    <meta property="og:description" content="Подробный разбор принципа работы GPS трекера с SIM-картой. Разбор протоколов передачи, частот GSM и алгоритмов позиционирования для авто.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как работает GPS трекер с SIM-картой: принцип действия и настройки</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как работает GPS трекер с SIM-картой: полный технический разбор</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#базовый-принцип-взаимодействия-модулей-gps-и-gsm">Базовый принцип взаимодействия модулей GPS и GSM</a></li><li><a href="#роль-sim-карты-и-протоколов-передачи-данных">Роль SIM-карты и протоколов передачи данных</a></li><li><a href="#точность-позиционирования-gps-против-lbs">Точность позиционирования: GPS против LBS</a></li><li><a href="#режимы-работы-и-энергосбережение">Режимы работы и энергосбережение</a></li><li><a href="#настройка-и-установка-оборудования">Настройка и установка оборудования</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современные системы спутникового мониторинга стали неотъемлемой частью эксплуатации личного и коммерческого транспорта. Многие владельцы автомобилей воспринимают трекер как «черный ящик», который просто показывает точку на карте, но не задумываются о сложных процессах, происходящих внутри устройства каждую секунду.</p>
+
+<p>В основе функционирования любого <strong>GPS трекера</strong> лежит непрерывный диалог между спутниками, сотовыми вышками и сервером обработки данных. Понимание этих процессов позволяет не только грамотно настроить оборудование, но и правильно интерпретировать данные о местоположении, особенно в сложных условиях городской застройки или в удаленных районах.</p>
+
+<p>Ключевым элементом, связывающим устройство с внешним миром, является модуль связи, который использует SIM-карту. Именно через каналы сотовой связи трекер отправляет координаты, полученные от спутников, на ваш смартфон или компьютер. Без понимания того, как именно происходит этот обмен пакетами данных, невозможно обеспечить стабильную работу системы слежения.</p>
+
+<h2 id="базовый-принцип-взаимодействия-модулей-gps-и-gsm">Базовый принцип взаимодействия модулей GPS и GSM</h2>
+
+<p>Работа любого трекера базируется на взаимодействии двух независимых, но взаимосвязанных подсистем: приемника спутниковых сигналов (GPS/ГЛОНАСС) и модуля сотовой связи (GSM/GPRS/4G). Первая система отвечает исключительно за определение координат, а вторая — за передачу этой информации пользователю. <em>GPS-модуль</em> пассивно принимает сигналы от спутников, вычисляя широту, долготу, высоту и точное время.</p>
+
+<p>После получения координат в дело вступает GSM-модуль. Он устанавливает соединение с ближайшей базовой станцией сотового оператора, используя установленную в устройство SIM-карту. Важно понимать, что сам по себе GPS не требует сим-карты для работы, но без нее устройство не сможет передать данные о своем местоположении вам. <strong>Передача данных</strong> осуществляется через интернет-канал GPRS, EDGE, 3G или LTE, в зависимости от возможностей модуля и покрытия сети.</p>
+
+<p>Процесс выглядит следующим образом: трекер вычисляет позицию, упаковывает ее в цифровой пакет данных вместе с дополнительными параметрами (скорость, уровень заряда, температура) и отправляет этот пакет на IP-адрес сервера. Сервер, в свою очередь, декодирует информацию и отображает метку на электронной карте в приложении пользователя. Задержка между получением сигнала со спутника и его отображением на экране зависит от качества сотовой связи и настроек интервала отправки.</p>
+
+<p><strong>Алгоритм работы</strong> может отличаться в зависимости от режима трекера. В активном режиме устройство отправляет данные с заданным интервалом, например, раз в 10 секунд. В энергосберегающем режиме (<em>Sleep Mode</em>) трекер «просыпается» только при движении или по команде, что критически важно для автономных маяков, работающих от.</p>
+
+<blockquote>
+<p>⚠️ Внимание: При установке трекера в металлический корпус или глубоко под обшивку автомобиля уровень сигнала GPS может критически снизиться. Металл экранирует спутниковые волны, и устройство перейдет в режим LBS (определение по вышкам), что резко снизит точность координат.</p>
+</blockquote>
+
+<h2 id="роль-sim-карты-и-протоколов-передачи-данных">Роль SIM-карты и протоколов передачи данных</h2>
+
+<p>Центральным элементом коммуникации является SIM-карта. В отличие от обычных смартфонов, в трекерах часто используются специализированные M2M (Machine-to-Machine) сим-карты. Их главное отличие заключается в устойчивости к перепадам температур и способности годами работать в режиме постоянного обмена небольшими пакетами данных без блокировки оператором за отсутствие голосовых вызовов.</p>
+
+<p>Передача данных происходит по протоколам TCP или UDP. Протокол <strong>TCP</strong> гарантирует доставку каждого пакета и подтверждение его получения сервером, что делает соединение надежным, но более медленным и энергозатратным. Протокол <em>UDP</em> отправляет данные «вслепую», без подтверждения, что экономит трафик и батарею, но теоретически допускает потерю части пакетов при плохой связи.</p>
+
+<p>Для корректной работы необходимо, чтобы на SIM-карте был подключен и оплачен пакет мобильного интернета. Голосовые минуты и SMS могут использоваться для управления устройством (например, отправка команд блокировки двигателя), но основной поток координат идет через GPRS/3G/4G канал. Настройка точек доступа (APN) является обязательным шагом при первичной установке.</p>
+
+<p>Частота обновления координат напрямую влияет на расход трафика. Для легкового автомобиля, используемого в личных целях, достаточно интервала в 30-60 секунд, что потребует минимального объема данных (около 50-100 МБ в месяц). Для систем мониторинга коммерческого транспорта, где требуется трекинг каждые 5-10 секунд, объем потребляемого трафика может вырасти в 5-10 раз.</p>
+
+<div class="poll-widget" id="poll-74c5017b"><div class="poll-widget-question">📊 Какой тип SIM-карты вы планируете использовать в трекере?</div><div class="poll-widget-option" data-poll="74c5017b" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Обычная потребительская SIM</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="74c5017b" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">M2M сим-карта для IoT</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="74c5017b" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Виртуальная eSIM</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="74c5017b" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не знаю, в чем разница</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="точность-позиционирования-gps-против-lbs">Точность позиционирования: GPS против LBS</h2>
+
+<p>Одной из самых частых проблем, с которой сталкиваются пользователи, является расхождение между реальным местоположением автомобиля и точкой на карте. Это часто связано с переключением трекера между спутниковым позиционированием (GPS/ГЛОНАСС) и определением по базовым станциям (LBS). <strong>GPS-позиционирование</strong> обеспечивает точность до 2-5 метров, но требует прямой видимости неба.</p>
+
+<p>Если спутниковый сигнал потерян (например, на подземной парковке или в «бетонном каньоне» улиц), трекер переключается на технологию <em>LBS (Location Based Service)</em>. В этом режиме координаты определяются по triangulation (триангуляции) сигналов от ближайших вышек сотового оператора. Точность LBS варьируется от 100 метров в городе до нескольких километров в сельской местности.</p>
+
+<p>Визуально на карте это часто отображается изменением цвета метки или появлением специального значка. Некоторые продвинутые модели трекеров используют гибридный метод, сохраняя последнюю известную GPS-координату и дополняя ее данными LBS, что позволяет строить более логичный трек движения даже при временной потере спутников.</p>
+
+<p>Для повышения точности в сложных условиях современные устройства поддерживают работу с многими спутниковыми системами одновременно: американской GPS, российской ГЛОНАСС, европейской Galileo и китайской BeiDou. Чем больше спутников «видит» антенна, тем быстрее происходит холодный старт и выше точность вычисления позиции.</p>
+
+<details class="faq-item"><summary>Почему трекер показывает движение, когда машина стоит?</summary><div class="faq-answer"><p>Это явление называется «дрожание координат» или GPS-дрейф. Оно возникает из-за атмосферных помех и многолучевого распространения сигнала (отражение от зданий). Качественные трекеры используют алгоритмы фильтрации, которые игнорируют перемещения менее 5-10 метров, если не зафиксировано изменение скорости или включение зажигания.</p></div></details>
+
+<h2 id="режимы-работы-и-энергосбережение">Режимы работы и энергосбережение</h2>
+
+<p>Эффективность работы трекера напрямую зависит от выбранного режима. Для устройств, подключенных к бортовой сети автомобиля (12/24 В), вопрос энергопотребления стоит не так остро, как для автономных маяков. Однако даже проводные трекеры имеют различные алгоритмы работы для оптимизации нагрузки на аккумулятор автомобиля и снижения заметности.</p>
+
+<p>В режиме <strong>трекинга</strong> устройство постоянно активизирует GPS и GSM модули с заданным интервалом. Это обеспечивает детальную историю перемещений, но потребляет больше всего энергии. В режиме <em>тревоги</em> трекер находится в «спящем» состоянии и активируется только при срабатывании датчиков (удар, наклон, отключение питания, вторжение в геозону).</p>
+
+<p>Автономные маяки, работающие от встроенной батареи, используют стратегию глубокого сна. Они могут «спать» неделями, просыпаясь раз в сутки или по расписанию, чтобы отправить одну пакетную телеграмму с координатами. Это позволяет достигать срока автономной работы до 3-5 лет без подзарядки.</p>
+
+<p>Существует также интеллектуальный режим, зависящий от состояния двигателя. Когда двигатель заглушен, трекер переходит в редкий режим опроса (например, раз в 10 минут). Как только фиксируется запуск двигателя (по скачку напряжения или вибрации), интервал опроса сокращается до минимума (5-10 секунд) для детального трекинга движения.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для максимального энергосбережения автономного маяка настройте отправку координат только при изменении местоположения более чем на 500 метров. Это исключит передачу одинаковых координат, когда машина стоит на парковке.</p></div>
+
+<h2 id="настройка-и-установка-оборудования">Настройка и установка оборудования</h2>
+
+<p>Правильная установка трекера — залог его незаметности и надежной работы. Антенну GPS/ГЛОНАСС необходимо размещать горизонтально, желательно на лобовом стекле или под пластиковой обшивкой, избегая экранирующих материалов. Антенна GSM менее требовательна к прямой видимости, но также не любит замкнутых металлических объемов.</p>
+
+<p>Подключение к автомобилю требует внимательности. Стандартная схема включает подключение красного провода к плюсу аккумулятора (постоянный плюс), черного — к массе, и желтого/оранжевого — к цепи зажигания. Для реализации функции блокировки двигателя дополнительно подключаются провода к реле, разрывающему цепь стартера или топливного насоса.</p>
+
+<p>После физической установки следует этап</div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#базовый-принцип-взаимодействия-модулей-gps-и-gsm">Базовый принцип взаимодействия модулей GPS и GSM</a></li><li><a href="#роль-sim-карты-и-протоколов-передачи-данных">Роль SIM-карты и протоколов передачи данных</a></li><li><a href="#точность-позиционирования-gps-против-lbs">Точность позиционирования: GPS против LBS</a></li><li><a href="#режимы-работы-и-энергосбережение">Режимы работы и энергосбережение</a></li><li><a href="#настройка-и-установка-оборудования">Настройка и установка оборудования</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/z/zn/znachok-eko-na-paneli-priborov.html" class="related-card">Значок Эко на панели приборов: что означает и как отключить</a></li><li><a href="/articles/c/ch/chto-takoe-mid-bass-dinamiki.html" class="related-card">Мид басс динамики: что это, частоты и отличие от сабвуфера</a></li><li><a href="/articles/m/mm/mmi-chto-eto-v-avtomobile.html" class="related-card">MMI в автомобиле: что это и как работает система Audi</a></li><li><a href="/articles/p/pa/panel-s-knopkami-dlya-avto.html" class="related-card">Панель с кнопками для авто: виды, выбор и установка</a></li><li><a href="/articles/k/ko/kolba-s-podsvetkoj-dlya-kalyana.html" class="related-card">Колба с подсветкой для кальяна: выбор, установка и уход (2026)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/z/zn/znachok-eko-na-paneli-priborov.html" class="related-bottom-card"><span class="related-bottom-title">Значок Эко на панели приборов: что означает и как отключить</span><span class="related-bottom-desc">Значок Эко на панели приборов: расшифровка индикатора, влияние на расход топлива, причины появления </span></a><a href="/articles/c/ch/chto-takoe-mid-bass-dinamiki.html" class="related-bottom-card"><span class="related-bottom-title">Мид басс динамики: что это, частоты и отличие от сабвуфера</span><span class="related-bottom-desc">Подробный разбор мид-басов в автозвуке. Узнайте частотный диапазон, назначение и отличие мидбаса от </span></a><a href="/articles/m/mm/mmi-chto-eto-v-avtomobile.html" class="related-bottom-card"><span class="related-bottom-title">MMI в автомобиле: что это и как работает система Audi</span><span class="related-bottom-desc">Подробный гид по MMI в авто Audi. Узнайте, что это за мультимедийный интерфейс, как пользоваться мен</span></a><a href="/articles/p/pa/panel-s-knopkami-dlya-avto.html" class="related-bottom-card"><span class="related-bottom-title">Панель с кнопками для авто: виды, выбор и установка</span><span class="related-bottom-desc">Как выбрать и установить панель с кнопками в авто. Обзор моделей для внедорожников, схемы подключени</span></a><a href="/articles/k/ko/kolba-s-podsvetkoj-dlya-kalyana.html" class="related-bottom-card"><span class="related-bottom-title">Колба с подсветкой для кальяна: выбор, установка и уход (2026)</span><span class="related-bottom-desc">Как выбрать колбу с LED-подсветкой для кальяна: виды, монтаж, настройка цвета и уход. Сравнение моде</span></a><a href="/articles/v/vo/vodorodnaya-ustanovka-na-avto.html" class="related-bottom-card"><span class="related-bottom-title">Водородная установка на авто: мифы, реальность и эффективность</span><span class="related-bottom-desc">Подробный разбор водородных установок на авто. Реальный расход топлива, устройство генератора Брауна</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

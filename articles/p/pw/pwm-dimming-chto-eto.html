@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>PWM Dimming: что это, как работает и влияние на глаза — Авто Гид</title>
+    <meta name="description" content="Подробный разбор технологии PWM dimming. Что это такое, как мерцание экрана влияет на зрение и почему важно знать частоту ШИМ при выборе смартфона.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/p/pw/pwm-dimming-chto-eto.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="PWM Dimming: что это, как работает и влияние на глаза">
+    <meta property="og:description" content="Подробный разбор технологии PWM dimming. Что это такое, как мерцание экрана влияет на зрение и почему важно знать частоту ШИМ при выборе смартфона.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">PWM Dimming: что это, как работает и влияние на глаза</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>PWM Dimming: что это и как мерцание экрана влияет на ваше зрение</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принцип-работы-широтно-импульсной-модуляции">Принцип работы широтно-импульсной модуляции</a></li><li><a href="#влияние-pwm-на-зрение-и-здоровье-человека">Влияние PWM на зрение и здоровье человека</a></li><li><a href="#сравнение-pwm-и-dc-dimming-ключевые-различия">Сравнение PWM и DC Dimming: ключевые различия</a></li><li><a href="#частота-pwm-низкая-против-высокой">Частота PWM: низкая против высокой</a></li><li><a href="#как-проверить-наличие-и-частоту-мерцания">Как проверить наличие и частоту мерцания</a></li><li><a href="#практические-рекомендации-по-защите-глаз">Практические рекомендации по защите глаз</a></li><li><a href="#будущее-технологий-дисплеев">Будущее технологий дисплеев</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>В погоне за идеальной картинкой и максимальной яркостью производители смартфонов и ноутбуков часто жертвуют здоровьем глаз пользователей, внедряя сложные технические решения для управления подсветкой. Одним из таких решений является <strong>PWM dimming</strong> — технология, которая незаметно для глаза регулирует яркость дисплея, но может вызывать серьезный дискомфорт при длительном использовании. Если вы замечали усталость глаз или головную боль после чтения с экрана в темноте, причина может крыться именно в принципах работы вашей матрицы.</p>
+
+<p>Суть метода заключается не в изменении силы тока, проходящего через светодиоды, а в сверхбыстром включении и выключении подсветки. Человеческий глаз не способен воспринимать эти колебания как мигание, если частота достаточно высока, однако мозг и зрительный нерв реагируют на них, что приводит к скрытому стрессу для организма. Понимание того, <em>что такое PWM dimming</em>, становится критически важным при выборе нового гаджета, особенно для людей с повышенной чувствительностью.</p>
+
+<p>В этой статье мы детально разберем физический процесс широтно-импульсной модуляции, сравним его с альтернативными методами регулировки и дадим практические советы по минимизации вреда. Вы узнаете, почему дешевые OLED-экраны часто «мерцают» сильнее, чем бюджетные LCD-панели, и как программные костыли пытаются исправить аппаратные недостатки современных флагманов.</p>
+
+<h2 id="принцип-работы-широтно-импульсной-модуляции">Принцип работы широтно-импульсной модуляции</h2>
+
+<p>Технология <strong>PWM (Pulse Width Modulation)</strong> изначально использовалась в электротехнике для управления мощностью двигателей, но в мире дисплеев она нашла свое применение для регулировки яркости светодиодной подсветки. В отличие от аналогового метода, где яркость меняется путем снижения напряжения (DC Dimming), здесь светодиоды работают либо на полную мощность, либо выключены полностью. Это позволяет избежать изменения цветового баланса, которое часто наблюдается при снижении тока.</p>
+
+<p>Механизм работы строится на циклическом переключении состояния «включено/выключено». Если нужно установить яркость на уровне 50%, подсветка половину времени горит на максимуме, а половину — не горит вовсе. При 10% яркости светодиоды светят очень короткими импульсами, занимая лишь десятую часть времени цикла. Глаз усредняет эти вспышки, воспринимая их как постоянный, но более тусклый свет.</p>
+
+<p>Ключевым параметром здесь является частота мерцания. Если она составляет, например, 240 Гц, то экран мигает 240 раз в секунду. На низких яркостях интервалы между вспышками света становятся больше, что увеличивает амплитуду колебаний яркости. Именно этот фактор часто становится причиной дискомфорта, так как зрачок не успевает адаптироваться к резким перепадам освещения, даже если они длятся доли секунды.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Люди с эпилепсией или высокой фоточувствительностью могут испытывать негативные симптомы даже от экранов с высокой частотой PWM, если амплитуда мерцания велика. При первых признаках недомогания следует немедленно прекратить использование устройства.</p>
+</blockquote>
+
+<h2 id="влияние-pwm-на-зрение-и-здоровье-человека">Влияние PWM на зрение и здоровье человека</h2>
+
+<p>Влияние <strong>ШИМ (PWM)</strong> на организм изучается уже давно, и хотя прямой связи с необратимым ухудшением зрения ученые пока не нашли, субъективные жалобы пользователей растут с каждым годом. Основным симптомом является так называемый «синдром компьютерного зрения», который проявляется в сухости, покраснении и рези в глазах. Это происходит потому, что мышцы глазного яблока находятся в постоянном напряжении, пытаясь компенсировать микро-изменения освещенности.</p>
+
+<p>Помимо локального дискомфорта, мерцание экрана может провоцировать системные реакции. Мозг получает противоречивые сигналы: зрительная кора фиксирует стабильное изображение, в то время как другие отделы реагируют на ритмичные световые импульсы. Этот конфликт может приводить к:</p>
+
+<ul>
+ <li>🤕 Возникновению мигреней и головных болей напряжения.</li>
+ <li>😴 Нарушению циркадных ритмов и проблемам со сном.</li>
+ <li>🤢 Появлению тошноты и головокружения при длительном чтении.</li>
+ <li>😫 Быстрой утомляемости и снижению концентрации внимания.</li>
+</ul>
+
+<p>Особенно сильно воздействие <em>PWM dimming</em> сказывается в условиях низкой освещенности. Когда вы берете смартфон в руки ночью, яркость экрана автоматически или вручную снижается до минимума. В этот момент амплитуда пульсации достигает пиковых значений, а интервалы темноты становятся наиболее длинными, что создает максимальную нагрузку на зрительный аппарат.</p>
+
+<div class="poll-widget" id="poll-32061350"><div class="poll-widget-question">📊 Чувствуете ли вы усталость глаз после использования смартфона в темноте?</div><div class="poll-widget-option" data-poll="32061350" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Да, очень сильно</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32061350" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Иногда бывает</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32061350" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Редко замечаю</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32061350" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Нет, глаза не устают</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="сравнение-pwm-и-dc-dimming-ключевые-различия">Сравнение PWM и DC Dimming: ключевые различия</h2>
+
+<p>Чтобы понять, почему индустрия до сих пор использует мерцающую подсветку, нужно сравнить её с альтернативой. <strong>DC Dimming</strong> (Direct Current) регулирует яркость путем изменения напряжения, подаваемого на светодиоды. Ток течет постоянно, просто его сила становится меньше. Это исключает мерцание, но вносит свои искажения в качество картинки.</p>
+
+<p>Главная проблема DC Dimming на OLED-дисплеях заключается в неравномерности свечения субпикселей при низком токе. Разные цвета могут тухнуть с разной скоростью, что приводит к изменению цветопередачи (часто экран уходит в зеленоватые или серые тона) и появлению «шума» или «лестничного эффекта» (color banding) на градиентах. Именно поэтому многие производители предпочитают PWM, жертвуя комфортом ради цветовой точности.</p>
+
+<p>Современные технологии пытаются совместить преимущества обоих методов. Например, гибридные системы используют DC Dimming на высоких яркостях и переключаются на высокочастотный PWM только когда яркость падает ниже определенного порога. Это позволяет минимизировать искажения цветов там, где они заметны, и снизить вред для глаз в темноте.</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Параметр</th>
+ <th>PWM Dimming</th>
+ <th>DC Dimming</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Принцип работы</td>
+ <td>Частота включения/выключения</td>
+ <td>Изменение силы тока</td>
+ </tr>
+ <tr>
+ <td>Мерцание</td>
+ <td>Присутствует (зависит от частоты)</td>
+ <td>Отсутствует</td>
+ </tr>
+ <tr>
+ <td>Цветопередача</td>
+ <td>Стабильная на всех яркостях</td>
+ <td>Может искажаться на минимуме</td>
+ </tr>
+ <tr>
+ <td>Влияние на глаза</td>
+ <td>Высокое (при низкой частоте)</td>
+ <td>Минимальное</td>
+ </tr>
+ </tbody>
+</table>
+
+
+
+<h2 id="частота-pwm-низкая-против-высокой">Частота PWM: низкая против высокой</h2>
+
+<p>Не все мерцания одинаково вредны. Критическим фактором является частота, с которой происходят циклы включения и выключения. В индустрии сложилось разделение на низкочастотный и высокочастотный <strong>PWM</strong>. Низкочастотным считается диапазон от 60 Гц до 400 Гц. Именно такие значения часто встречались в ранних OLED-смартфонах и до сих пор могут попадаться в бюджетных моделях.</p>
+
+<p>Высокочастотный PWM (High-Frequency PWM) подразумевает частоту от 1000 Гц (1 кГц) и выше. В последних флагманских моделях китайских брендов можно встретить частоты 1440 Гц, 2160 Гц и даже 3840 Гц. Исследования показывают, что при частоте выше 1250 Гц риск негативного воздействия на глаза значительно снижается, так как мерцание становится практически неразличимым для нервной системы.</p>
+
+<p>Важно понимать, что наличие высокой частоты — это не просто маркетинговая уловка, а реальная забота о здоровье пользователя. Однако даже высокая частота не гарантирует полного отсутствия проблем, если глубина модуляции (амплитуда) остается большой. Поэтому при выборе устройства стоит обращать внимание не только на герцы, но и на наличие сертификатов безопасности, таких как <em>TÜV Rheinland</em>.</p>
+
+
+
+<h2 id="как-проверить-наличие-и-частоту-мерцания">Как проверить наличие и частоту мерцания</h2>
+
+<p>Определить, какой тип регулировки яркости используется в вашем устройстве, можно несколькими способами. Самый простой и доступный — тест с помощью камеры смартфона. Включите камеру на другом телефоне, наведите её на экран проверяемого устройства и убавьте яркость до минимума. Если на экране камеры вы видите четкие черные полосы, бегущие по дисплею, значит, используется <strong>низкочастотный PWM</strong>.</p>
+
+<p>Более точный метод требует использования специализированного оборудования или приложений-датчиков. Существуют программы для Android, которые могут анализировать сигнал с датчика освещенности (если он не заблокирован системой) и строить график пульсаций. Однако на многих современных смартфонах доступ к сырым данным датчика закрыт производителем именно для скрытия факта использования PWM.</p>
+
+<p>Для профессиональной оценки используется осциллограф с фотодатчиком. Этот метод позволяет точно замерить частоту и коэффициент пульсации (Kp). Нормой считается коэффициент менее 5%, хотя для OLED-экранов на минимальной яркости он часто достигает 80-100%. Если вы чувствительны к свету, лучше избегать устройств, где Kp превышает 20-30%.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не полагайтесь слепо на заявления производителей о «защите глаз». Термины вроде «Anti-Flicker» могут означать просто повышение частоты с 240 Гц до 480 Гц, что все равно остается вредным для чувствительных людей.</p>
+</blockquote>
+
+<h2 id="практические-рекомендации-по-защите-глаз">Практические рекомендации по защите глаз</h2>
+
+<p>Если вы уже владеете устройством с <strong>PWM dimming</strong> и не планируете его менять, существуют способы снизить негативное воздействие. В первую очередь, старайтесь не использовать смартфон в полной темноте. Всегда включайте хотя бы минимальный фоновый свет в комнате, чтобы контраст между ярким экраном и окружающей средой был меньше.</p>
+
+<p>Второй важный совет — держите яркость выше 30-40%. На этих значениях многие OLED-панели переходят в режим работы с меньшей амплитудой пульсаций или вовсе переключаются на DC-режим. Если текст слишком яркий, лучше используйте режим «Чтение» или инверсию цветов, чем снижайте ползунок яркости до дна.</p>
+
+<p>Третий шаг — программные решения. Для пользователей Android с root-правами существуют приложения (например, Screen Dimmer), которые создают поверх экрана черный полупрозрачный слой, позволяя визуально снизить яркость, оставляя реальную подсветку на высоком уровне. Это эффективный, хоть и не идеальный способ борьбы с мерцанием.</p>
+
+<div class="checklist-block"><h4>☑️ Чек-лист безопасного использования смартфона</h4><label class="check-item"><input type="checkbox"><span>Включить фоновое освещение в комнате</span></label><label class="check-item"><input type="checkbox"><span>Установить яркость выше 30%</span></label><label class="check-item"><input type="checkbox"><span>Использовать темную тему интерфейса</span></label><label class="check-item"><input type="checkbox"><span>Делать перерывы каждые 20 минут</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="будущее-технологий-дисплеев">Будущее технологий дисплеев</h2>
+
+<p>Индустрия движется в сторону решения проблемы мерцания. Одной из перспективных технологий является <em>LTPO (Low-Temperature Polycrystalline Oxide)</em>, которая позволяет не только динамически менять частоту обновления кадров, но и более гибко управлять подсветкой. Однако революцию может принести массовое внедрение новых типов светодиодов и материалов, способных стабильно светиться при сверхнизких токах без потери цветопередачи.</p>
+
+<p>Также набирает популярность технология <strong>Class-3 PWM</strong> и выше, где частота поднимается до десятков килогерц, что полностью выводит мерцание за пределы восприятия любых биологических систем. Производители начинают осознавать, что здоровье пользователей становится конкурентным преимуществом, и характеристики экранов смещаются от «самый яркий» к «самый безопасный».</p>
+
+<p>Пока же потребителю остается быть внимательным. При покупке нового смартфона или планшета обязательно проверяйте обзоры на предмет тестов мерцания. <mark>Частота PWM выше 1440 Гц считается безопасной для большинства пользователей</mark>, в то время как значения ниже 500 Гц могут стать причиной серьезных проблем со здоровьем при ежедневном использовании.</p>
+
+
+
+<details>
+<summary>Что делать, если у меня уже болят глаза от экрана?</summary>
+<p>В первую очередь, обратитесь к офтальмологу для исключения других патологий. Если причина именно в экране, используйте искусственную слезу для увлажнения, делайте гимнастику для глаз (упражнение 20-20-20: каждые 20 минут смотреть 20 секунд на объект в 20 футах) и максимально ограничьте использование гаджета перед сном. В крайнем случае поможет смена устройства на модель с LCD-экраном или OLED с высокой частотой PWM.</p>
+</details>
+
+<details>
+<summary>Влияет ли PWM на качество видео и фото?</summary>
+<p>Само по себе мерцание подсветки не влияет на работу камеры при съемке, так как это разные системы. Однако при съемке видео другого экрана или при использовании электронного затвора на камере могут появляться полосы (banding), которые являются артефактом рассинхронизации частоты обновления экрана и частоты кадров камеры.</p>
+</details>
+
+<details>
+<summary>Есть ли разница между AMOLED и IPS в плане PWM?</summary>
+<p>Да, разница существенная. AMOLED-экраны практически всегда используют PWM для регулировки яркости, так как они не имеют отдельного слоя подсветки. IPS-матрицы чаще используют DC Dimming или гибридную схему, так как управляются отдельной LED-подсветкой, которую легче контролировать по току. Поэтому для чувствительных людей IPS часто является более безопасным выбором.</p>
+</details>
+
+<details>
+<summary>Помогает ли режим «Защита зрения» или «Night Shift»?</summary>
+<p>Режимы вроде Night Shift или «Защита зрения» лишь меняют цветовую температуру экрана, делая её более теплой (желтой), чтобы снизить влияние синего спектра на выработку мелатонина. Они <strong>не устраняют</strong> мерцание PWM, так как не меняют принцип регулировки яркости подсветки. Однако теплый свет субъективно воспринимается как более мягкий, что может немного снизить утомляемость.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#принцип-работы-широтно-импульсной-модуляции">Принцип работы широтно-импульсной модуляции</a></li><li><a href="#влияние-pwm-на-зрение-и-здоровье-человека">Влияние PWM на зрение и здоровье человека</a></li><li><a href="#сравнение-pwm-и-dc-dimming-ключевые-различия">Сравнение PWM и DC Dimming: ключевые различия</a></li><li><a href="#частота-pwm-низкая-против-высокой">Частота PWM: низкая против высокой</a></li><li><a href="#как-проверить-наличие-и-частоту-мерцания">Как проверить наличие и частоту мерцания</a></li><li><a href="#практические-рекомендации-по-защите-глаз">Практические рекомендации по защите глаз</a></li><li><a href="#будущее-технологий-дисплеев">Будущее технологий дисплеев</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/n/na/na-kakoj-mashine-ezdit-kim-chen-yn.html" class="related-card">На какой машине ездит Ким Чен Ын: обзор лимузина Paektu</a></li><li><a href="/articles/p/pr/prichina-smerti-ajsedory-dunkan.html" class="related-card">Причина смерти Айседоры Дункан: тайна шарфа и автомобиля</a></li><li><a href="/articles/m/ma/mashinka-nabiraet-vodu-no-ne-krutit.html" class="related-card">Машинка набирает воду но не крутит: причины и ремонт</a></li><li><a href="/articles/k/ka/kakim-gruzovym-avtomobilyam-perevozyashchim-lyudej-v-kuzove-razreshaetsya-dvizhenie-vne-naselennykh-punktov-so.html" class="related-card">Перевозка людей в кузове грузовика: ПДД и требования безопасности</a></li><li><a href="/articles/p/pe/pervye-uroki-vozhdeniya-na-mekhanike.html" class="related-card">Первые уроки вождения на механике: полное руководство</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/n/na/na-kakoj-mashine-ezdit-kim-chen-yn.html" class="related-bottom-card"><span class="related-bottom-title">На какой машине ездит Ким Чен Ын: обзор лимузина Paektu</span><span class="related-bottom-desc">Узнайте, на каком автомобиле перемещается лидер КНДР. Детальный обзор бронированного лимузина Paektu</span></a><a href="/articles/p/pr/prichina-smerti-ajsedory-dunkan.html" class="related-bottom-card"><span class="related-bottom-title">Причина смерти Айседоры Дункан: тайна шарфа и автомобиля</span><span class="related-bottom-desc">Как погибла великая танцовщица? Детальный разбор трагедии, версии гибели, технические особенности ша</span></a><a href="/articles/m/ma/mashinka-nabiraet-vodu-no-ne-krutit.html" class="related-bottom-card"><span class="related-bottom-title">Машинка набирает воду но не крутит: причины и ремонт</span><span class="related-bottom-desc">Стиральная машина набирает воду, но барабан не крутится? Разбираем причины: ремень, двигатель, ТЭН, </span></a><a href="/articles/k/ka/kakim-gruzovym-avtomobilyam-perevozyashchim-lyudej-v-kuzove-razreshaetsya-dvizhenie-vne-naselennykh-punktov-so.html" class="related-bottom-card"><span class="related-bottom-title">Перевозка людей в кузове грузовика: ПДД и требования безопасности</span><span class="related-bottom-desc">Правила перевозки людей в кузове грузовика вне населенного пункта. Требования к бортам, сиденьям, до</span></a><a href="/articles/p/pe/pervye-uroki-vozhdeniya-na-mekhanike.html" class="related-bottom-card"><span class="related-bottom-title">Первые уроки вождения на механике: полное руководство</span><span class="related-bottom-desc">Как трогаться, переключать передачи и глохнуть правильно. Практические советы для новичков, садящихс</span></a><a href="/articles/u/uz/uzel-podachi-vody-v-kofemashine.html" class="related-bottom-card"><span class="related-bottom-title">Узел подачи воды в кофемашине: устройство, чистка и ремонт</span><span class="related-bottom-desc">Полный гид по системе подачи воды кофемашины. Разбор узлов, промывка от накипи, устранение протечек </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

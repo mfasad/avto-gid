@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>КАН в автомобиле: что это, как работает и зачем нужен — Авто Гид</title>
+    <meta name="description" content="Подробный разбор CAN-шины в машине: принцип работы, диагностика неисправностей, отличия от LIN и FlexRay. Как проверить CAN-сеть мультиметром и сканером.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kan-chto-eto-takoe.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="КАН в автомобиле: что это, как работает и зачем нужен">
+    <meta property="og:description" content="Подробный разбор CAN-шины в машине: принцип работы, диагностика неисправностей, отличия от LIN и FlexRay. Как проверить CAN-сеть мультиметром и сканером.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/elektrika-i-svet/">Электрика и Свет</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">КАН в автомобиле: что это, как работает и зачем нужен</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>CAN-шина в автомобиле: устройство, назначение и диагностика</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#что-такое-can-шина-и-как-она-работает">Что такое CAN-шина и как она работает</a></li><li><a href="#отличия-can-от-других-автомобильных-сетей-lin-flexray-ethernet">Отличия CAN от других автомобильных сетей (LIN, FlexRay, Ethernet)</a></li><li><a href="#типы-can-шин-в-автомобиле-high-speed-low-speed-single-wire">Типы CAN-шин в автомобиле: High-Speed, Low-Speed, Single-Wire</a></li><li><a href="#как-проверить-can-шину-мультиметром-и-осциллографом">Как проверить CAN-шину мультиметром и осциллографом</a></li><li><a href="#признаки-неисправности-can-шины-и-их-причины">Признаки неисправности CAN-шины и их причины</a></li><li><a href="#как-починить-can-шину-пошаговая-инструкция">Как починить CAN-шину: пошаговая инструкция</a></li><li><a href="#can-шина-и-тюнинг-что-нужно-знать">CAN-шина и тюнинг: что нужно знать</a></li><li><a href="#будущее-can-шины-переход-на-ethernet-и-новые-стандарты">Будущее CAN-шины: переход на Ethernet и новые стандарты</a></li><li><a href="#faq-частые-вопросы-о-can-шине">FAQ: Частые вопросы о CAN-шине</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><p>Вы когда-нибудь задумывались, как десятки электронных блоков в современном автомобиле обмениваются данными друг с другом без пульта дистанционного управления? Ответ кроется в трех буквах — <strong>CAN</strong> (Controller Area Network). Эта технология, появившаяся еще в 1980-х, сегодня стала неотъемлемой частью любой машины с электронной начинкой. Без CAN-шины не работают ни ABS, ни ESP, ни даже простая кнопка открытия багажника.</p>
+
+<p>Но что такое CAN на практике? Это не просто"провода в машине", а целая сеть, где каждый датчик и контроллер — как участник оркестра, играющий свою партию под управлением дирижера. И если хотя бы один"музыкант" начинает фальшивить, последствия могут варьироваться от горящей лампочки <code>Check Engine</code> до полного отказа двигателя. В этой статье мы разберем, как устроена CAN-шина, почему она лучше традиционной проводки, и что делать, если система дает сбой.</p>
+
+<p>Вы удивитесь, но даже в бюджетных автомобилях типа <em>Lada Vesta</em> или <em>Renault Logan</em> используется CAN-сеть — просто в упрощенном варианте. А в премиальных моделях (например, <em>BMW 7 Series</em> или <em>Mercedes S-Class</em>) их может быть сразу несколько: для двигателя, шасси, мультимедиа и даже для систем комфорта. И каждая из этих сетей требует своего подхода при диагностике.</p>
+
+<h2 id="что-такое-can-шина-и-как-она-работает">Что такое CAN-шина и как она работает</h2>
+
+<p>CAN (<strong>Controller Area Network</strong>) — это стандарт связи, разработанный компанией <em>Bosch</em> в 1983 году специально для автомобильной промышленности. Его главная задача — обеспечить надежный обмен данными между электронными блоками управления (ЭБУ) без центрального компьютера. В отличие от традиционной проводки, где каждый датчик соединялся с блоком управления отдельным проводом, CAN позволяет передавать сигналы по двум витым парам проводов: <code>CAN-High</code> и <code>CAN-Low</code>.</p>
+
+<p>Как это работает на практике? Представьте, что в вашей машине есть 10 контроллеров (двигателя, коробки передач, ABS и т.д.). Вместо того чтобы связывать их все 45-ю проводами (по формуле <code>n*(n-1)/2</code>), достаточно подключить каждый к общей шине. Данные передаются в виде <strong>CAN-сообщений</strong> (фреймов), которые содержат:</p>
+<ul>
+ <li>🔹 <strong>Идентификатор</strong> — уникальный номер, определяющий приоритет сообщения (например, сигнал о неисправности тормозов имеет высший приоритет).</li>
+ <li>🔹 <strong>Данные</strong> — до 8 байт полезной информации (например, обороты двигателя или температура охлаждающей жидкости).</li>
+ <li>🔹 <strong>Контрольную сумму</strong> — для проверки целостности данных.</li>
+</ul>
+
+<p>Ключевое преимущество CAN — <mark>децентрализованная архитектура</mark>. Это значит, что если один из контроллеров выйдет из строя, остальные продолжат работать. Например, если откажет блок управления климатом, это не повлияет на работу двигателя или ABS. В традиционной проводке поломка одного провода могла парализовать всю систему.</p>
+
+<div class="poll-widget" id="poll-546e6b5e"><div class="poll-widget-question">📊 Какой тип диагностики CAN-шины вы используете чаще?</div><div class="poll-widget-option" data-poll="546e6b5e" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Сканер ELM327</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="546e6b5e" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Мультиметр</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="546e6b5e" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Осциллограф</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="546e6b5e" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Диагностика на СТО</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="546e6b5e" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Не занимаюсь диагностикой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="отличия-can-от-других-автомобильных-сетей-lin-flexray-ethernet">Отличия CAN от других автомобильных сетей (LIN, FlexRay, Ethernet)</h2>
+
+<p>CAN — не единственная сеть, используемая в автомобилях. В зависимости от задачи, производители применяют и другие протоколы. Вот основные отличия:</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Характеристика</th>
+ <th>CAN</th>
+ <th>LIN</th>
+ <th>FlexRay</th>
+ <th>Ethernet</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Скорость передачи</td>
+ <td>до 1 Мбит/с</td>
+ <td>до 20 кбит/с</td>
+ <td>до 10 Мбит/с</td>
+ <td>до 1 Гбит/с</td>
+ </tr>
+ <tr>
+ <td>Стоимость реализации</td>
+ <td>Средняя</td>
+ <td>Низкая</td>
+ <td>Высокая</td>
+ <td>Высокая</td>
+ </tr>
+ <tr>
+ <td>Применение</td>
+ <td>Двигатель, шасси, кузов</td>
+ <td>Датчики, кнопки, освещение</td>
+ <td>Системы активной безопасности</td>
+ <td>Мультимедиа, ADAS</td>
+ </tr>
+ <tr>
+ <td>Топология сети</td>
+ <td>Шина</td>
+ <td>Шина/звезда</td>
+ <td>Шина/звезда/кольцо</td>
+ <td>Звезда</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Например, <strong>LIN</strong> (Local Interconnect Network) используется для простых устройств, где не нужна высокая скорость: регулировка сидений, управление стеклоподъемниками или подсветкой. А <strong>FlexRay</strong> применяется в премиальных автомобилях для систем, где критична скорость и надежность — например, в адаптивном круиз-контроле или управлении подвеской.</p>
+
+<p><em>Automotive Ethernet</em> — новинка последнего десятилетия. Его можно встретить в <em>Tesla Model 3</em> или <em>Audi e-tron</em>, где требуется передача больших объемов данных (например, для камер 360° или автопилота). Однако CAN по-прежнему остается основой: даже в электромобилях он управляет зарядом батареи и тормозной системой.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если в вашем автомобиле установлена система <em>CarPlay</em> или <em>Android Auto</em>, это не означает, что он использует Ethernet. Эти протоколы работают поверх CAN или LIN для передачи мультимедийных данных, но критические системы (двигатель, тормоза) всегда остаются на CAN.</blockquote>
+
+<h2 id="типы-can-шин-в-автомобиле-high-speed-low-speed-single-wire">Типы CAN-шин в автомобиле: High-Speed, Low-Speed, Single-Wire</h2>
+
+<p>Не все CAN-шины одинаковы. В зависимости от задачи, в автомобиле могут использоваться разные типы:</p>
+
+<ol>
+ <li><strong>High-Speed CAN (HS-CAN)</strong> — скорость до 1 Мбит/с. Применяется для критичных систем: двигатель (<em>ECU</em>), коробка передач (<em>TCU</em>), ABS, ESP. В большинстве машин это основная сеть, к которой подключены до 30 контроллеров.</li>
+ <li><strong>Low-Speed CAN (LS-CAN)</strong> — скорость до 125 кбит/с. Используется для менее критичных систем: климат-контроль, центральный замок, освещение. Часто встречается в бюджетных автомобилях.</li>
+ <li><strong>Single-Wire CAN (SWCAN)</strong> — упрощенная версия с одним проводом (вместо витой пары). Применяется в старых моделях (например, <em>Ford Focus 2</em> до 2011 года) или для подключения диагностического разъема.</li>
+ <li><strong>CAN FD (Flexible Data-Rate)</strong> — усовершенствованный протокол с скоростью до 8 Мбит/с. Используется в современных автомобилях (например, <em>Volkswagen MQB</em> платформа) для передачи больших объемов данных.</li>
+</ol>
+
+<p>Как понять, какой тип CAN используется в вашей машине? Во-первых, посмотрите на диагностический разъем <code>OBD-II</code>:</p>
+<ul>
+ <li>🔌 Контакты <code>6 (CAN-High)</code> и <code>14 (CAN-Low)</code> — это <strong>High-Speed CAN</strong>.</li>
+ <li>🔌 Контакты <code>3 (LS-CAN-High)</code> и <code>11 (LS-CAN-Low)</code> — это <strong>Low-Speed CAN</strong>.</li>
+ <li>🔌 Контакт <code>1 (SWCAN)</code> — это <strong>Single-Wire CAN</strong>.</li>
+</ul>
+
+<p>Во-вторых, скорость можно определить с помощью сканера. Например, в программе <em>Torque Pro</em> или <em>FORScan</em> при подключении к автомобилю отображается тип протокола. Если у вас нет сканера, можно воспользоваться мультиметром (об этом расскажем ниже).</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если ваш автомобиль выпущен после 2010 года, с вероятностью 99% в нем используется High-Speed CAN. В машинах до 2005 года часто встречается Low-Speed или даже Single-Wire CAN.</p></div>
+
+<h2 id="как-проверить-can-шину-мультиметром-и-осциллографом">Как проверить CAN-шину мультиметром и осциллографом</h2>
+
+<p>Если в автомобиле появились признаки неисправности CAN-шины (о них поговорим позже), первым делом нужно проверить физическое состояние сети. Для этого понадобится мультиметр или осциллограф.</p>
+
+<h3>Проверка мультиметром</h3>
+<p>Выполните следующие шаги:</p>
+<div class="checklist-block"><h4>☑️ Диагностика CAN-шины мультиметром</h4><label class="check-item"><input type="checkbox"><span>Выключить зажигание</span></label><label class="check-item"><input type="checkbox"><span>Отсоединить клемму аккумулятора на 10 минут</span></label><label class="check-item"><input type="checkbox"><span>Подключить мультиметр к контактам 6 и 14 разъема OBD-II</span></label><label class="check-item"><input type="checkbox"><span>Измерить сопротивление между CAN-High и CAN-Low</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+<p>Нормальные показатели:</p>
+<ul>
+ <li>🔋 <strong>Сопротивление</strong> между <code>CAN-High</code> и <code>CAN-Low</code>: <strong>60 Ом ± 10%</strong> (это сопротивление терминаторов — резисторов на концах шины).</li>
+ <li>🔋 <strong>Напряжение</strong> на <code>CAN-High</code>: <strong>2.5–3.5 В</strong> (относительно массы).</li>
+ <li>🔋 <strong>Напряжение</strong> на <code>CAN-Low</code>: <strong>1.5–2.5 В</strong> (относительно массы).</li>
+</ul>
+
+<p>Если сопротивление равно <strong>0 Ом</strong> или <strong>бесконечности</strong>, это указывает на:</p>
+<ul>
+ <li>🔴 <strong>Короткое замыкание</strong> в шине (0 Ом).</li>
+ <li>🔴 <strong>Обрыв</strong> одного из проводов (бесконечность).</li>
+ <li>🔴 <strong>Отсутствие терминаторов</strong> (сопротивление выше 120 Ом).</li>
+</ul>
+
+<h3>Проверка осциллографом</h3>
+<p>Осциллограф позволяет увидеть <strong>форму сигнала</strong> на CAN-шине. В норме график должен выглядеть как"ступеньки" с четкими перепадами напряжения между <code>CAN-High</code> и <code>CAN-Low</code>. Пример нормального сигнала:</p>
+<ul>
+ <li>📊 <strong>Амплитуда</strong>: ~2 В (разница между High и Low).</li>
+ <li>📊 <strong>Частота</strong>: зависит от скорости шины (например, 500 кГц для HS-CAN).</li>
+ <li>📊 <strong>Форма</strong>: прямоугольные импульсы без искажений.</li>
+</ul>
+
+<p>Типичные неисправности на осциллографе:</p>
+<ul>
+ <li>🚨 <strong>Шум</strong> — помехи на сигнале (может указывать на плохой контакт или экранирование).</li>
+ <li>🚨 <strong>Затухание</strong> — снижение амплитуды (проблемы с терминаторами).</li>
+ <li>🚨 <strong>Отсутствие сигнала</strong> — обрыв или отключенный контроллер.</li>
+</ul>
+
+<details class="faq-item"><summary>Что делать если сопротивление CAN-шины 120 Ом?</summary><div class="faq-answer"><p>Это означает, что один из терминаторов (резисторов на 120 Ом) отсутствует или поврежден. Обычно терминаторы установлены в двух крайних контроллерах сети (например, в ECU и блоке ABS). Чтобы найти проблему:
+<p>1. Отключите поочередно контроллеры и проверяйте сопротивление.</p>
+<p>2. Когда сопротивление резко изменится (например, станет 60 Ом), вы нашли сторону с работающим терминатором.</p>
+<p>3. Проблема на противоположной стороне — ищите поврежденный контроллер или обрыв провода.</p></div></details></p>
+
+<h2 id="признаки-неисправности-can-шины-и-их-причины">Признаки неисправности CAN-шины и их причины</h2>
+
+<p>CAN-шина может выходить из строя по разным причинам: от банального окисления контактов до серьезных повреждений проводки. Вот типичные симптомы:</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Симптом</th>
+ <th>Возможная причина</th>
+ <th>Как проверить</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Горит <code>Check Engine</code>, но ошибок нет</td>
+ <td>Помехи в CAN-шине или потеря связи с ЭБУ</td>
+ <td>Проверьте осциллографом форму сигнала</td>
+ </tr>
+ <tr>
+ <td>Не работают несколько систем одновременно (ABS, ESP, климат-контроль)</td>
+ <td>Обрыв или короткое замыкание в основной шине</td>
+ <td>Измерьте сопротивление между CAN-High и CAN-Low</td>
+ </tr>
+ <tr>
+ <td>Приборная панель"глючит" (стрелки дергаются, показания сбрасываются)</td>
+ <td>Нестабильное питание контроллеров или потеря терминаторов</td>
+ <td>Проверьте напряжение на CAN-шине мультиметром</td>
+ </tr>
+ <tr>
+ <td>Автомобиль не заводится, стартер крутит</td>
+ <td>Отсутствие связи между ECU и иммобилайзером</td>
+ <td>Диагностируйте CAN-шину сканером (ошибки типа <code>U0100</code>)</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Самые распространенные причины неисправностей:</p>
+<ul>
+ <li>🔧 <strong>Повреждение проводки</strong> — перетертые провода, окисленные контакты, плохая масса.</li>
+ <li>🔧 <strong>Неисправные контроллеры</strong> —"залипший" блок может блокировать всю шину.</li>
+ <li>🔧 <strong>Проблемы с питанием</strong> — скачки напряжения или слабый аккумулятор.</li>
+ <li>🔧 <strong>Вмешательство в электрику</strong> — неправильное подключение сигнализации или мультимедиа.</li>
+</ul>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если после установки дополнительного оборудования (например, автосигнализации <em>StarLine</em> или <em>Pandora</em>) появились ошибки CAN-шины, первым делом отключите его! Некачественное оборудование может создавать помехи или даже повреждать контроллеры.</blockquote>
+
+<p>Ошибки CAN-шины в диагностическом сканере обычно имеют коды серии <code>Uxxxx</code>. Например:</p>
+<ul>
+ <li><code>U0100</code> — потеря связи с ECU.</li>
+ <li><code>U0121</code> — проблемы с ABS.</li>
+ <li><code>U0401</code> — неверные данные от датчика.</li>
+</ul>
+
+<h2 id="как-починить-can-шину-пошаговая-инструкция">Как починить CAN-шину: пошаговая инструкция</h2>
+
+<p>Если вы обнаружили неисправность CAN-шины, вот алгоритм действий для ее устранения:</p>
+
+<ol>
+ <li><strong>Шаг 1. Диагностика сканером</strong><br>
+<p>Подключите диагностический сканер (например, <em>ELM327</em>, <em>Launch X431</em> или <em>Autel</em>) и проверьте наличие ошибок серии <code>Uxxxx</code>. Запишите все коды — они укажут, какие контроллеры не отвечают.</li></p>
+ <li><strong>Шаг 2. Проверка физической цепи</strong><br>
+<p>Измерьте сопротивление и напряжение на CAN-шине (как описано выше). Если параметры не соответствуют норме, ищите обрыв или короткое замыкание.</li></p>
+ <li><strong>Шаг 3. Визуальный осмотр проводки</strong><br>
+<p>Проверьте провода CAN-шины (обычно это витая пара оранжевого и оранжево-черного цвета) на предмет повреждений. Особое внимание уделите местам, где проводка проходит рядом с движущимися частями (например, возле педалей или дверей).</li></p>
+ <li><strong>Шаг 4. Проверка терминаторов</strong><br>
+<p>Если сопротивление между <code>CAN-High</code> и <code>CAN-Low</code> не равно 60 Ом, проверьте терминаторы (резисторы 120 Ом) в крайних контроллерах. При необходимости замените поврежденный контроллер.</li></p>
+ <li><strong>Шаг 5. Проверка контроллеров</strong><br>
+<p>Отключайте контроллеры по одному и следите за изменениями в работе системы. Если после отключения одного из блоков CAN-шина начинает работать нормально, проблема в нем.</li></p>
+ <li><strong>Шаг 6. Перепрошивка или замена</strong><br>
+<p>Если контроллер неисправен, попробуйте перепрошить его (например, с помощью <em>K-TAG</em> или <em>KT200</em>). Если это не помогает — требуется замена.</li></p>
+</ol>
+
+<p>Пример из практики: на <em>Toyota Camry 2015</em> после замены аккумулятора перестали работать приборная панель и климат-контроль. Диагностика показала ошибку <code>U0100</code>. Причина — окисление контактов в разъеме блока управления кузовом (<em>BCM</em>). После очистки контактов и сброса ошибок все заработало.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если вы не уверены в своих навыках, лучше обратиться на СТО. Неправильное вмешательство в CAN-шину может привести к полному отказу электроники автомобиля!</p></div>
+
+<h2 id="can-шина-и-тюнинг-что-нужно-знать">CAN-шина и тюнинг: что нужно знать</h2>
+
+<p>CAN-шина открывает широкие возможности для тюнинга, но и таит в себе риски. Вот что важно учесть:</p>
+
+<p><strong>Чип-тюнинг через CAN</strong><br>
+<p>Многие программы для чип-тюнинга (например, <em>ECUFlash</em> или <em>WinOLS</em>) подключаются к ЭБУ именно через CAN-шину. Однако:</p></p>
+<ul>
+ <li>🔧 Некачественное ПО может"забриковать" ЭБУ, сделав машину непригодной к движению.</li>
+ <li>🔧 Не все контроллеры поддерживают запись через CAN — некоторые требуют прямого подключения к микросхеме (например, через <em>Boot-mode</em>).</li>
+ <li>🔧 После тюнинга может потребоваться адаптация других контроллеров (например, коробки передач), иначе возникнут конфликты в сети.</li>
+</ul>
+
+<p><strong>Подключение дополнительного оборудования</strong><br>
+<p>Если вы устанавливаете:</p></p>
+<ul>
+ <li>🎵 Мультимедийную систему (<em>Android Auto</em>, <em>CarPlay</em>) — убедитесь, что она поддерживает CAN-протокол вашего автомобиля.</li>
+ <li>🚗 Сигнализацию с автозапуском — некоторые модели (например, <em>StarLine A93</em>) требуют подключения к CAN-шине для корректной работы.</li>
+ <li>💡 Светодиодную оптику — современные LED-фары часто управляются по CAN, и их замена может потребовать прошивки блока управления светом (<em>LCM</em>).</li>
+</ul>
+
+<p><strong>CAN-фильтры и"обманки"</strong><br>
+<p>При установке газового оборудования или дизельных тюнинг-боксов часто используют CAN-фильтры, чтобы"обмануть" ЭБУ. Однако:</p></p>
+<ul>
+ <li>⚠️ Дешевые фильтры могут создавать помехи в сети.</li>
+ <li>⚠️ Некоторые фильтры блокируют диагностику, и сканер не увидит реальные ошибки.</li>
+ <li>⚠️ В современных автомобилях (например, <em>Volkswagen MQB</em>) CAN-фильтры могут вызвать ошибки <code>U0422</code> (неверные данные от датчиков).</li>
+</ul>
+
+<details class="faq-item"><summary>Можно ли подключить Arduino к CAN-шине автомобиля?</summary><div class="faq-answer"><p>Технически да, но это крайне рискованно! Для экспериментов используйте отдельный CAN-контроллер (например, <em>MCP2515</em>) и <strong>никогда не подключайтесь напрямую к основной шине</strong>. Ошибка в коде может заблокировать критичные системы (тормоза, рулевое управление). Для безопасных экспериментов существуют тренировочные CAN-шины (например, в наборах для обучения от <em>Bosch</em>).</p></div></details>
+
+<h2 id="будущее-can-шины-переход-на-ethernet-и-новые-стандарты">Будущее CAN-шины: переход на Ethernet и новые стандарты</h2>
+
+<p>Несмотря на надежность, CAN-шина постепенно уступает место более современным технологиям. Вот что ждет автомобильные сети в ближайшем будущем:</p>
+
+<p><strong>Automotive Ethernet</strong><br>
+<p>Уже сегодня в автомобилях <em>Tesla</em>, <em>BMW</em> и <em>Audi</em> используется Ethernet для:</p></p>
+<ul>
+ <li>📹 Передачи видео с камер 360° (требуется скорость до 1 Гбит/с).</li>
+ <li>🎮 Обновления ПО"по воздуху" (<em>OTA-updates</em>).</li>
+ <li>🤖 Работы систем автопилота (например, <em>Autopilot</em> в <em>Tesla</em>).</li>
+</ul>
+
+<p>Однако CAN не исчезнет полностью. В гибридных сетях (например, в <em>Volkswagen MEB</em> платформе) Ethernet используется для мультимедиа, а CAN — для критичных систем (тормоза, рулевое управление).</p>
+
+<p><strong>CAN FD (Flexible Data-Rate)</strong><br>
+<p>Это усовершенствованная версия CAN, где скорость передачи данных в одном сообщении может меняться (например, начать с 500 кбит/с и ускориться до 8 Мбит/с). CAN FD уже применяется в:</p></p>
+<ul>
+ <li>🚗 <em>Volkswagen Golf Mk7</em> (платформа MQB).</li>
+ <li>🚗 <em>BMW 5 Series (G30)</em>.</li>
+ <li>🚗 <em>Ford Mustang 2018+</em>.</li>
+</ul>
+
+<p><strong>CAN XL</strong><br>
+<p>Новый стандарт, над которым работает <em>Bosch</em>. Его ключевые особенности:</p></p>
+<ul>
+ <li>🚀 Скорость до <strong>10 Мбит/с</strong>.</li>
+ <li>📦 Поддержка сообщений до <strong>2048 байт</strong> ( против 8 байт в классическом CAN).</li>
+ <li>🔒 Улучшенная защита от помех.</li>
+</ul>
+
+<p>Ожидается, что CAN XL начнет внедряться в автомобили после 2026 года, но классический CAN останется еще минимум 10–15 лет из-за обратной совместимости.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если вы покупаете подержанный автомобиль старше 10 лет, проверьте состояние CAN-шины! В машинах с пробегом более 200 тыс. км часто встречаются проблемы с окислением контактов в разъемах контроллеров. Это может привести к спонтанным ошибкам и дорогому ремонту.</blockquote>
+
+<h2 id="faq-частые-вопросы-о-can-шине">FAQ: Частые вопросы о CAN-шине</h2>
+
+<details>
+ <summary>Можно ли ездить с неисправной CAN-шиной?</summary>
+ <p>Технически можно, но <strong>крайне не рекомендуется</strong>. В зависимости от характера неисправности вы рискуете:</p>
+ <ul>
+ <li>🔴 Потерять управление двигателем (машина может заглохнуть на ходу).</li>
+ <li>🔴 Остаться без тормозов (если откажет ABS/ESP).</li>
+ <li>🔴 Повредить другие контроллеры из-за скачков напряжения.</li>
+ </ul>
+ <p>Если проблема проявляется только в виде горящей лампочки <code>Check Engine</code>, можно доехать до СТО. Если отказывают критичные системы (тормоза, руль) — вызывайте эвакуатор.</p>
+</details>
+
+<details>
+ <summary>Какой сканер лучше для диагностики CAN-шины?</summary>
+ <p>Выбор зависит от бюджета и задачи:</p>
+ <ul>
+ <li>💰 <strong>Бюджетный вариант</strong> (<5 тыс. руб.): <em>ELM327 Bluetooth</em> + <em>Torque Pro</em> (подходит для чтения ошибок, но не показывает параметры CAN в реальном времени).</li>
+ <li>💰 <strong>Средний класс</strong> (10–30 тыс. руб.): <em>Launch CReader</em>, <em>Autel AL519</em> (читают CAN-ошибки и показывают основные параметры).</li>
+ <li>💰 <strong>Профессиональный</strong> (50 тыс. руб.+): <em>Launch X431</em>, <em>Bosch KTS</em> (полная диагностика CAN, осциллограф, кодирование блоков).</li>
+ </ul>
+ <p>Для глубокой диагностики (проверка сигналов осциллографом) потребуется специализированное оборудование, например, <em>PicoScope</em>.</p>
+</details>
+
+<details>
+ <summary>Можно ли самому паять CAN-шину?</summary>
+ <p>Можно, но с оговорками:</p>
+ <ul>
+ <li>✅ <strong>Разрешается</strong> восстанавливать поврежденные провода (при условии правильной пайки и изоляции).</li>
+ <li>❌ <strong>Запрещается</strong> добавлять новые устройства в CAN-шину без согласования с другими контроллерами.</li>
+ <li>⚠️ <strong>Осторожно</strong> с терминаторами: если вы удалите резистор 120 Ом, шина перестанет работать!</li>
+ </ul>
+ <p>Для пайки используйте:</p>
+ <ul>
+ <li>🔥 Паяльник мощностью 40–60 Вт.</li>
+ <li>🔥 Припой с канифолью (не кислотой!).</li>
+ <li>🔥 Термоусадочную трубку для изоляции.</li>
+ </ul>
+ <p>После ремонта обязательно проверьте сопротивление шины и протестируйте все системы автомобиля.</p>
+</details>
+
+<details>
+ <summary>Что такое CAN-гейтвей и зачем он нужен?</summary>
+ <p><strong>CAN-гейтвей</strong> (или шлюз) — это контроллер, который связывает между собой разные CAN-шины в автомобиле. Например, в <em>BMW F30</em> есть:</p>
+ <ul>
+ <li>🚗 <strong>PT-CAN</strong> (для двигателя и коробки).</li>
+ <li>🚗 <strong>K-CAN</strong> (для кузовных систем).</li>
+ <li>🚗 <strong>MOST</strong> (для мультимедиа).</li>
+ </ul>
+ <p>Гейтвей:</p>
+ <ul>
+ <li>🔄 Преобразует данные между сетями с разной скоростью.</li>
+ <li>🔒 Защищает критичные системы от помех (например, вирус в мультимедийной системе не попадет в CAN двигателя).</li>
+ <li>📡 Упрощает диагностику (сканер подключается к гейтвею, а тот уже распределяет запросы по другим шинам).</li>
+ </ul>
+ <p>В большинстве автомобилей гейтвей встроен в блок управления кузовом (<em>BCM</em>) или отдельный модуль (например, <em>Central Gateway</em> в <em>Audi</em>).</p>
+</details>
+
+<details>
+ <summary>Почему после замены аккумулятора пропала связь с CAN-шиной?</summary>
+ <p>Этоная проблема, связанная с:</p>
+ <ul>
+ <li>🔋 <strong>Сбросом адаптаций</strong> — некоторые контроллеры (например, <em>ECU</em> или <em>TCU</em>) требуют повторной"привязки" после отключения питания.</li>
+ <li>🔋 <strong>Помехами при подключении</strong> — если вы подключали аккумулятор под нагрузкой (например, при работающем зажигании), мог произойти скачок напряжения.</li>
+ <li>🔋 <strong>Окислением контактов</strong> — при отключении/подключении аккумулятора контакты на клеммах или разъемах контроллеров могли окислиться.</li>
+ </</div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#что-такое-can-шина-и-как-она-работает">Что такое CAN-шина и как она работает</a></li><li><a href="#отличия-can-от-других-автомобильных-сетей-lin-flexray-ethernet">Отличия CAN от других автомобильных сетей (LIN, FlexRay, Ethernet)</a></li><li><a href="#типы-can-шин-в-автомобиле-high-speed-low-speed-single-wire">Типы CAN-шин в автомобиле: High-Speed, Low-Speed, Single-Wire</a></li><li><a href="#как-проверить-can-шину-мультиметром-и-осциллографом">Как проверить CAN-шину мультиметром и осциллографом</a></li><li><a href="#признаки-неисправности-can-шины-и-их-причины">Признаки неисправности CAN-шины и их причины</a></li><li><a href="#как-починить-can-шину-пошаговая-инструкция">Как починить CAN-шину: пошаговая инструкция</a></li><li><a href="#can-шина-и-тюнинг-что-нужно-знать">CAN-шина и тюнинг: что нужно знать</a></li><li><a href="#будущее-can-шины-переход-на-ethernet-и-новые-стандарты">Будущее CAN-шины: переход на Ethernet и новые стандарты</a></li><li><a href="#faq-частые-вопросы-о-can-шине">FAQ: Частые вопросы о CAN-шине</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/n/ne/ne-rabotaet-prikurivatel-chto-delat.html" class="related-card">Не работает прикуриватель в авто: причины и ремонт</a></li><li><a href="/articles/a/ar/ariston-avtf-104-instruktsiya.html" class="related-card">Инструкция Ariston AVTF 104: настройка, ошибки и ремонт своими руками</a></li><li><a href="/articles/c/ch/chto-takoe-bortovoj-kompyuter-v-avtomobile-i-dlya-chego-on.html" class="related-card">Бортовой компьютер в машине: что это и зачем нужен?</a></li><li><a href="/articles/m/ma/maksimalno-dopustimaya-utechka-toka-v-avtomobile.html" class="related-card">Норма утечки тока в автомобиле: причины и способы устранения</a></li><li><a href="/articles/p/pr/printsipialnaya-skhema-avtomobilnogo-generatora.html" class="related-card">Принципиальная схема автомобильного генератора: устройство и работа</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/n/ne/ne-rabotaet-prikurivatel-chto-delat.html" class="related-bottom-card"><span class="related-bottom-title">Не работает прикуриватель в авто: причины и ремонт</span><span class="related-bottom-desc">Не работает прикуриватель в машине? Узнайте, как найти обрыв, заменить предохранитель или починить г</span></a><a href="/articles/a/ar/ariston-avtf-104-instruktsiya.html" class="related-bottom-card"><span class="related-bottom-title">Инструкция Ariston AVTF 104: настройка, ошибки и ремонт своими руками</span><span class="related-bottom-desc">Полное руководство по эксплуатации Ariston AVTF 104: подключение, коды ошибок, сброс настроек и сове</span></a><a href="/articles/c/ch/chto-takoe-bortovoj-kompyuter-v-avtomobile-i-dlya-chego-on.html" class="related-bottom-card"><span class="related-bottom-title">Бортовой компьютер в машине: что это и зачем нужен?</span><span class="related-bottom-desc">Разбираемся, как работает бортовой компьютер автомобиля, какие функции выполняет и как его правильно</span></a><a href="/articles/m/ma/maksimalno-dopustimaya-utechka-toka-v-avtomobile.html" class="related-bottom-card"><span class="related-bottom-title">Норма утечки тока в автомобиле: причины и способы устранения</span><span class="related-bottom-desc">Какая максимально допустимая утечка тока в автомобиле? Нормы, причины саморазряда АКБ, инструкция по</span></a><a href="/articles/p/pr/printsipialnaya-skhema-avtomobilnogo-generatora.html" class="related-bottom-card"><span class="related-bottom-title">Принципиальная схема автомобильного генератора: устройство и работа</span><span class="related-bottom-desc">Подробный разбор электрической схемы генератора авто. Изучите устройство, работу регулятора напряжен</span></a><a href="/articles/v/v-/v-chem-otlichie-avtomatov-klassa-v-i-s.html" class="related-bottom-card"><span class="related-bottom-title">Автоматы B и C: в чем разница и что выбрать для дома</span><span class="related-bottom-desc">Полный разбор отличий автоматов класса B и C. Таблица сравнения, графики срабатывания и советы по вы</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

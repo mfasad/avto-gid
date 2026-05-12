@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Схема зарядного устройства на КТ117 и тиристоре: сборка своими руками — Авто Гид</title>
+    <meta name="description" content="Пошаговая инструкция по созданию зарядного устройства для АКБ на транзисторе КТ117 и тиристоре. Схемы, расчеты, советы по настройке и безопасности для автолюбителей.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/s/sk/skhema-zaryadnogo-ustrojstva-na-kt117-i-tiristore.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Схема зарядного устройства на КТ117 и тиристоре: сборка своими руками">
+    <meta property="og:description" content="Пошаговая инструкция по созданию зарядного устройства для АКБ на транзисторе КТ117 и тиристоре. Схемы, расчеты, советы по настройке и безопасности для автолюбителей.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/elektrika-i-svet/">Электрика и Свет</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Схема зарядного устройства на КТ117 и тиристоре: сборка своими руками</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Зарядное устройство на КТ117 и тиристоре: схема, сборка и настройка для автомобильного аккумулятора</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принцип-работы-зарядного-устройства-на-кт117-и-тиристоре">Принцип работы зарядного устройства на КТ117 и тиристоре</a></li><li><a href="#необходимые-компоненты-и-их-аналоги">Необходимые компоненты и их аналоги</a></li><li><a href="#схемы-зарядных-устройств-от-простой-до-улучшенной">Схемы зарядных устройств: от простой до улучшенной</a></li><li><a href="#пошаговая-инструкция-по-сборке-зарядного-устройства">Пошаговая инструкция по сборке зарядного устройства</a></li><li><a href="#настройка-и-тестирование-устройства">Настройка и тестирование устройства</a></li><li><a href="#типичные-ошибки-и-как-их-избежать">Типичные ошибки и как их избежать</a></li><li><a href="#меры-безопасности-при-работе-с-самодельным-зарядным-устройством">Меры безопасности при работе с самодельным зарядным устройством</a></li><li><a href="#faq-частые-вопросы-по-зарядным-устройствам-на-кт117-и-тиристоре">FAQ: Частые вопросы по зарядным устройствам на КТ117 и тиристоре</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><p>Зарядное устройство для автомобильного аккумулятора — незаменимый помощник каждого автовладельца, особенно в условиях суровых российских зим. Когда штатный генератор не справляется с подзарядкой, а покупное устройство выходит из строя, на помощь приходит самодельная схема на основе доступных радиодеталей. Одним из самых надежных и проверенных временем решений является зарядное устройство на <strong>биполярном транзисторе КТ117</strong> и <em>тиристоре</em> (например, <em>КУ202</em> или <em>Т122-25</em>). Такая схема позволяет плавно регулировать ток зарядки, защищает аккумулятор от перезаряда и подходит для большинства свинцово-кислотных батарей емкостью от 45 до 100 А·ч.</p>
+
+<p>В этой статье мы разберем <strong>принцип работы схемы</strong>, подробно остановимся на выборе компонентов, приведём пошаговую инструкцию по сборке и настройке, а также укажем на типичные ошибки, которые могут привести к выходу устройства из строя. Особое внимание уделим мерам безопасности — неправильное подключение или нарушение полярности может не только повредить аккумулятор, но и стать причиной пожара. Если вы уже имели дело с пайкой и основами радиоэлектроники, сборка такого зарядного устройства не займёт больше 2–3 часов. Для новичков мы подготовили <mark>упрощённую версию схемы с минимальным набором деталей</mark>, которая не требует глубоких знаний в электронике.</p>
+
+<h2 id="принцип-работы-зарядного-устройства-на-кт117-и-тиристоре">Принцип работы зарядного устройства на КТ117 и тиристоре</h2>
+
+<p>Схема зарядного устройства на <em>КТ117</em> и тиристоре относится к классу <strong>импульсных регуляторов тока</strong>. Её ключевое преимущество — возможность плавной регулировки выходного тока за счёт изменения угла открытия тиристора. В отличие от простых трансформаторных схем с диодным мостом, здесь ток подаётся на аккумулятор не постоянно, а короткими импульсами, что снижает нагрев компонентов и повышает КПД.</p>
+
+<p>Как это работает:</p>
+<ul>
+ <li>🔌 <strong>Сетевой трансформатор</strong> понижает напряжение с 220 В до 12–18 В (в зависимости от обмоток).</li>
+ <li>🔄 <strong>Диодный мост</strong> (например, <em>КД202</em> или <em>1N4007</em>) выпрямляет переменный ток в постоянный.</li>
+ <li>🔧 <strong>Транзистор КТ117</strong> управляет базой тиристора, открывая его в нужный момент времени.</li>
+ <li>⚡ <strong>Тиристор</strong> (например, <em>КУ202Н</em>) пропускает ток на аккумулятор только в определённые моменты, формируя импульсы зарядки.</li>
+ <li>📉 <strong>Регулировочный резистор</strong> (потенциометр) позволяет изменять длительность импульсов, тем самым контролируя ток зарядки.</li>
+</ul>
+
+<p>Важно понимать, что <em>КТ117</em> здесь выполняет роль <strong>усилителя тока</strong> для управления тиристором. Без него схема не сможет стабильно работать, так как ток базы тиристора слишком мал для прямого управления от делителя напряжения. Тиристор же выступает в роли <strong>электронного ключа</strong>, который либо пропускает ток на аккумулятор, либо блокирует его. Чем дольше тиристор остаётся открытым, тем больше средний ток зарядки.</p>
+
+<div class="poll-widget" id="poll-f857b952"><div class="poll-widget-question">📊 Какой тип зарядного устройства вы используете?</div><div class="poll-widget-option" data-poll="f857b952" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Покупное автоматическое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f857b952" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Самодельное на тиристоре</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f857b952" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Самодельное на LM317</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f857b952" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Трансформаторное без регулировки</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f857b952" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Другое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="необходимые-компоненты-и-их-аналоги">Необходимые компоненты и их аналоги</h2>
+
+<p>Для сборки зарядного устройства вам потребуются следующие радиодетали. Мы указали не только точные модели, но и их аналоги, которые можно найти в ближайшем магазине электроники или заказать на <em>AliExpress</em>:</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Компонент</th>
+ <th>Основная модель</th>
+ <th>Аналоги</th>
+ <th>Примечания</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Транзистор</td>
+ <td><em>КТ117А/Б/В</em></td>
+ <td><em>BD139, BD140, 2N3055, KT815</em></td>
+ <td>Подойдёт любой кремниевый n-p-n транзистор средней мощности</td>
+ </tr>
+ <tr>
+ <td>Тиристор</td>
+ <td><em>КУ202Н</em></td>
+ <td><em>Т122-25, BT151, SCR C106</em></td>
+ <td>Максимальный ток должен быть не менее 10 А</td>
+ </tr>
+ <tr>
+ <td>Диодный мост</td>
+ <td><em>КД202, KBPC2510</em></td>
+ <td><em>1N4007 (4 шт.), BY229, RS607</em></td>
+ <td>Ток не менее 6–10 А, обратное напряжение 50–100 В</td>
+ </tr>
+ <tr>
+ <td>Трансформатор</td>
+ <td>Любой понижающий 220/12–18 В</td>
+ <td><em>ТС-180, ТПП-227, самодельный</em></td>
+ <td>Мощность от 150 Вт, ток вторичной обмотки 8–10 А</td>
+ </tr>
+ <tr>
+ <td>Резисторы</td>
+ <td>1 кОм, 10 кОм (потенциометр), 100 Ом</td>
+ <td>Любые с мощностью 0.25–0.5 Вт</td>
+ <td>Для потенциометра подойдёт <em>SP5-2</em> или аналогичный</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Если вы не нашли точный аналог <em>КТ117</em>, можно использовать <em>KT815</em> или <em>BD139</em>, но в этом случае может потребоваться подбор резисторов в цепи базы. Тиристор <em>КУ202Н</em> легко заменяется на <em>Т122-25</em>, который выдерживает ток до 25 А и имеет более высокую надёжность. Диодный мост лучше брать готовый (например, <em>KBPC2510</em>), так как пайка четырёх отдельных диодов занимает больше времени и требует аккуратности.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Не используйте трансформаторы от старых телевизоров или блоков питания компьютеров — их вторичные обмотки часто рассчитаны на малые токи (1–3 А), что недостаточно для зарядки автомобильного аккумулятора. Оптимальный вариант — трансформатор от сварочного аппарата или готовый тороидальный трансформатор мощностью 200–300 Вт.</blockquote>
+
+<h2 id="схемы-зарядных-устройств-от-простой-до-улучшенной">Схемы зарядных устройств: от простой до улучшенной</h2>
+
+<p>Существует несколько вариантов схем на <em>КТ117</em> и тиристоре, отличающихся сложностью и функциональностью. Мы рассмотрим три основных варианта: <strong>базовую схему</strong> для новичков, <strong>улучшенную с защитой от переполюсовки</strong> и <strong>схему с автоматическим отключением</strong> при полном заряде.</p>
+
+<h3>1. Базовая схема (для начинающих)</h3>
+<p>Эта схема содержит минимальный набор элементов и подходит для зарядки аккумуляторов емкостью до 60 А·ч. Регулировка тока осуществляется потенциометром <code>R2</code>:</p>
+<pre><code>
+<p>220V ~</p>
+<p>|</p>
+<p>[Трансформатор]</p>
+<p>|</p>
+<p>+---|---+</p>
+<p>| Диодный мост |</p>
+<p>+---|---+</p>
+<p>|</p>
+<p>+----[Аккумулятор]---</p>
+<p>|</p>
+<p>[Тиристор КУ202]</p>
+<p>|</p>
+<p>+----[R1 100Ω]----+</p>
+<p>| |</p>
+<p>[КТ117] [R2 10kΩ (потенциометр)]</p>
+<p>| |</p>
+<p>GND GND</p>
+</code></pre>
+
+<p>Преимущества:
+<p>- Простота сборки (менее 10 деталей).</p>
+<p>- Низкая стоимость (все компоненты обойдутся в 300–500 рублей).</p>
+<p>- Надёжность при правильном подборе трансформатора.</p></p>
+
+<p>Недостатки:
+<p>- Нет защиты от переполюсовки.</p>
+<p>- Требуется ручной контроль за процессом зарядки.</p></p>
+
+<h3>2. Улучшенная схема с защитой</h3>
+<p>Добавлены диод <em>VD3</em> (защита от обратного подключения) и светодиод <em>HL1</em> для индикации зарядки:</p>
+<pre><code>
+<p>220V ~</p>
+<p>|</p>
+<p>[Трансформатор]</p>
+<p>|</p>
+<p>+---|---+</p>
+<p>| Диодный мост |</p>
+<p>+---|---+</p>
+<p>|</p>
+<p>+----[VD3 1N4007]----[Аккумулятор]---</p>
+<p>| |</p>
+<p>[Тиристор КУ202] [HL1 LED + R 1kΩ]</p>
+<p>| |</p>
+<p>+----[R1 100Ω]----+</p>
+<p>| |</p>
+<p>[КТ117] [R2 10kΩ]</p>
+<p>| |</p>
+<p>GND GND</p>
+</code></pre>
+
+<h3>3. Схема с автоматом отключения</h3>
+<p>Самая продвинутая версия включает компаратор на <em>LM358</em> или транзисторах, который отключает зарядку при достижении напряжения 14.4 В:</p>
+<details class="faq-item"><summary>Подробная схема с автоматом</summary><div class="faq-answer"><p>Для реализации автоматического отключения потребуется добавить в схему операционный усилитель LM358, стабилитрон на 14.4 В (например, TL431) и реле на 12 В. Принцип работы: при достижении на аккумуляторе напряжения 14.4 В срабатывает компаратор, который размыкает реле в цепи управления тиристором. Полная схема и печатная плата доступны по запросу в комментариях.</p></div></details>
+
+<p>Выбор схемы зависит от ваших навыков и требований. Для периодической подзарядки аккумулятора зимой хватит и базового варианта. Если же устройство будет использоваться регулярно, лучше потратить время на сборку улучшенной версии с защитой.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка перед сборкой</h4><label class="check-item"><input type="checkbox"><span>Все компоненты соответствуют схеме</span></label><label class="check-item"><input type="checkbox"><span>Трансформатор выдаёт 14–16 В на вторичной обмотке</span></label><label class="check-item"><input type="checkbox"><span>Диодный мост рассчитан на ток ≥10 А</span></label><label class="check-item"><input type="checkbox"><span>Тиристор установлен на радиатор</span></label><label class="check-item"><input type="checkbox"><span>Потенциометр подключён правильно (средний вывод к базе КТ117)</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<h2 id="пошаговая-инструкция-по-сборке-зарядного-устройства">Пошаговая инструкция по сборке зарядного устройства</h2>
+
+<p>Прежде чем приступить к пайке, подготовьте рабочее место: вам понадобится паяльник мощностью 40–60 Вт, припой, флюс (лучше использовать <em>ФКСп</em> или <em>ЛТИ-120</em>), кусачки и мультиметр для проверки соединений. Если вы используете трансформатор с несколькими вторичными обмотками, предварительно проверьте их напряжение под нагрузкой (например, подключив 12-вольтовую лампу накаливания).</p>
+
+<p><strong>Шаг 1. Подготовка трансформатора</strong></p>
+<ul>
+ <li>🔧 Если трансформатор самодельный, намотайте вторичную обмотку проводом сечением 2–3 мм² (около 10–15 витков на 1 В напряжения).</li>
+ <li>📏 Проверьте напряжение на вторичной обмотке без нагрузки — оно должно быть в пределах 16–18 В (под нагрузкой упадёт до 14–15 В).</li>
+ <li>⚡ Заизолируйте выводы трансформатора термоусадочной трубкой или изолентой.</li>
+</ul>
+
+<p><strong>Шаг 2. Сборка диодного моста</strong></p>
+<p>Если вы используете отдельные диоды (например, <em>1N4007</em>), спаяйте их по схеме моста, соблюдая полярность:
+<p>- Катоды (полоски на корпусе) всех диодов должны быть обращены в одну сторону.</p>
+<p>- Для надёжности припаяйте мост к небольшой печатной плате или используйте монтажные стойки.</p></p>
+
+<p><strong>Шаг 3. Установка тиристора и транзистора</strong></p>
+<ul>
+ <li>🔥 <strong>Тиристор</strong> обязательно установите на радиатор! при токе 5–7 А он будет сильно нагреваться. Используйте термопасту <em>КПТ-8</em>.</li>
+ <li>🔄 <strong>Транзистор КТ117</strong> можно разместить без радиатора, если ток базы тиристора не превышает 50 мА.</li>
+ <li>🔌 Подключите управляющий электрод тиристора к коллектору <em>КТ117</em> через резистор 100 Ом.</li>
+</ul>
+
+<p><strong>Шаг 4. Монтаж регулировочного узла</strong></p>
+<p>Потенциометр <code>R2</code> (10 кОм) отвечает за регулировку тока зарядки. Его средний вывод подключается к базе <em>КТ117</em>, а крайние — к плюсовому проводу после диодного моста и минусу (через резистор 1 кОм). Для удобства установите потенциометр на лицевую панель корпуса с ручкой регулировки.</p>
+
+<p><strong>Шаг 5. Проверка и настройка</strong></p>
+<p>Перед первым включением:</p>
+<ol>
+ <li>Проверьте все соединения мультиметром в режиме прозвонки (нет ли коротких замыканий).</li>
+ <li>Подключите к выходу устройства 12-вольтовую лампу накаливания (например, от фары) вместо аккумулятора.</li>
+ <li>Включите устройство в сеть и плавно вращайте ручку потенциометра — лампа должна загораться ярче или тускнеть.</li>
+ <li>Измерьте ток в цепи лампы (мультиметр в режиме амперметра, последовательное подключение). Он должен регулироваться от 0 до 5–7 А.</li>
+</ol>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если при включении схема искрит, дымит или трансформатор гудит — немедленно отключите её от сети! Вероятные причины: неправильная полярность диодов, короткое замыкание в цепи тиристора или пробой транзистора <em>КТ117</em>.</blockquote>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для точной настройки тока зарядки используйте эталонный амперметр (например, мультиметр <em>Mastech MY64</em>). Подключите его последовательно с аккумулятором и установите ток 10% от ёмкости батареи (например, 6 А для АКБ 60 А·ч).</p></div>
+
+<h2 id="настройка-и-тестирование-устройства">Настройка и тестирование устройства</h2>
+
+<p>После успешной сборки необходимо <strong>откалибровать схему</strong> и проверить её работу с реальным аккумулятором. Для этого:</p>
+
+<ol>
+ <li><strong>Подключите аккумулятор</strong> к выходу устройства, соблюдая полярность (плюс к плюсу, минус к минусу). Если в вашей схеме есть защита от переполюсовки, при неправильном подключении зарядка не начнётся.</li>
+ <li><strong>Установите минимальный ток</strong> потенциометром (ручка в крайнем левом положении).</li>
+ <li><strong>Включите устройство в сеть</strong> и плавно увеличивайте ток до значения 10% от ёмкости аккумулятора (например, 4.5 А для АКБ 45 А·ч).</li>
+ <li><strong>Контролируйте напряжение</strong> на клеммах аккумулятора — оно должно постепенно расти до 14.4 В (для стандартных свинцово-кислотных батарей).</li>
+</ol>
+
+<p>Если напряжение превышает 15 В, а ток не снижается — это признак <strong>неисправности схемы стабилизации</strong>. Возможные причины:</p>
+<ul>
+ <li>🔧 Неправильно подобран резистор в цепи базы <em>КТ117</em> (нужно увеличить его номинал).</li>
+ <li>🔥 Пробой тиристора (проверьте его мультиметром в режиме диода).</li>
+ <li>📉 Нестабильное напряжение на вторичной обмотке трансформатора (проверьте под нагрузкой).</li>
+</ul>
+
+<p>Для длительной зарядки (более 8 часов) рекомендуется снизить ток до 2–3 А, чтобы избежать перегрева аккумулятора. Если ваше устройство не имеет автоматического отключения, используйте таймер или периодически проверяйте напряжение на клеммах.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Оптимальный ток зарядки для свинцово-кислотных АКБ — 10% от ёмкости (например, 6 А для 60 А·ч). Превышение этого значения сокращает срок службы батареи.</p></div>
+
+<h2 id="типичные-ошибки-и-как-их-избежать">Типичные ошибки и как их избежать</h2>
+
+<p>Даже опытные радиолюбители иногда допускают ошибки при сборке зарядных устройств на тиристорах. Мы собрали самые распространённые проблемы и способы их решения:</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Проблема</th>
+ <th>Возможная причина</th>
+ <th>Решение</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Устройство не включается, предохранитель сгорает</td>
+ <td>Короткое замыкание в диодном мосту или тиристоре</td>
+ <td>Прозвонить все диоды и тиристор мультиметром, проверить пайку</td>
+ </tr>
+ <tr>
+ <td>Ток зарядки не регулируется</td>
+ <td>Неисправен потенциометр или обрыв в цепи базы КТ117</td>
+ <td>Заменить потенциометр, проверить резисторы R1 и R2</td>
+ </tr>
+ <tr>
+ <td>Тиристор сильно греется</td>
+ <td>Отсутствует радиатор или ток превышает 10 А</td>
+ <td>Установить радиатор, уменьшить ток или использовать более мощный тиристор</td>
+ </tr>
+ <tr>
+ <td>Напряжение на выходе скачет</td>
+ <td>Нестабильное питание или пробой конденсаторов (если есть)</td>
+ <td>Добавить конденсатор 1000 мкФ после диодного моста</td>
+ </tr>
+ <tr>
+ <td>Аккумулятор не заряжается, хотя устройство работает</td>
+ <td>Обрыв в цепи или сульфатация пластин АКБ</td>
+ <td>Прозвонить провода, проверить напряжение на клеммах АКБ</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Если ваше устройство ведёт себя непредсказуемо (например, самопроизвольно изменяет ток), проверьте <strong>качество пайки</strong> — часто проблема кроется в холодных контактах. Также убедитесь, что рядом с тиристором и трансформатором нет источников помех (например, работающих электродвигателей или сварочных аппаратов), которые могут влиять на работу схемы.</p>
+
+<p>Ещё одна типичная ошибка — использование <strong>слишком мощного трансформатора</strong> (например, от сварочного аппарата на 500 Вт). В этом случае диодный мост и тиристор могут не справиться с током, что приведёт к их пробою. Оптимальная мощность трансформатора для зарядки аккумулятора 60 А·ч — 200–250 Вт.</p>
+
+<h2 id="меры-безопасности-при-работе-с-самодельным-зарядным-устройством">Меры безопасности при работе с самодельным зарядным устройством</h2>
+
+<p>Самодельные зарядные устройства, особенно собранные на тиристорах, требуют особого внимания к <strong>электробезопасности</strong>. Напряжение 220 В на первичной обмотке трансформатора может быть смертельно опасным, а неправильное подключение аккумулятора — привести к его взрыву. Следуйте этим правилам:</p>
+
+<ul>
+ <li>⚡ <strong>Всегда отключайте устройство от сети</strong> перед подключением или отключением аккумулятора.</li>
+ <li>🔌 Используйте <strong>предохранитель</strong> на 10 А в первичной цепи (после вилки 220 В).</li>
+ <li>🧤 Работайте в <strong>резиновых перчатках</strong> и используйте инструмент с изолированными ручками.</li>
+ <li>🔥 Не оставляйте устройство без присмотра во время зарядки — следите за температурой тиристора и трансформатора.</li>
+ <li>🚫 Не заряжайте <strong>замёрзший аккумулятор</strong> — перед зарядкой дайте ему отогреться до комнатной температуры.</li>
+</ul>
+
+<p>Если вы заметили, что корпус аккумулятора вздулся или из него идёт запах сероводорода — <strong>немедленно прекратите зарядку</strong>! Это признаки <strong>сульфатации</strong> или внутреннего замыкания пластин. Такой аккумулятор подлежит утилизации.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Никогда не подключайте зарядное устройство к аккумулятору, установленному в автомобиле, если не отключили минусовую клемму от кузова! Это может привести к повреждению бортовой электроники (ЭБУ, сигнализации, магнитолы).</blockquote>
+
+<p>Для дополнительной защиты рекомендуется собрать схему в <strong>металлическом корпусе</strong> (например, от старого блока питания компьютера) и заземлить его. Также полезно добавить в цепь <strong>варистор</strong> (например, <em>RN2-15</em>) для защиты от скачков напряжения в сети.</p>
+
+<h2 id="faq-частые-вопросы-по-зарядным-устройствам-на-кт117-и-тиристоре">FAQ: Частые вопросы по зарядным устройствам на КТ117 и тиристоре</h2>
+
+<details>
+ <summary>Можно ли использовать этот зарядник для гелевых (GEL) аккумуляторов?</summary>
+ <p>Для гелевых аккумуляторов требуется <strong>более точное поддержание напряжения</strong> (обычно 14.1–14.4 В). Базовая схема на <em>КТ117</em> не обеспечивает такой стабильности, поэтому её нужно доработать, добавив <strong>стабилизатор напряжения</strong> (например, на <em>TL431</em>) или использовать специализированную микросхему (например, <em>LM317</em>). Без доработок гелевый аккумулятор можно заряжать только на малых токах (1–2 А) с постоянным контролем напряжения.</p>
+</details>
+
+<details>
+ <summary>Как рассчитать мощность трансформатора для своего аккумулятора?</summary>
+ <p>Мощность трансформатора (в ваттах) должна быть не менее <strong>напряжения зарядки × максимальный ток</strong>. Например, для аккумулятора 60 А·ч при токе зарядки 6 А и напряжении 15 В:</p>
+ <p><code>15 В × 6 А = 90 Вт</code> (минимум). Рекомендуется брать трансформатор с запасом — 150–200 Вт.</p>
+ <p>Если вы используете трансформатор с несколькими обмотками, их можно соединить параллельно для увеличения тока или последовательно для повышения напряжения.</p>
+</details>
+
+<details>
+ <summary>Почему тиристор греется даже при малом токе?</summary>
+ <p>Нагрев тиристора при малых токах обычно связан с:</p>
+ <ol>
+ <li><strong>Недостаточным охлаждением</strong> — установите радиатор площадью не менее 50 см².</li>
+ <li><strong>Пробоем p-n-перехода</strong> — проверьте тиристор мультиметром (в режиме диода сопротивление должно быть бесконечным в обоих направлениях до подачи управляющего сигнала).</li>
+ <li><strong>Неправильным управлением</strong> — если угол открытия тиристора слишком мал, он работает в линейном режиме, что приводит к нагреву. Увеличьте ток базы через резистор <code>R1</code>.</li>
+ </ol>
+</details>
+
+<details>
+ <summary>Можно ли заряжать 24-вольтовый аккумулятор этой схемой?</summary>
+ <p>Для зарядки 24-вольтового аккумулятора нужно:</p>
+ <ol>
+ <li>Использовать трансформатор с напряжением на вторичной обмотке 28–30 В.</li>
+ <li>Заменить диодный мост на более мощный (например, <em>KBPC5010</em> на 50 А).</li>
+ <li>Увеличить номиналы резисторов в цепи управления тиристором (например, <code>R1 = 200 Ом</code>, <code>R2 = 22 кОм</code>).</li>
+ </ol>
+ <p>Также убедитесь, что тиристор и транзистор <em>КТ117</em> рассчитаны на напряжение не менее 40 В.</p>
+</details>
+
+<details>
+ <summary>Как модифицировать схему для десульфатации аккумулятора?</summary>
+ <p>Для десульфатации (восстановления ёмкости старого аккумулятора) можно доработать схему, добавив <strong>режим импульсного заряда</strong>:</p>
+ <ol>
+ <li>Подключите параллельно тиристору реле, которое будет разрывать цепь на 1–2 секунды каждые 10 секунд.</li>
+ <li>Используйте таймер на <em>NE555</em> или микроконтроллере для управления реле.</li>
+ <li>Установите ток зарядки на уровне 1–2 А.</li>
+ </ol>
+ <p>Такой режим помогает разрушить сульфаты на пластинах, но не гарантирует 100% восстановление ёмкости.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#принцип-работы-зарядного-устройства-на-кт117-и-тиристоре">Принцип работы зарядного устройства на КТ117 и тиристоре</a></li><li><a href="#необходимые-компоненты-и-их-аналоги">Необходимые компоненты и их аналоги</a></li><li><a href="#схемы-зарядных-устройств-от-простой-до-улучшенной">Схемы зарядных устройств: от простой до улучшенной</a></li><li><a href="#пошаговая-инструкция-по-сборке-зарядного-устройства">Пошаговая инструкция по сборке зарядного устройства</a></li><li><a href="#настройка-и-тестирование-устройства">Настройка и тестирование устройства</a></li><li><a href="#типичные-ошибки-и-как-их-избежать">Типичные ошибки и как их избежать</a></li><li><a href="#меры-безопасности-при-работе-с-самодельным-зарядным-устройством">Меры безопасности при работе с самодельным зарядным устройством</a></li><li><a href="#faq-частые-вопросы-по-зарядным-устройствам-на-кт117-и-тиристоре">FAQ: Частые вопросы по зарядным устройствам на КТ117 и тиристоре</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-soedinyat-provoda-raznogo-secheniya.html" class="related-card">Как соединять провода разного сечения: методы и правила</a></li><li><a href="/articles/k/kt/kto-dolzhen-menyat-vvodnoj-avtomat-v-shchitke-v-podezde.html" class="related-card">Кто меняет вводной автомат в щитке: правила и нормы</a></li><li><a href="/articles/k/ka/kakim-tsvetom-oboznachaetsya-plyus-i-minus-na-provodakh-postoyannogo-toka.html" class="related-card">Цвет проводов постоянного тока: где плюс и минус по ГОСТ</a></li><li><a href="/articles/p/po/pochemu-vykhodit-iz-stroya-generator-na-avtomobile.html" class="related-card">Почему выходит из строя генератор: 7 главных причин</a></li><li><a href="/articles/k/ka/kak-zamerit-tok-utechki-v-avtomobile-multimetrom.html" class="related-card">Как замерить ток утечки в автомобиле мультиметром: инструкция</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-soedinyat-provoda-raznogo-secheniya.html" class="related-bottom-card"><span class="related-bottom-title">Как соединять провода разного сечения: методы и правила</span><span class="related-bottom-desc">Правильное соединение проводов разного сечения: способы, ошибки, выбор клемм. Инструкция по безопасн</span></a><a href="/articles/k/kt/kto-dolzhen-menyat-vvodnoj-avtomat-v-shchitke-v-podezde.html" class="related-bottom-card"><span class="related-bottom-title">Кто меняет вводной автомат в щитке: правила и нормы</span><span class="related-bottom-desc">Узнайте, кто обязан менять вводной автомат в подъезде: владелец квартиры или управляющая компания. Р</span></a><a href="/articles/k/ka/kakim-tsvetom-oboznachaetsya-plyus-i-minus-na-provodakh-postoyannogo-toka.html" class="related-bottom-card"><span class="related-bottom-title">Цвет проводов постоянного тока: где плюс и минус по ГОСТ</span><span class="related-bottom-desc">Каким цветом обозначается плюс и минус в электрике постоянного тока. Разбор маркировки L+, L-, цвето</span></a><a href="/articles/p/po/pochemu-vykhodit-iz-stroya-generator-na-avtomobile.html" class="related-bottom-card"><span class="related-bottom-title">Почему выходит из строя генератор: 7 главных причин</span><span class="related-bottom-desc">Подробный разбор причин, почему выходит из строя генератор автомобиля. Симптомы поломки, диагностика</span></a><a href="/articles/k/ka/kak-zamerit-tok-utechki-v-avtomobile-multimetrom.html" class="related-bottom-card"><span class="related-bottom-title">Как замерить ток утечки в автомобиле мультиметром: инструкция</span><span class="related-bottom-desc">Подробное руководство, как проверить ток утечки в машине мультиметром. Пошаговая диагностика разряда</span></a><a href="/articles/z/za/zamknula-provodka-v-mashine-chto-delat.html" class="related-bottom-card"><span class="related-bottom-title">Замкнула проводка в машине: что делать в 2026 году</span><span class="related-bottom-desc">Пошаговая инструкция: как найти и устранить короткое замыкание в авто. Причины, симптомы, методы диа</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как работает Яндекс Еда: от заказа до курьера — Авто Гид</title>
+    <meta name="description" content="Подробный разбор того, как устроена работа в Яндекс Еде: алгоритмы, логистика, требования к партнерам и курьерам, а также распределение заказов.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-proiskhodit-rabota-v-yandeks-ede.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как работает Яндекс Еда: от заказа до курьера">
+    <meta property="og:description" content="Подробный разбор того, как устроена работа в Яндекс Еде: алгоритмы, логистика, требования к партнерам и курьерам, а также распределение заказов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как работает Яндекс Еда: от заказа до курьера</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как происходит работа в Яндекс Еде: полная схема процесса</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-системы-и-прием-заказа">Архитектура системы и прием заказа</a></li><li><a href="#интеграция-с-ресторанами-и-обработка-заказа">Интеграция с ресторанами и обработка заказа</a></li><li><a href="#логистика-и-назначение-курьера">Логистика и назначение курьера</a></li><li><a href="#путь-курьера-от-ресторана-до-клиента">Путь курьера: от ресторана до клиента</a></li><li><a href="#технические-аспекты-и-алгоритмы-распределения">Технические аспекты и алгоритмы распределения</a></li><li><a href="#оплата-чаевые-и-завершение-заказа">Оплата, чаевые и завершение заказа</a></li><li><a href="#безопасность-и-контроль-качества">Безопасность и контроль качества</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современная индустрия доставки еды представляет собой сложнейший технологический механизм, где каждая секунда имеет значение. Пользователи привыкли получать горячие блюда за 30-40 минут, но мало кто задумывается о том, какая колоссальная работа происходит «под капотом» сервиса в этот промежуток времени. Вся система завязана на искусственном интеллекте, который ежеминутно обрабатывает миллионы переменных для оптимизации логистических цепочек.</p>
+
+<p>Понимание внутренней кухни агрегатора важно не только для тех, кто планирует стать партнером или курьером, но и для любопытных пользователей, желающих знать, как их данные превращаются в реальные действия. <strong>Алгоритмы распределения</strong> учитывают сотни факторов: от пробок на дорогах и погоды до текущей загруженности кухни ресторана и рейтинга исполнителя. Это динамическая система, которая адаптируется к изменениям в реальном времени, обеспечивая бесперебойную работу сервиса в масштабах огромных мегаполисов.</p>
+
+<p>В этой статье мы детально разберем весь путь заказа, начиная с момента нажатия кнопки «Оплатить» в приложении и заканчивая вручением пакета клиенту. Мы проанализируем взаимодействие между клиентским приложением, серверами компании, интерфейсами ресторанов и мобильными устройствами курьеров. Вы узнаете, как <em>нейросети</em> предсказывают спрос и почему иногда система предлагает вам блюда из ресторанов, которые находятся дальше других.</p>
+
+<h2 id="архитектура-системы-и-прием-заказа">Архитектура системы и прием заказа</h2>
+
+<p>Вся магия начинается в тот момент, когда пользователь выбирает блюдо и оформляет заказ. В этот миг в дело вступает мощный бэкенд, который должен мгновенно проверить множество условий. Первичная валидация включает проверку доступности товаров на складе ресторана, актуальность цен и возможность доставки по указанному адресу. Если хотя бы один параметр не сходится, система предложит альтернативу или уведомит об изменениях.</p>
+
+<p>Ключевым элементом здесь является <strong>геолокация</strong>. Сервис определяет точные координаты клиента и строит вокруг них виртуальную зону доставки. Внутри этой зоны могут находиться десятки партнеров, но алгоритм ранжирует их не просто по расстоянию, а по комплексному показателю эффективности. Учитывается средняя скорость приготовления блюд в данном заведении, история задержек и текущая очередь заказов.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Алгоритм может временно скрывать рестораны с высокой загрузкой кухни, даже если они находятся рядом с вами, чтобы не сорвать сроки доставки.</p>
+</blockquote>
+
+<p>После подтверждения оплаты заказ попадает в специальную очередь ожидания распределения. В это время система уже начинает искать потенциального исполнителя, анализируя свободных курьеров в радиусе нескольких километров. <em>Машинное обучение</em> прогнозирует, сколько времени займет приготовление, чтобы курьер подъехал к ресторану максимально близко к моменту готовности, минимизируя время простоя.</p>
+
+<p>Важно отметить роль <strong>REST API</strong>, через который происходит обмен данными между приложением пользователя и сервером агрегатора. Именно этот канал связи обеспечивает мгновенное обновление статусов: «Принят», «Готовится», «Курьер назначен». Любая задержка в передаче пакетов данных может привести к рассинхронизации и ошибкам в работе приложения.</p>
+
+<h2 id="интеграция-с-ресторанами-и-обработка-заказа">Интеграция с ресторанами и обработка заказа</h2>
+
+<p>Как только заказ распределен, он мгновенно отображается на планшете или компьютере партнера в системе <code>Yandex Partner</code>. Рестораны используют различные способы интеграции: от простых планшетов с громким звуком до сложных API-решений, встроенных directly в их кассовые системы (POS). Это позволяет автоматизировать процесс и исключить человеческий фактор на этапе приема.</p>
+
+<p>Сотрудники ресторана видят состав заказа, комментарии клиента (например, «не класть соус») и примерное время прибытия курьера. <strong>Статусная модель</strong> требует от персонала последовательного переключения состояний заказа: «Принят в работу», «Готовится», «Готов к выдаче». Переход на статус «Готов» является триггером для уведомления курьера о необходимости подъехать к точке выдачи.</p>
+
+<p>Для крупных сетей ресторанов часто используется прямая интеграция, позволяющая управлять меню и остатками в реальном времени. Это предотвращает ситуации, когда пользователь заказывает блюдо, которого физически нет на кухне. <em>Синхронизация баз данных</em> происходит с минимальной задержкой, что критически важно для поддержания репутации сервиса.</p>
+
+<div class="poll-widget" id="poll-f26d93bc"><div class="poll-widget-question">📊 Как вы чаще всего оформляете заказы?</div><div class="poll-widget-option" data-poll="f26d93bc" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Через мобильное приложение</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f26d93bc" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Через веб-сайт</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f26d93bc" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Через голосового помощника</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f26d93bc" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Через виджет на главном экране</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>В случае технических сбоев или перегрузки кухни, партнер может вручную изменить время готовности или отменить позицию. Система сразу же оповещает об этом клиента и, при необходимости, пересчитывает стоимость. Гибкость интерфейса партнера позволяет оперативно реагировать на форс-мажорные обстоятельства, сохраняя прозрачность процесса для всех участников.</p>
+
+<h2 id="логистика-и-назначение-курьера">Логистика и назначение курьера</h2>
+
+<p>Самый сложный этап — это назначение исполнителя. Здесь работает <strong>алгоритм матчинга</strong>, который сопоставляет заказ с доступным курьером. Учитывается тип транспорта (пеший, вело, авто), так как от этого зависит скорость перемещения и допустимое расстояние. Система также анализирует текущий маршрут курьера: если он уже везет другой заказ в соседний дом, ему может быть предложен этот заказ для оптимизации пути (сборный заказ).</p>
+
+<p>Курьеры работают через специальное приложение <code>Yandex Pro</code> (или его аналоги для разных регионов), которое выступает навигатором и рабочим инструментом. Приложение получает push-уведомления о новых заказах, но курьер не всегда может отказаться от них без последствий для рейтинга. <em>Динамическое ценообразование</em> может повышать стоимость доставки для клиента в часы пик, чтобы стимулировать выход большего числа курьеров на линию.</p>
+
+<p>При назначении курьера система строит оптимальный маршрут с учетом пробок, дорожных работ и даже особенностей здания (например, наличие домофона или лифта). Если курьер опаздывает, алгоритм может переназначить заказ другому исполнителю, который находится ближе, даже если первый уже выехал.</p>
+
+<p>Важнейшим параметром является <strong>ETA</strong> (Estimated Time of Arrival) — расчетное время прибытия. Оно постоянно пересчитывается на основе данных о движении курьера. Клиент видит этот таймер в приложении, что снижает тревожность и количество звонков в поддержку.</p>
+
+<div class="checklist-block"><h4>☑️ Критерии выбора курьера системой</h4><label class="check-item"><input type="checkbox"><span>Свободен ли курьер в данный момент</span></label><label class="check-item"><input type="checkbox"><span>Соответствует ли тип транспорта заказу</span></label><label class="check-item"><input type="checkbox"><span>Находится ли курьер в зоне доставки</span></label><label class="check-item"><input type="checkbox"><span>Каков рейтинг исполнителя</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<blockquote>
+<p>⚠️ Внимание: Курьеры не видят точный адрес клиента до момента принятия заказа или приближения к точке, что является мерой безопасности и конфиденциальности данных.</p>
+</blockquote>
+
+<h2 id="путь-курьера-от-ресторана-до-клиента">Путь курьера: от ресторана до клиента</h2>
+
+<p>После получения задания курьер следует в ресторан. Приложение прокладывает маршрут, избегая сложных развязок и запрещенных для проезда зон. Прибыв на место, исполнитель должен подтвердить свое геопозиционирование и нажать кнопку «Я в ресторане». С этого момента может запуститься таймер ожидания, если блюдо еще не готово.</p>
+
+<p>Получив заказ, курьер проверяет комплектацию и целостность упаковки. В некоторых случаях требуется сфотографировать чек или сам заказ для контроля качества. <strong>Термосумка</strong> — обязательный элемент экипировки, позволяющий сохранять температурный режим блюд во время транспортировки. Нарушение правил перевозки может привести к блокировке аккаунта.</p>
+
+<p>Доставка до двери клиента — финальный рывок. Курьер следует по навигатору, который может корректировать маршрут в реальном времени. Прибыв к дому, исполнитель подтверждает местоположение и ждет клиента или поднимается к двери. В случае отсутствия ответа, запускается процедура ожидания и последующих звонков.</p>
+
+<p>Весь путь трекается с высокой точностью. Клиент может видеть передвижение курьера на карте, что создает ощущение контроля. <em>Геозоны</em> вокруг точек выдачи и доставки автоматически фиксируют время прибытия и убытия, формируя статистику эффективности работы исполнителя.</p>
+
+<h2 id="технические-аспекты-и-алгоритмы-распределения">Технические аспекты и алгоритмы распределения</h2>
+
+<p>В основе работы сервиса лежит сложная математическая модель, часто называемая «мозгом» системы. Она решает задачу коммивояжера в масштабах города, но с тысячами переменных. Алгоритм должен распределить N заказов между M курьерами так, чтобы суммарное время доставки было минимальным, а удовлетворенность клиентов — максимальной.</p>
+
+<p>Используется <strong>машинное обучение</strong> для предсказания времени приготовления. Система анализирует историю заказов конкретного ресторана: в пятницу вечером пиццу могут готовить дольше, чем во вторник днем. Эти данные закладываются в расчет времени ожидания курьера.</p>
+
+<p>Для управления потоками применяется система балансировки. Если в одном районе поступает слишком много заказов, а курьеров не хватает, радиус доставки может быть временно расширен на соседние зоны, или клиентам будут предложены более длительные сроки. <em>Микромобилинг</em> позволяет перераспределять ресурсы между соседними кластерами города.</p>
+
+<p>Ниже приведена таблица основных параметров, влияющих на распределение заказов:</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Влияние на алгоритм</th>
+<th>Вес в расчетах</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Расстояние</td>
+<td>Определяет базовое время пути</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td>Загрузка курьера</td>
+<td>Влияет на возможность взять сборный заказ</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>Рейтинг ресторана</td>
+<td>Корректирует время ожидания готовности</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>Погодные условия</td>
+<td>Увеличивает нормативное время доставки</td>
+<td>Низкий</td>
+</tr>
+<tr>
+<td>Тип транспорта</td>
+<td>Ограничивает зону доступных заказов</td>
+<td>Критический</td>
+</tr>
+</tbody>
+</table>
+
+<details class="faq-item"><summary>Что такое "Сборный заказ"?</summary><div class="faq-answer"><p>Сборный заказ — это ситуация, когда один курьер везет несколько заказов одновременно. Это возможно, если точки забора и доставки находятся близко друг к другу, что позволяет оптимизировать логистику и снизить стоимость доставки для клиентов.>
+
+<h2 id="оплата-чаевые-и-завершение-заказа">Оплата, чаевые и завершение заказа</h2>
+
+<p>Финансовый аспект работы сервиса также автоматизирован. Оплата проходит через платежный шлюз в момент заказа. Деньги замораживаются на карте клиента и перечисляются ресторану и сервису после успешного завершения доставки. <strong>Эквайринг</strong> обеспечивает безопасность транзакций и защиту от мошенничества.</p>
+
+<p>Чаевые курьеру — это добровольный бонус, который пользователь может добавить в приложении или передать наличными. В электронном виде сумма чаевых полностью уходит исполнителю, агрегатор не берет с них комиссию. Это важный мотивационный фактор для курьеров, особенно в часы пик.</p>
+
+<p>Завершением заказа считается подтверждение вручения. Курьер нажимает кнопку «Заказ вручен», и система отправляет пользователю уведомление с просьбой оценить сервис. <em>Обратная связь</em> используется для корректировки рейтингов ресторанов и курьеров, влияя на их будущие назначения.</p>
+
+<p>В случае проблем (недовоз, брак) работает система возвратов. Пользователь может оформить заявку в приложении, прикрепив фото. Автоматический или ручной анализ претензии приводит к возврату средств на баланс или карту. <mark>Среднее время обработки претензии составляет менее 15 минут благодаря автоматизации.</mark></p>
+
+
+
+<h2 id="безопасность-и-контроль-качества">Безопасность и контроль качества</h2>
+
+<p>Безопасность пищевых продуктов и данных пользователей — приоритет номер один. Все партнеры проходят строгий отбор и регулярные проверки СЭС. Курьеры обязаны соблюдать санитарные нормы, использовать одноразовые пакеты и регулярно дезинфицировать термосумки. <strong>Контроль качества</strong> осуществляется как автоматически (через фотоотчеты), так и выборочными проверками.</p>
+
+<p>Персональные данные клиентов защищены протоколами шифрования. Курьер видит только номер телефона (часто виртуальный) и адрес, но не знает фамилии или других деталей. После завершения заказа доступ к данным блокируется.</p>
+
+<p>Система мониторинга отслеживает аномалии в поведении: резкие изменения маршрута, длительные остановки, отклонения от графика. Это помогает выявлять попытки махинаций или нарушения правил сервиса. <em>Комплаенс-контроль</em> гарантирует соблюдение законодательства и внутренних стандартов компании.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Безопасность и качество в Яндекс Еде обеспечиваются комплексом автоматических проверок, строгими требованиями к партнерам и постоянным мониторингом данных в реальном времени.</p></div>
+
+<details>
+<summary>Как быстро курьер получает заказ после его готовности?</summary>
+<p>В идеальных условиях время ожидания курьера составляет от 0 до 5 минут. Алгоритм старается рассчитать время прибытия исполнителя так, чтобы оно совпадало с моментом готовности блюда. Однако в часы пик или при сложной логистике ожидание может затянуться до 10-15 минут.</p>
+</details>
+
+<details>
+<summary>Может ли курьер видеть содержимое заказа?</summary>
+<p>Да, курьер видит список позиций в заказе в своем приложении. Это необходимо для проверки комплектации при получении заказа в ресторане. Однако он не видит цену блюд и платежные данные клиента.</p>
+</details>
+
+<details>
+<summary>Что происходит, если курьер не может найти адрес?</summary>
+<p>Приложение курьера имеет функцию «Позвонить клиенту» через защищенный канал связи. Если связь не устанавливается, курьер ожидает определенное время, после чего может отменить заказ с пометкой «Клиент не вышел». В этом случае с пользователя могут быть списаны дополнительные средства за ожидание.</p>
+</details>
+
+<details>
+<summary>Как рассчитывается рейтинг курьера?</summary>
+<p>Рейтинг формируется на основе множества факторов: скорость доставки, процент выполненных заказов, отзывы клиентов, опоздания и отмены. Низкий рейтинг может ограничить доступ курьера к выгодным заказам или привести к блокировке аккаунта.</p>
+</details>
+
+<details>
+<summary>Работает ли сервис в плохую погоду?</summary>
+<p>Да, сервис работает в любую погоду, но время доставки может быть увеличено. В экстремальных условиях (ураган, сильный снегопад) сервис может временно приостановить работу в отдельных районах ради безопасности курьеров.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#архитектура-системы-и-прием-заказа">Архитектура системы и прием заказа</a></li><li><a href="#интеграция-с-ресторанами-и-обработка-заказа">Интеграция с ресторанами и обработка заказа</a></li><li><a href="#логистика-и-назначение-курьера">Логистика и назначение курьера</a></li><li><a href="#путь-курьера-от-ресторана-до-клиента">Путь курьера: от ресторана до клиента</a></li><li><a href="#технические-аспекты-и-алгоритмы-распределения">Технические аспекты и алгоритмы распределения</a></li><li><a href="#оплата-чаевые-и-завершение-заказа">Оплата, чаевые и завершение заказа</a></li><li><a href="#безопасность-и-контроль-качества">Безопасность и контроль качества</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/s/st/strakhovka-proverit-po-nomeru-mashiny.html" class="related-card">Проверка страховки по номеру машины: ОСАГО онлайн</a></li><li><a href="/articles/i/iv/ivan-zenkevich-god-rozhdeniya.html" class="related-card">Иван Зенкевич: год рождения, биография и факты</a></li><li><a href="/articles/o/ot/otkryt-elektrozapravku-dlya-avtomobilya.html" class="related-card">Как открыть электрозаправку для авто: бизнес-план</a></li><li><a href="/articles/o/oz/ozon-fresh-rabota-sborshchik-zakazov-otzyvy-sotrudnikov.html" class="related-card">Работа сборщиком на Ozon Fresh: отзывы сотрудников, зарплата</a></li><li><a href="/articles/a/av/avtomobil-iz-filma-operatsiya-y.html" class="related-card">Автомобиль из фильма «Операция Ы»: легендарный ГАЗ-21</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/s/st/strakhovka-proverit-po-nomeru-mashiny.html" class="related-bottom-card"><span class="related-bottom-title">Проверка страховки по номеру машины: ОСАГО онлайн</span><span class="related-bottom-desc">Как проверить полис ОСАГО по номеру машины в базе РСА. Инструкция, проверка подлинности, штрафы за о</span></a><a href="/articles/i/iv/ivan-zenkevich-god-rozhdeniya.html" class="related-bottom-card"><span class="related-bottom-title">Иван Зенкевич: год рождения, биография и факты</span><span class="related-bottom-desc">Когда родился Иван Зенкевич? Год рождения, интересные факты из жизни, образование и карьера популярн</span></a><a href="/articles/o/ot/otkryt-elektrozapravku-dlya-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Как открыть электрозаправку для авто: бизнес-план</span><span class="related-bottom-desc">Полное руководство: как открыть электрозаправку. Анализ затрат, выбор оборудования, юридические нюан</span></a><a href="/articles/o/oz/ozon-fresh-rabota-sborshchik-zakazov-otzyvy-sotrudnikov.html" class="related-bottom-card"><span class="related-bottom-title">Работа сборщиком на Ozon Fresh: отзывы сотрудников, зарплата</span><span class="related-bottom-desc">Правдивые отзывы сотрудников о работе сборщиком на Озон Фреш. Зарплата, условия труда, график и реал</span></a><a href="/articles/a/av/avtomobil-iz-filma-operatsiya-y.html" class="related-bottom-card"><span class="related-bottom-title">Автомобиль из фильма «Операция Ы»: легендарный ГАЗ-21</span><span class="related-bottom-desc">Какой автомобиль снимали в «Операции Ы»? История ГАЗ-21, роль такси и трюковой машины. Технические д</span></a><a href="/articles/k/ka/kak-proverit-freon-v-konditsionere-doma-samomu.html" class="related-bottom-card"><span class="related-bottom-title">Как проверить фреон в кондиционере дома: признаки и способы</span><span class="related-bottom-desc">Узнайте, как проверить фреон в кондиционере дома самому. Симптомы утечки, способы диагностики, табли</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

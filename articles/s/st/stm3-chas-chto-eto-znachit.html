@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>STM32 Часы: что это значит и как настроить таймеры — Авто Гид</title>
+    <meta name="description" content="Разбираем, что такое STM32 часы в контексте таймеров. Инструкция по настройке прескалеров и автоперезагрузки для точной генерации задержек.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/s/st/stm3-chas-chto-eto-znachit.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="STM32 Часы: что это значит и как настроить таймеры">
+    <meta property="og:description" content="Разбираем, что такое STM32 часы в контексте таймеров. Инструкция по настройке прескалеров и автоперезагрузки для точной генерации задержек.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">STM32 Часы: что это значит и как настроить таймеры</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>STM32 Часы: что это значит и как настроить таймеры</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-тактирования-stm32-и-роль-rcc">Архитектура тактирования STM32 и роль RCC</a></li><li><a href="#принцип-работы-таймера-и-понятие-предделителя">Принцип работы таймера и понятие предделителя</a></li><li><a href="#режим-автоперезагрузки-и-период-счета">Режим автоперезагрузки и период счета</a></li><li><a href="#расчет-временных-интервалов-практический-пример">Расчет временных интервалов: практический пример</a></li><li><a href="#типы-таймеров-и-их-назначение">Типы таймеров и их назначение</a></li><li><a href="#частые-ошибки-при-настройке-и-их-устранение">Частые ошибки при настройке и их устранение</a></li><li><a href="#faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Для инженера-электронщика, работающего с микроконтроллерами, вопрос «STM32 часы что это значит» часто возникает не в контексте времени суток, а при настройке системного времени или таймеров. В мире встраиваемых систем понятие «часы» (Clock) имеет фундаментальное значение, так как именно они задают ритм работы всего устройства. Если вы столкнулись с необходимостью настроить точную задержку или измерить время между событиями, вам придется разобраться с тактированием таймеров.</p>
+
+<p>Многие новички путают системные часы (RCC) и часы реального времени (RTC), но в контексте таймеров речь идет о тактовой частоте, подаваемой на счетчик. Именно от этой частоты зависит, с какой скоростью будет тикать внутренний счетчик модуля. Понимание этого процесса позволяет создавать устройства с микросекундной точностью, что критично для управления двигателями или сбора данных с датчиков.</p>
+
+<p>В этой статье мы детально разберем архитектуру тактирования таймеров, чтобы вы могли безошибочно рассчитывать коэффициенты деления. Вы научитесь различать системное время и время, генерируемое периферийными модулями, что станет ключом к стабильной работе вашего проекта на базе <em>ARM Cortex-M</em>.</p>
+
+<h2 id="архитектура-тактирования-stm32-и-роль-rcc">Архитектура тактирования STM32 и роль RCC</h2>
+
+<p>Центральным элементом распределения частот в микроконтроллерах семейства <em>STM32</em> является блок RCC (Reset and Clock Control). Именно этот модуль отвечает за то, чтобы каждая периферия, включая таймеры, получала стабильный и предсказуемый сигнал. Без правильно настроенного RCC ни один таймер не сможет отсчитывать время с заявленной точностью.</p>
+
+<p>Сигнал может поступать от различных источников: внутреннего генератора (HSI), внешнего кварца (HSE) или PLL (Phase Locked Loop). Для высокоточных приложений, таких как генерация ШИМ или измерение длительности импульсов, обычно используют внешний кварцевый резонатор. Он обеспечивает стабильность, не зависящую от температуры и напряжения питания, в отличие от внутренних генераторов.</p>
+
+<p>Важно понимать, что частота на выходе блока RCC может быть значительно выше частоты входного кварца. Система PLL позволяет умножать частоту, достигая значений в десятки и сотни мегагерц. Однако таймеры не всегда работают на полной частоте ядра, так как их входы часто подключены к шинам APB1 или APB2, которые могут иметь свои делители.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Всегда проверяйте схему вашего устройства (Datasheet), чтобы узнать, к какой шине (APB1 или APB2) подключен нужный вам таймер, так как их максимальные частоты могут отличаться.</p></div>
+
+<p>Настройка источников тактирования производится через регистры конфигурации, но в современных проектах удобнее использовать графические конфигураторы. Они автоматически рассчитывают необходимые коэффициенты и генерируют код инициализации, минимизируя риск ошибки в расчетах.</p>
+
+<h2 id="принцип-работы-таймера-и-понятие-предделителя">Принцип работы таймера и понятие предделителя</h2>
+
+<p>Когда мы говорим о таймере в контексте запроса «STM32 часы что это значит», мы подразумеваем счетный механизм, который инкрементируется при каждом приходящем такте. Однако частота этого такта часто слишком велика для практических задач, поэтому используется предделитель (Prescaler). Этот узел делит входную частоту на заданный коэффициент, замедляя ход счетчика до нужной скорости.</p>
+
+<p>Формула расчета частоты таймера выглядит следующим образом: частота таймера равна частоте источника, деленной на значение предделителя плюс один. Если на вход подается 1 МГц, а нам нужно, чтобы счетчик тикал 1000 раз в секунду (1 кГц), мы должны установить предделитель равным 999. Это позволяет гибко масштабировать время.</p>
+
+<p>Использование предделителя критически важно для создания длительных задержек без переполнения счетчика. Без делителя 32-битный или 16-битный счетчик переполнился бы за доли секунды на высоких частотах. Правильный расчет <strong>Prescaler</strong> позволяет растянуть этот интервал до секунд или даже минут.</p>
+
+<blockquote>⚠️ Внимание: Значение регистра предделителя всегда на единицу меньше желаемого коэффициента деления, так как счет начинается с нуля. Установка значения 0 означает деление на 1 (отсутствие деления).</blockquote>
+
+<p>В некоторых моделях микроконтроллеров предделитель может быть каскадным или иметь дополнительные фильтры для подавления шумов на входе. Это особенно актуально, если таймер используется для измерения внешних сигналов, где возможны дребезги контактов или помехи.</p>
+
+<div class="poll-widget" id="poll-415fa451"><div class="poll-widget-question">📊 Какой источник тактирования вы используете чаще всего?</div><div class="poll-widget-option" data-poll="415fa451" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Внутренний HSI</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="415fa451" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Внешний HSE</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="415fa451" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">PLL (умножение)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="415fa451" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">LSI (низкая частота)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="режим-автоперезагрузки-и-период-счета">Режим автоперезагрузки и период счета</h2>
+
+<p>Ключевым параметром любого таймера является регистр автоперезагрузки (Auto-Reload Register, ARR). Он определяет максимальное значение, до которого досчитывает таймер, прежде чем сброситься в ноль и, возможно, вызвать прерывание. Именно связка предделителя и регистра ARR позволяет генерировать точные временные интервалы.</p>
+
+<p>Процесс выглядит так: счетчик тикает с частотой, заданной предделителем, и когда его значение совпадает с содержимым регистра ARR, происходит событие обновления. Это событие может использоваться для генерации прерывания, переключения вывода или запуска АЦП. Такой механизм лежит в основе создания периодических задач в реальном времени.</p>
+
+<p>Для создания задержки в 1 секунду при частоте тактирования таймера 1 МГц необходимо, чтобы счетчик сделал 1 000 000 шагов. Если предделитель установлен в 0 (деление на 1), то регистр ARR должен быть равен 999999. Если же мы увеличим предделитель, значение ARR уменьшится пропорционально.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Влияние на время</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLK_TIM</code></td>
+<td>Частота тактирования таймера</td>
+<td>Прямая зависимость</td>
+</tr>
+<tr>
+<td><code>PSC</code></td>
+<td>Значение предделителя</td>
+<td>Обратная зависимость</td>
+</tr>
+<tr>
+<td><code>ARR</code></td>
+<td>Значение автоперезагрузки</td>
+<td>Прямая зависимость</td>
+</tr>
+<tr>
+<td><code>T_out</code></td>
+<td>Итоговый период</td>
+<td>Результат расчета</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно отметить, что изменение значений регистров PSC и ARR на лету требует осторожности. В некоторых конфигурациях новые значения применяются только после события обновления, чтобы избежать glitches (кратковременных сбоев) в работе таймера.</p>
+
+<h2 id="расчет-временных-интервалов-практический-пример">Расчет временных интервалов: практический пример</h2>
+
+<p>Давайте разберем конкретный пример, чтобы закрепить понимание того, как рассчитываются «часы» таймера. Предположим, у нас есть микроконтроллер, где таймер подключен к шине с частотой 72 МГц. Нам необходимо получить прерывание ровно каждые 1 мс (1000 раз в секунду).</p>
+
+<p>Сначала определим необходимую частоту счета таймера. Для периода 1 мс частота должна составлять 1 кГц (1000 Гц). Теперь рассчитаем общий коэффициент деления: 72 000 000 Гц делим на 1000 Гц, получаем 72 000. Это число нужно разложить на множители для регистров Prescaler и Auto-Reload.</p>
+
+<p>Оптимальным решением будет установить предделитель равным 7199 (что даст деление на 7200), а регистр автоперезагрузки — 999 (деление на 1000). В итоге: 72 МГц / 7200 = 10 кГц, и 10 кГц / 1000 = 10 Гц (период 100 мс)? Нет, давайте пересчитаем для 1 мс.</p>
+
+<p>Для 1 мс нужна частота 1 кГц. 72 МГц / 1 кГц = 72000. Вариант 1: PSC = 71999 (деление на 72000), ARR = 0 (счет до 1). Вариант 2: PSC = 7199 (деление на 7200), ARR = 9 (счет до 10, частота 10 кГц, период 0.1 мс — не то). Правильный расчет для 1 мс: PSC = 7199 (делитель 7200), частота станет 10 кГц. Чтобы получить 1 кГц, ARR должен быть 9. Итого: 72М / 7200 / 10 = 1000 Гц. Период 1 мс.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка расчета таймера</h4><label class="check-item"><input type="checkbox"><span>Известна частота источника (CLK)</span></label><label class="check-item"><input type="checkbox"><span>Задан требуемый период (T)</span></label><label class="check-item"><input type="checkbox"><span>Рассчитан Prescaler (PSC)</span></label><label class="check-item"><input type="checkbox"><span>Рассчитан Auto-Reload (ARR)</span></label><label class="check-item"><input type="checkbox"><span>Проверена переполняемость 16/32 бит</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<p>Такие расчеты необходимо выполнять для каждого таймера отдельно, так как они могут находиться на разных шинах с разной частотой. Ошибка в расчетах приведет либо к слишком частым прерываниям, нагружающим процессор, либо к потере точности тайминга.</p>
+
+<h2 id="типы-таймеров-и-их-назначение">Типы таймеров и их назначение</h2>
+
+<p>В линейке <em>STM32</em> существуют различные типы таймеров, и выбор конкретного модуля зависит от решаемой задачи. Базовые таймеры (Basic Timers) подходят для простых задержек и генерации прерываний, не имея сложных функций захвата ввода. Они идеальны, когда нужно просто отсчитать время.</p>
+
+<p>Таймеры общего назначения (General Purpose) оснащены каналами захвата/сравнения, что позволяет им генерировать ШИМ-сигналы или измерять длительность внешних импульсов. Это наиболее универсальный инструмент в арсенале разработчика, используемый в 80% случаев.</p>
+
+<p>Продвинутые таймеры (Advanced Control) предназначены для управления двигателями и источниками питания. Они имеют «мертвое время» (dead-time), комплементарные выходы и защиту от аварийных ситуаций. Использование таких таймеров для простых задач избыточно, но необходимо для управления моторами.</p>
+
+<blockquote>⚠️ Внимание: Не все таймеры в микроконтроллере одинаковы. 32-битные таймеры могут считать до огромных значений без предделителя, тогда как 16-битные переполняются гораздо быстрее.</blockquote>
+
+<p>При проектировании системы распределите таймеры рационально: оставьте высокоточные 32-битные модули для критичных по времени задач, а простые 16-битные отдайте под фоновые опросы или мигание индикаторами.</p>
+
+<details class="faq-item"><summary>Что такое Watchdog Timer?</summary><div class="faq-answer"><p>Это специальный таймер, который сбрасывает микроконтроллер, если программа зависла. Он не используется для измерения времени, а служит системой защиты от сбоев.</p></div></details>
+
+<h2 id="частые-ошибки-при-настройке-и-их-устранение">Частые ошибки при настройке и их устранение</h2>
+
+<p>Одной из самых распространенных ошибок является игнирование обновления регистров. В некоторых режимах изменения в регистрах prescaler и auto-reload не вступают в силу мгновенно, а требуют генерации события обновления (Update Event). Если забыть об этом, таймер продолжит работать со старыми параметрами.</p>
+
+<p>Другая проблема — переполнение 16-битных регистров. Если рассчитанное значение ARR превышает 65535, а таймер 16-битный, необходимо увеличить предделитель. Попытка записать большее значение просто обрежет старшие биты, и время пойдет неверно.</p>
+
+<p>Также стоит помнить о приоритетах прерываний. Если таймер генерирует прерывания слишком часто, а обработчик прерывания (ISR) выполняется долго, процессор может быть полностью занят обслуживанием таймера, и основная программа встанет. В таких случаях нужно увеличивать период таймера или оптимизировать код.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Золотое правило: всегда проверяйте, не превышает ли частота прерываний таймера возможности процессора их обработать без потери производительности основной задачи.</p></div>
+
+<p>Для отладки используйте осциллограф или логический анализатор, подключив вывод таймера в режиме toggling (переключения). Визуальное наблюдение за сигналом позволяет мгновенно оценить реальную частоту и выявить ошибки в расчетах.</p>
+
+<h2 id="faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</h2>
+
+<details>
+<summary>В чем разница между системными часами и часами таймера?</summary>
+<p>Системные часы (System Core Clock) определяют скорость выполнения инструкций процессором. Часы таймера — это частота, с которой инкрементируется счетчик конкретного таймера. Они могут быть равны, но часто таймер работает на частоте шины APB, которая может быть разделена.</p>
+</details>
+
+<details>
+<summary>Почему мой таймер отсчитывает время неправильно?</summary>
+<p>Наиболее вероятная причина — неверно рассчитанный предделитель или игнорирование того факта, что счет идет с нуля. Также проверьте, не изменилась ли частота внешнего кварца или настройки PLL в коде инициализации.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать один таймер для нескольких задач?</summary>
+<p>Да, используя режимы сравнения (Output Compare) на разных каналах одного таймера. Однако все каналы будут иметь общую базу времени (Prescaler и Counter), поэтому кратные периоды реализовать легко, а не кратные — сложнее.</p>
+</details>
+
+<details>
+<summary>Что такое (переполнение) таймера?</summary>
+<p>Переполнение происходит, когда счетчик достигает максимального значения (для 16 бит это 65535) и переходит к нулю. Это событие часто используется для генерации прерывания, если период счета велик.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#архитектура-тактирования-stm32-и-роль-rcc">Архитектура тактирования STM32 и роль RCC</a></li><li><a href="#принцип-работы-таймера-и-понятие-предделителя">Принцип работы таймера и понятие предделителя</a></li><li><a href="#режим-автоперезагрузки-и-период-счета">Режим автоперезагрузки и период счета</a></li><li><a href="#расчет-временных-интервалов-практический-пример">Расчет временных интервалов: практический пример</a></li><li><a href="#типы-таймеров-и-их-назначение">Типы таймеров и их назначение</a></li><li><a href="#частые-ошибки-при-настройке-и-их-устранение">Частые ошибки при настройке и их устранение</a></li><li><a href="#faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/p/po/pochemu-garazhi-takie-dorogie.html" class="related-card">Почему гаражи в 2026 году стоят как квартиры? 7 причин роста цен</a></li><li><a href="/articles/t/tr/trap-dlya-razgruzki-fur.html" class="related-card">Трап для разгрузки фур: выбор, установка и безопасность (2026)</a></li><li><a href="/articles/c/ch/chto-znachit-nomer-igly-dlya-shvejnoj-mashinki.html" class="related-card">Что значит номер иглы для швейной машинки: расшифровка и выбор</a></li><li><a href="/articles/p/pr/promyvka-skvazhiny-vibratsionnym-nasosom.html" class="related-card">Промывка скважины вибрационным насосом: технология и нюансы</a></li><li><a href="/articles/p/pr/proga-dlya-diagnostiki-avto-dlya-noutbuka.html" class="related-card">Топ-10 программ для диагностики авто с ноутбука: выбор и настройка</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/p/po/pochemu-garazhi-takie-dorogie.html" class="related-bottom-card"><span class="related-bottom-title">Почему гаражи в 2026 году стоят как квартиры? 7 причин роста цен</span><span class="related-bottom-desc">Разбираем реальные факторы, из-за которых цены на гаражи взлетели до небес: от дефицита земли до спе</span></a><a href="/articles/t/tr/trap-dlya-razgruzki-fur.html" class="related-bottom-card"><span class="related-bottom-title">Трап для разгрузки фур: выбор, установка и безопасность (2026)</span><span class="related-bottom-desc">Как выбрать и установить трап для разгрузки фур: виды, материалы, нормативы ГОСТ и советы по эксплуа</span></a><a href="/articles/c/ch/chto-znachit-nomer-igly-dlya-shvejnoj-mashinki.html" class="related-bottom-card"><span class="related-bottom-title">Что значит номер иглы для швейной машинки: расшифровка и выбор</span><span class="related-bottom-desc">Подробно разбираем, что значит номер иглы для швейной машинки. Таблица соответствия тканей, советы п</span></a><a href="/articles/p/pr/promyvka-skvazhiny-vibratsionnym-nasosom.html" class="related-bottom-card"><span class="related-bottom-title">Промывка скважины вибрационным насосом: технология и нюансы</span><span class="related-bottom-desc">Как почистить скважину вибрационным насосом? Полная инструкция, схемы опусков, выбор оборудования и </span></a><a href="/articles/p/pr/proga-dlya-diagnostiki-avto-dlya-noutbuka.html" class="related-bottom-card"><span class="related-bottom-title">Топ-10 программ для диагностики авто с ноутбука: выбор и настройка</span><span class="related-bottom-desc">Какие программы для диагностики автомобиля через ноутбук выбрать в 2026 году? Сравнение функций, сов</span></a><a href="/articles/p/pr/programma-diagnostiki-avto-dlya-noutbuka-obd2.html" class="related-bottom-card"><span class="related-bottom-title">Программа диагностики авто для ноутбука OBD2: выбор и настройка</span><span class="related-bottom-desc">Обзор лучших программ для диагностики авто через ноутбук и OBD2. Как выбрать софт, подключить сканер</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

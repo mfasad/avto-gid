@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как скрыть рамку видового экрана в Автокаде при печати — Авто Гид</title>
+    <meta name="description" content="Подробная инструкция: убираем границы viewport в AutoCAD. Настройка слоев, заморозка, свойства для чистого вывода чертежа на печать.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-skryt-ramku-vidovogo-ekrana-v-avtokade-pri-pechati.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как скрыть рамку видового экрана в Автокаде при печати">
+    <meta property="og:description" content="Подробная инструкция: убираем границы viewport в AutoCAD. Настройка слоев, заморозка, свойства для чистого вывода чертежа на печать.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как скрыть рамку видового экрана в Автокаде при печати</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как скрыть рамку видового экрана в Автокаде при печати: полное руководство</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-зарезервированного-слоя-defpoints">Использование зарезервированного слоя Defpoints</a></li><li><a href="#создание-отдельного-слоя-для-видовых-экранов">Создание отдельного слоя для видовых экранов</a></li><li><a href="#заморозка-слоя-в-текущем-видовом-экране">Заморозка слоя в текущем видовом экране</a></li><li><a href="#настройка-системной-переменной-vplayeroverrides">Настройка системной переменной VPLAYEROVERRIDES</a></li><li><a href="#сравнение-методов-скрытия-рамок">Сравнение методов скрытия рамок</a></li><li><a href="#частые-ошибки-и-дополнительные-рекомендации">Частые ошибки и дополнительные рекомендации</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Работа с <strong>AutoCAD</strong> часто сопряжена с необходимостью оформления проектной документации, где каждый лишний элемент на листе может испортить общее впечатление или нарушить стандарты предприятия. Одной из самых частых проблем, с которой сталкиваются инженеры и архитекторы, является отображение границы видового экрана (viewport) на готовом чертеже. Эта рамка, необходимая для навигации и настройки масштаба в пространстве модели, совершенно не нужна на финальном бумажном или PDF-документе.</p>
+
+<p>Существует несколько проверенных методов, позволяющих убрать этот визуальный шум. Выбор конкретного способа зависит от версии программного обеспечения, корпоративных стандартов и личных предпочтений пользователя. В этой статье мы разберем наиболее эффективные техники, начиная от простого переключения слоев и заканчивая тонкой настройкой системных переменных.</p>
+
+<p>Понимание принципов работы видовых экранов — это ключ к чистой и профессиональной печати. <em>AutoCAD</em> предоставляет гибкие инструменты управления видимостью объектов, и правильное их использование сэкономит вам время на пост-обработке файлов. Давайте рассмотрим, как именно можно добиться идеального результата.</p>
+
+<h2 id="использование-зарезервированного-слоя-defpoints">Использование зарезервированного слоя Defpoints</h2>
+
+<p>Самым распространенным и, пожалуй, наиболее элегантным способом скрытия границ видовых экранов является помещение их на специальный системный слой <strong>Defpoints</strong>. Уникальность этого слоя заключается в том, что объекты, находящиеся на нем, отображаются на экране во время работы, но автоматически игнорируются принтером при выводе документа. Это свойство делает его идеальным контейнером для служебных элементов чертежа.</p>
+
+<p>Для реализации этого метода вам необходимо выделить рамку видового экрана в пространстве модели. После выделения следует открыть диспетчер слоев и переместить выделенный объект на слой <code>Defpoints</code>. </p>
+
+<p>Основное преимущество данного подхода заключается в его универсальности. Независимо от того, какие настройки печати вы используете или какой плоттер выбран в качестве устройства вывода, слой <strong>Defpoints</strong> всегда останется невидимым на бумаге. Это избавляет от необходимости каждый раз вручную отключать видимость слоев перед отправкой файла на печать или сохранением в PDF.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не размещайте на слое Defpoints важные геометрические объекты, которые должны быть напечатаны. Этот слой создан исключительно для справочных данных, размеров и границ видовых экранов.</p>
+</blockquote>
+
+<p>Стоит также отметить, что если вы работаете в команде, использование слоя <strong>Defpoints</strong> требует согласования. Некоторые инженеры предпочитают видеть все границы для удобства навигации, поэтому перед внедрением такого стандарта лучше обсудить это с коллегами. Однако для финальной стадии проекта это решение является одним из самых надежных.</p>
+
+<h2 id="создание-отдельного-слоя-для-видовых-экранов">Создание отдельного слоя для видовых экранов</h2>
+
+<p>Если по каким-то причинам использование системного слоя <strong>Defpoints</strong> не подходит вашей рабочей группе, отличным альтернативным решением станет создание собственного пользовательского слоя. Назовите его, например, <code>VIEWPORTS</code> или <code>ГРАНИЦЫ_ЭКРАНОВ</code>. Главная идея заключается в том, чтобы собрать все рамки видовых экранов в одном месте для централизованного управления их видимостью.</p>
+
+<p>После создания нового слоя необходимо переместить на него все существующие рамки видовых экранов. Это можно сделать как через свойства объектов, так и используя инструмент <code>Мастер слоев</code>. После того как все рамки окажутся на новом слое, достаточно просто отключить значок "Принтер" (Print) в столбце настроек слоя, чтобы сделать их невидимыми при печати, оставив видимыми в рабочем пространстве.</p>
+
+<p>Такой подход дает вам гибкость. Вы можете быстро переключаться между режимами "Редактирование" (где рамки видны) и "Печать" (где рамки скрыты), просто щелкая по соответствующему значку в диспетчере слоев. Это особенно удобно при работе с большими проектами, где количество видовых экранов может исчисляться десятками.</p>
+
+<div class="poll-widget" id="poll-2711e27c"><div class="poll-widget-question">📊 Какой метод скрытия рамок вы используете чаще всего?</div><div class="poll-widget-option" data-poll="2711e27c" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Слой Defpoints</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="2711e27c" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Отдельный слой с отключенной печатью</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="2711e27c" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Заморозка в текущем вьюпорте</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="2711e27c" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Системная переменная</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Кроме того, использование отдельного слоя позволяет применять к рамкам специфические свойства, такие как цвет или тип линии, которые не будут конфликтовать с основными элементами чертежа. Вы можете сделать линии рамок пунктирными или выделить их ярким цветом для удобства редактирования, зная, что на печати их не будет видно.</p>
+
+<h2 id="заморозка-слоя-в-текущем-видовом-экране">Заморозка слоя в текущем видовом экране</h2>
+
+<p>Одним из наиболее мощных инструментов в арсенале пользователя <em>AutoCAD</em> является возможность замораживать слои именно в текущем видовом экране. Эта функция позволяет скрывать объекты на одном листе, оставляя их видимыми на других, или скрывать служебные элементы внутри конкретного вида, не затрагивая остальной чертеж.</p>
+
+<p>Чтобы воспользоваться этим методом, дважды щелкните внутри видового экрана, чтобы активировать его. Затем откройте диспетчер слоев. Вы заметите, что в столбце настроек слоев появилась новая колонка с названием текущего видового экрана (или значок "солнышка" с дополнительным индикатором). Нажатие на значок заморозки в этой колонке скроет слой только внутри активной рамки.</p>
+
+<p>Этот способ идеально подходит для ситуаций, когда вам нужно убрать не только саму рамку, но и вспомогательную геометрию, которая не должна отображаться в данном конкретном виде. Например, вы можете скрыть осевые линии или размеры на одном виде, оставив их на соседнем.</p>
+
+<ul>
+<li>🔹 Двойной клик внутри видового экрана активирует пространство модели.</li>
+<li>🔹 Используйте команду <code>LAYFRZ</code> для быстрой заморозки слоев через выбор объектов.</li>
+<li>🔹 Замороженные слои не пересчитываются при регенерации, что ускоряет работу.</li>
+<li>🔹 Метод позволяет создавать сложные композиции видов с разным набором отображаемой информации.</li>
+</ul>
+
+<p>Важно понимать разницу между "Выключить" (Off) и "Заморозить" (Freeze). Выключенный слой все равно участвует в вычислениях программы, тогда как замороженный слой игнорируется полностью, что положительно сказывается на производительности при работе с тяжелыми чертежами.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для быстрой заморозки слоя, на котором находится рамка видового экрана, выделите рамку, нажмите Ctrl+1 для вызова свойств и в строке "Слой" выберите опцию заморозки в текущем вьюпорте, если она доступна в вашей версии интерфейса.</p></div>
+
+<h2 id="настройка-системной-переменной-vplayeroverrides">Настройка системной переменной VPLAYEROVERRIDES</h2>
+
+<p>В современных версиях <strong>AutoCAD</strong> появилась возможность управлять видимостью слоев видовых экранов через системные переменные, что дает еще более глубокий контроль над процессом. Переменная <code>VPLAYEROVERRIDES</code> (или связанные с ней настройки в свойствах видового экрана) позволяет определять, будут ли переопределения слоев сохраняться при печати.</p>
+
+<p>По умолчанию <em>AutoCAD</em> может игнорировать некоторые настройки видимости слоев внутри видового экрана при печати, если это не указано явно. Проверка настроек в диалоговом окне "Диспетчер видовых экранов" (команда <code>-VPLAYER</code> или через панель "Вид") гарантирует, что ваши настройки заморозки будут применены корректно.</p>
+
+<p>Использование системных переменных особенно актуально при автоматизации процессов и работе со скриптами. Если вы создаете шаблон чертежа (<code>.dwt</code>), правильная настройка этих параметров избавит всех пользователей шаблона от необходимости вручную настраивать печать каждый раз.</p>
+
+<p>Следует быть осторожным при сбросе настроек видовых экранов. Команда <code>VPCLEAN</code> может удалить все переопределения слоев, вернув видимость к состоянию по умолчанию. Используйте ее только если уверены, что вам нужно сбросить все настройки видимости в видовых экранах.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Изменение системных переменных может повлиять на поведение всех видовых экранов в чертеже. Рекомендуется делать резервную копию файла перед внесением глобальных изменений в системные настройки AutoCAD.</p>
+</blockquote>
+
+<h2 id="сравнение-методов-скрытия-рамок">Сравнение методов скрытия рамок</h2>
+
+<p>Выбор оптимального метода зависит от конкретной задачи и этапа работы над проектом. Чтобы помочь вам определиться, мы подготовили сравнительную таблицу, которая summarizes основные характеристики рассмотренных способов. Каждый метод имеет свои сильные стороны и области применения.</p>
+
+<p>Например, для разовой печати небольшого чертежа подойдет простое выключение слоя. Однако для сложного проекта с множеством листов и видов, где требуется разная компоновка информации, незаменимым станет использование заморозки в текущем видовом экране.</p>
+
+<p>Также стоит учитывать версию программного обеспечения. Некоторые функции могут работать по-разному в <em>AutoCAD 2018</em> и <em>AutoCAD 2026</em>. Всегда проверяйте актуальность команд в вашей версии программы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Видимость на экране</th>
+<th>Видимость при печати</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Слой Defpoints</td>
+<td>Видим</td>
+<td>Не виден</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Отдельный слой (Print Off)</td>
+<td>Видим</td>
+<td>Не виден</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Заморозка в вьюпорте</td>
+<td>Не виден (в активном вьюпорте)</td>
+<td>Не виден</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Выключение слоя (Off)</td>
+<td>Не виден</td>
+<td>Не виден</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Анализируя таблицу, можно заметить, что слой <strong>Defpoints</strong> и отдельный слой с отключенной печатью дают схожий результат, но первый является системным, а второй — пользовательским. Выбор между ними — дело вкуса и корпоративного стандарта.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для постоянных шаблонов чертежей лучше всего подходит создание отдельного слоя "VIEWPORTS" с заранее настроенным запретом печати, что обеспечивает предсказуемый результат для всех сотрудников.</p></div>
+
+<h2 id="частые-ошибки-и-дополнительные-рекомендации">Частые ошибки и дополнительные рекомендации</h2>
+
+<p>Даже опытные пользователи <strong>AutoCAD</strong> иногда допускают ошибки при работе с видовыми экранами. Одной из распространенных проблем является ситуация, когда рамка вроде бы скрыта, но на печати появляется тонкая линия или артефакт. Это может быть связано с толщиной линии, назначенной слою, или настройками стилей печати (<code>.ctb</code> или <code>.stb</code>).</p>
+
+<p>Проверьте таблицу стилей печати. Убедитесь, что для цвета, соответствующего слою рамок, назначена толщина линии "Нет" или минимально возможное значение. Иногда помогает установка цвета печати в "Белый" или "Черный" с толщиной 0.00 мм, если слой не скрыт полностью.</p>
+
+<p>Еще одна ошибка — попытка удалить рамку видового экрана полностью. Делать этого нельзя, так как видовой экран является контейнером для отображения модели. Без него вы не сможете управлять масштабом и композицией вида. Рамку можно только скрыть, но не уничтожить.</p>
+
+<ul>
+<li>🔸 Всегда проверяйте предпросмотр печати (<code>Ctrl+P</code> → "Предварительный просмотр") перед отправкой на плоттер.</li>
+<li>🔸 Используйте команду <code>QSELECT</code> для быстрого выделения всех видовых экранов сразу.</li>
+<li>🔸 Сохраняйте часто используемые конфигурации слоев в виде "Состояний слоев" для быстрого переключения.</li>
+</ul>
+
+<p>Не забывайте о команде <code>MVIEW</code> (или <code>ВЭКРАН</code> в русской версии), которая позволяет создавать новые видовые экраны. При создании нового экрана он наследует свойства текущего слоя, поэтому следите, чтобы активным был правильный слой перед вызовом команды.</p>
+
+
+
+<p>В заключение стоит отметить, что mastery работы с видовыми экранами приходит с опытом. Экспериментируйте с разными методами, создавайте свои шаблоны и не бойтесь использовать возможности <em>AutoCAD</em> по максимуму. Чистый и аккуратный чертеж — это визитная карточка профессионала.</p>
+
+<details>
+<summary>Можно ли удалить слой Defpoints?</summary>
+<p>Технически слой <strong>Defpoints</strong> является системным и создается автоматически. Удалить его стандартными средствами нельзя, и делать это не рекомендуется. Даже если вам удастся обойти ограничения через сторонние утилиты, это может привести к нестабильной работе файла и потере ассоциативных размеров. Лучше просто игнорировать его наличие, используя по назначению.</p>
+</details>
+
+<details>
+<summary>Почему рамка видна в предпросмотре, хотя слой выключен?</summary>
+<p>Если слой выключен (иконка лампочки), но рамка видна в предпросмотре печати, проверьте настройки таблицы стилей печати (<code>.ctb</code>). Возможно, для цвета слоя назначена печать, несмотря на видимость. Также убедитесь, что вы не находитесь в режиме, где игнорируются настройки слоев (например, некоторые режимы монопечати).</p>
+</details>
+
+<details>
+<summary>Как быстро выделить все видовые экраны в чертеже?</summary>
+<p>Используйте команду <code>QSELECT</code> (Быстрый выбор). В диалоговом окне выберите тип объекта "Видовой экран" (Viewport) и примените выбор ко всему чертежу. После этого все рамки будут выделены, и вы сможете переместить их на нужный слой или изменить их свойства массово.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#использование-зарезервированного-слоя-defpoints">Использование зарезервированного слоя Defpoints</a></li><li><a href="#создание-отдельного-слоя-для-видовых-экранов">Создание отдельного слоя для видовых экранов</a></li><li><a href="#заморозка-слоя-в-текущем-видовом-экране">Заморозка слоя в текущем видовом экране</a></li><li><a href="#настройка-системной-переменной-vplayeroverrides">Настройка системной переменной VPLAYEROVERRIDES</a></li><li><a href="#сравнение-методов-скрытия-рамок">Сравнение методов скрытия рамок</a></li><li><a href="#частые-ошибки-и-дополнительные-рекомендации">Частые ошибки и дополнительные рекомендации</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ku/kurer-na-svoej-mashine-yandeks.html" class="related-card">Курьер на своей машине в Яндекс: старт и заработок</a></li><li><a href="/articles/t/to/top-mashin-do-200000.html" class="related-card">Топ машин до 200000 рублей: что купить в 2026 году?</a></li><li><a href="/articles/s/sh/shvejnaya-mashinka-styagivaet-tkan-v-strochke-prichiny.html" class="related-card">Швейная машинка стягивает ткань: причины и решение</a></li><li><a href="/articles/a/av/avito-kukmor-avto-s-probegom-chastnye-obyavleniya.html" class="related-card">Авито Кукмор авто с пробегом: частные объявления и поиск</a></li><li><a href="/articles/v/vo/voditel-avtomobilya-3-klassa-chto-eto-znachit.html" class="related-card">Водитель автомобиля 3 класса: что это значит, требования и доплат</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ku/kurer-na-svoej-mashine-yandeks.html" class="related-bottom-card"><span class="related-bottom-title">Курьер на своей машине в Яндекс: старт и заработок</span><span class="related-bottom-desc">Как устроиться курьером в Яндекс на своем авто? Заработок, требования к машине, документы и пошагова</span></a><a href="/articles/t/to/top-mashin-do-200000.html" class="related-bottom-card"><span class="related-bottom-title">Топ машин до 200000 рублей: что купить в 2026 году?</span><span class="related-bottom-desc">Ищете авто до 200000 руб? Обзор лучших моделей, советы по поиску, список надежных двигателей и чек-л</span></a><a href="/articles/s/sh/shvejnaya-mashinka-styagivaet-tkan-v-strochke-prichiny.html" class="related-bottom-card"><span class="related-bottom-title">Швейная машинка стягивает ткань: причины и решение</span><span class="related-bottom-desc">Почему швейная машинка стягивает ткань в строчке? Разбор причин: иглы, нитки, настройки. Как устрани</span></a><a href="/articles/a/av/avito-kukmor-avto-s-probegom-chastnye-obyavleniya.html" class="related-bottom-card"><span class="related-bottom-title">Авито Кукмор авто с пробегом: частные объявления и поиск</span><span class="related-bottom-desc">Полный гид по поиску авто с пробегом в Кукморе на Авито. Как отличить частные объявления от перекупо</span></a><a href="/articles/v/vo/voditel-avtomobilya-3-klassa-chto-eto-znachit.html" class="related-bottom-card"><span class="related-bottom-title">Водитель автомобиля 3 класса: что это значит, требования и доплат</span><span class="related-bottom-desc">Что значит водитель 3 класса, как его получить, какие доплаты положены. Требования к стажу, навыки в</span></a><a href="/articles/k/ka/kak-sobrat-mashinku-iz-lego-iz-prostykh-detalej.html" class="related-bottom-card"><span class="related-bottom-title">Как собрать машинку из Лего: инструкция для начинающих</span><span class="related-bottom-desc">Узнайте, как собрать машинку из Лего из простых деталей. Пошаговая инструкция, выбор элементов и сов</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

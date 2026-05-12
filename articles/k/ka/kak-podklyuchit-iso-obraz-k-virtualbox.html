@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как подключить ISO-образ к VirtualBox: пошаговая инструкция 2026 — Авто Гид</title>
+    <meta name="description" content="Подробное руководство по монтированию ISO в VirtualBox для установки ОС или тестирования ПО. Способы подключения, настройки BIOS и решения ошибок.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-podklyuchit-iso-obraz-k-virtualbox.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как подключить ISO-образ к VirtualBox: пошаговая инструкция 2026">
+    <meta property="og:description" content="Подробное руководство по монтированию ISO в VirtualBox для установки ОС или тестирования ПО. Способы подключения, настройки BIOS и решения ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как подключить ISO-образ к VirtualBox: пошаговая инструкция 2026</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как правильно подключить ISO-образ к VirtualBox: 3 рабочих метода + решение ошибок</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#что-такое-iso-образ-и-зачем-его-подключать-к-virtualbox">Что такое ISO-образ и зачем его подключать к VirtualBox</a></li><li><a href="#подготовка-что-нужно-сделать-до-подключения-iso">Подготовка: что нужно сделать до подключения ISO</a></li><li><a href="#способ-1-подключение-iso-через-графический-интерфейс-virtualbox">Способ 1: Подключение ISO через графический интерфейс VirtualBox</a></li><li><a href="#способ-2-подключение-iso-через-командную-строку-vboxmanage">Способ 2: Подключение ISO через командную строку (VBoxManage)</a></li><li><a href="#способ-3-подключение-iso-через-контекстное-меню-быстрый-метод">Способ 3: Подключение ISO через контекстное меню (быстрый метод)</a></li><li><a href="#настройка-bios-виртуальной-машины-для-загрузки-с-iso">Настройка BIOS виртуальной машины для загрузки с ISO</a></li><li><a href="#распространённые-ошибки-и-их-решения">Распространённые ошибки и их решения</a></li><li><a href="#faq-частые-вопросы-по-подключению-iso-в-virtualbox">FAQ: Частые вопросы по подключению ISO в VirtualBox</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p><em>VirtualBox</em> от <em>Oracle</em> остаётся одним из самых популярных инструментов для виртуализации среди автомобильных инженеров, IT-специалистов автосервисов и просто энтузиастов, которые хотят протестировать новое ПО без риска для основной системы. Например, вы можете запустить <strong>диагностическое ПО для ЭБУ</strong> в изолированной среде или развернуть сервер базы данных запчастей — всё это требует умения работать с <strong>ISO-образами</strong>. Но как правильно их подключить, чтобы избежать ошибок при установке?</p>
+
+<p>В этой статье мы разберём не только базовые способы монтирования образа, но и нюансы, которые часто упускают: от выбора типа контроллера до настройки приоритета загрузки в виртуальном BIOS. А ещё вы узнаете, почему некоторые образы (особенно старые версии <em>Windows XP</em> или специализированные авто-диагностические дистрибутивы) могут не определяться в VirtualBox и как это исправить.</p>
+
+<h2 id="что-такое-iso-образ-и-зачем-его-подключать-к-virtualbox">Что такое ISO-образ и зачем его подключать к VirtualBox</h2>
+
+<p>Файл с расширением <code>.iso</code> — это <strong>точная копия оптического диска</strong> (CD/DVD), упакованная в один файл. В контексте виртуализации он выполняет ту же роль, что и физический диск: служит источником для установки операционной системы, драйверов или программ. Например, если вам нужно развернуть <em>Ubuntu</em> для работы с <strong>программами чип-тюнинга</strong> или протестировать <em>Windows 11</em> перед обновлением основного ПК в автосервисе — ISO-образ будет стартовой точкой.</p>
+
+<p>VirtualBox позволяет "вставлять" такой файл в виртуальный привод, имитируя физическое устройство. Это удобно, потому что:</p>
+<ul>
+  <li>🔹 Не нужно тратить реальные диски или USB-накопители.</li>
+  <li>🔹 Можно быстро переключаться между несколькими образами (например, между <em>Windows 10</em> и <em>Kali Linux</em> для тестирования безопасности бортового компьютера).</li>
+  <li>🔹 Скорость чтения виртуального привода часто выше, чем у физического DVD.</li>
+</ul>
+
+<p><mark>Важно: VirtualBox поддерживает загрузку с ISO только если образ не повреждён и соответствует стандарту ISO 9660 или UDF. Образ, записанный в нестандартном формате (например, некоторые самодельные сборки Windows), может не определиться.</mark></p>
+
+<h2 id="подготовка-что-нужно-сделать-до-подключения-iso">Подготовка: что нужно сделать до подключения ISO</h2>
+
+<p>Перед тем как монтировать образ, убедитесь, что:</p>
+<ol>
+  <li><strong>VirtualBox установлен</strong> (актуальная версия — <em>7.0.12+</em> на момент 2026 года). Старые версии (например, <em>6.x</em>) могут не поддерживать новые форматы образов.</li>
+  <li><strong>ISO-образ скачан и проверен</strong>. Файл должен быть целым (проверьте контрольную сумму <code>MD5</code> или <code>SHA-1</code>, если она указана на сайте загрузки).</li>
+  <li><strong>Создана виртуальная машина</strong>. Без неё подключать образ бессмысленно — он просто некуда будет монтироваться.</li>
+</ol>
+
+<p>Если вы работаете с <strong>автомобильными диагностическими образами</strong> (например, <em>VCDS</em> для <em>VW/Audi</em>), обратите внимание на их разрядность. Многие старые программы требуют <code>32-битной ОС</code>, и если вы подключите их к <code>64-битной ВМ</code>, они не запустятся.</p>
+
+<div class="poll-widget" id="poll-231fddb7"><div class="poll-widget-question">📊 Для чего вы чаще всего используете VirtualBox?</div><div class="poll-widget-option" data-poll="231fddb7" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Установка новых ОС</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="231fddb7" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Тестирование ПО</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="231fddb7" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Разработка/программирование</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="231fddb7" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Автомобильная диагностика</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="231fddb7" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Другое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="способ-1-подключение-iso-через-графический-интерфейс-virtualbox">Способ 1: Подключение ISO через графический интерфейс VirtualBox</h2>
+
+<p>Это самый простой метод, который подойдёт новичкам. Следуйте инструкции:</p>
+
+<ol>
+  <li>Запустите <em>VirtualBox</em> и выберите нужную виртуальную машину (если её нет — создайте через <code>Машина → Создать</code>).</li>
+  <li>Нажмите <code>Настроить</code> (жёлтая шестерёнка).</li>
+  <li>Перейдите в раздел <code>Носители</code>.</li>
+  <li>В дереве устройств выберите пустой привод (обычно он подписан как <code>Пусто</code> или <code>IDE Secondary Master</code>).</li>
+  <li>Нажмите на иконку диска справа и выберите <code>Выбрать образ оптического диска...</code>.</li>
+  <li>Укажите путь к вашему <code>.iso</code>-файлу и нажмите <code>Открыть</code>.</li>
+</ol>
+
+<p>После этого образ будет подключён. Чтобы загрузиться с него, нужно:</p>
+<ul>
+  <li>🔹 Либо сразу запустить ВМ — если в настройках загрузки привод стоит первым.</li>
+  <li>🔹 Либо зайти в <strong>виртуальный BIOS</strong> (при старте ВМ нажмите <code>F12</code>) и вручную выбрать загрузочное устройство.</li>
+</ul>
+
+<div class="checklist-block"><h4>☑️ Проверка перед запуском ВМ с ISO</h4><label class="check-item"><input type="checkbox"><span>Образ подключён в разделе "Носители"</span></label><label class="check-item"><input type="checkbox"><span>ВМ настроена на загрузку с оптического диска</span></label><label class="check-item"><input type="checkbox"><span>Образ не повреждён (проверен MD5/SHA)</span></label><label class="check-item"><input type="checkbox"><span>Для старых ОС отключён UEFI в настройках ВМ</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p><strong>Важно для автомобильных диагностических образов:</strong> некоторые программы (например, <em>BMW ICOM</em> или <em>Toyota Techstream</em>) требуют <strong>отключения Secure Boot</strong> в настройках ВМ. Это можно сделать в разделе <code>Система → Материнская плата → Включить EFI</code> (снимите галочку, если образ не загружается).</p>
+
+<h2 id="способ-2-подключение-iso-через-командную-строку-vboxmanage">Способ 2: Подключение ISO через командную строку (VBoxManage)</h2>
+
+<p>Этот метод полезен для автоматизации или если графический интерфейс недоступен (например, на сервере без GUI). Используется утилита <code>VBoxManage</code>, которая входит в комплект VirtualBox.</p>
+
+<p>Откройте <strong>командную строку</strong> (<code>Win + R → cmd</code>) или <strong>терминал</strong> (для <em>Linux/macOS</em>) и выполните:</p>
+<pre><code>VBoxManage storageattach "Имя_ВМ" --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium "путь/к/образу.iso"</code></pre>
+
+<p>Пример для ВМ с именем <code>AutoDiag</code> и образом <code>vcds.iso</code> в папке <code>Downloads</code>:</p>
+<pre><code>VBoxManage storageattach "AutoDiag" --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium "C:\Users\ИмяПользователя\Downloads\vcds.iso"</code></pre>
+
+<p>Чтобы отключить образLater, используйте:</p>
+<pre><code>VBoxManage storageattach "Имя_ВМ" --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium none</code></pre>
+
+<p>Этот способ удобен для <strong>скриптов автоматизации</strong>, если вам нужно развернуть несколько ВМ с одинаковыми образами (например, для тестирования ПО на разных версиях <em>Windows</em>).</p>
+
+<details class="faq-item"><summary>Как узнать имя контроллера хранения?</summary><div class="faq-answer"><p>По умолчанию в VirtualBox используется "IDE Controller". Чтобы увидеть все доступные контроллеры для вашей ВМ, выполните команду:
+<pre><code>VBoxManage showvminfo "Имя_ВМ" | find "Storage Controller"</code></pre>
+<p>Это выведет список контроллеров (IDE, SATA, SCSI и т.д.).</p></div></details></p>
+
+<h2 id="способ-3-подключение-iso-через-контекстное-меню-быстрый-метод">Способ 3: Подключение ISO через контекстное меню (быстрый метод)</h2>
+
+<p>Если вы часто работаете с образами, можно сэкономить время, используя <strong>контекстное меню проводника Windows</strong>. Для этого:</p>
+
+<ol>
+  <li>Найдите ваш <code>.iso</code>-файл в проводнике.</li>
+  <li>Кликните по нему <strong>правой кнопкой мыши</strong>.</li>
+  <li>Выберите пункт <code>Открыть с помощью → VirtualBox</code> (если его нет, нажмите <code>Выбрать другое приложение</code> и укажите путь к <code>VirtualBox.exe</code>).</li>
+  <li>В открывшемся окне выберите виртуальную машину, к которой хотите подключить образ.</li>
+</ol>
+
+<p>Этот метод работает только если:</p>
+<ul>
+  <li>🔹 VirtualBox установлен как приложение по умолчанию для ISO-файлов.</li>
+  <li>🔹 У вас одна активная ВМ (иначе придётся выбирать вручную).</li>
+</ul>
+
+<p><strong>Ограничение:</strong> в <em>Linux</em> и <em>macOS</em> этот способ не работает — там нужно использовать <code>VBoxManage</code> или графический интерфейс.</p>
+
+<h2 id="настройка-bios-виртуальной-машины-для-загрузки-с-iso">Настройка BIOS виртуальной машины для загрузки с ISO</h2>
+
+<p>Даже если образ подключён, ВМ может игнорировать его и пытаться загрузиться с виртуального жёсткого диска. Чтобы этого избежать, нужно:</p>
+
+<ol>
+  <li>Запустите ВМ и сразу нажмите <code>F12</code> (для вызова меню загрузки) или <code>Del</code> (для входа в BIOS).</li>
+  <li>В BIOS перейдите в раздел <code>Boot</code>.</li>
+  <li>Переместите <code>CD/DVD-ROM</code> на первое место в списке загрузочных устройств.</li>
+  <li>Сохраните настройки (<code>F10</code>) и перезагрузите ВМ.</li>
+</ol>
+
+<p>Для <strong>UEFI-систем</strong> (например, <em>Windows 11</em> или современные <em>Linux</em>-дистрибутивы) процесс немного другой:</p>
+<ul>
+  <li>🔹 В настройках ВМ (<code>Система → Материнская плата</code>) включите <code>Включить EFI</code>.</li>
+  <li>🔹 В меню загрузки (клавиша <code>Esc</code> при старте) выберите <code>Boot Manager</code>, затем ваш ISO-образ.</li>
+</ul>
+
+<p><blockquote>⚠️ <strong>Внимание:</strong> Если вы подключаете <strong>загрузочный образ автомобильной диагностики</strong> (например, <em>ODIS</em> для <em>VW</em>), отключите <code>Secure Boot</code> в настройках ВМ. Многие такие программы не имеют подписанных UEFI-загрузчиков и не будут запускаться с включённым Secure Boot.</blockquote></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Тип ОС в ISO</th>
+      <th>Рекомендуемый контроллер</th>
+      <th>UEFI или Legacy</th>
+      <th>Secure Boot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>Windows 10/11</em></td>
+      <td>SATA</td>
+      <td>UEFI</td>
+      <td>Вкл.</td>
+    </tr>
+    <tr>
+      <td><em>Linux (Ubuntu, Debian)</em></td>
+      <td>IDE или SATA</td>
+      <td>UEFI/Legacy</td>
+      <td>Выкл.</td>
+    </tr>
+    <tr>
+      <td><em>Windows XP/7</em></td>
+      <td>IDE</td>
+      <td>Legacy</td>
+      <td>Н/Д</td>
+    </tr>
+    <tr>
+      <td><em>Авто-диагностика (VCDS, ICOM)</em></td>
+      <td>IDE</td>
+      <td>Legacy</td>
+      <td>Выкл.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="распространённые-ошибки-и-их-решения">Распространённые ошибки и их решения</h2>
+
+<p>Даже опытные пользователи сталкиваются с проблемами при подключении ISO. Вот самые частые:</p>
+
+<ul>
+  <li>🚨 <strong>"No bootable medium found"</strong> — ВМ не видит образ.
+    <p><strong>Решение:</strong> Проверьте, что образ подключён к правильному контроллеру (например, <code>IDE Secondary Master</code>). Также убедитесь, что файл не повреждён (попробуйте открыть его архиватором — если внутри есть файлы, образ цел).</p>
+  </li>
+  <li>🚨 <strong>"FATAL: Could not read from the boot medium"</strong> — ошибка чтения.
+    <p><strong>Решение:</strong> Попробуйте другой контроллер (например, <code>SATA</code> вместо <code>IDE</code>). Если используется <em>UEFI</em>, переключитесь на <em>Legacy BIOS</em> в настройках ВМ.</p>
+  </li>
+  <li>🚨 <strong>Образ определяется, но установка "зависает"</strong>.
+    <p><strong>Решение:</strong> Выделите ВМ больше оперативной памяти (минимум <code>2048 МБ</code> для <em>Windows 10</em>) и включите <code>PAE/NX</code> в настройках процессора (<code>Система → Процессор</code>).</p>
+  </li>
+</ul>
+
+<p><blockquote>⚠️ <strong>Внимание:</strong> Если вы подключаете <strong>образ с автомобильным ПО</strong> (например, <em>Bosch KTS</em>), и оно требует <strong>прямого доступа к USB-портам</strong>, не забудьте в настройках ВМ добавить USB-устройство в фильтры (<code>USB → Добавить фильтр</code>). Без этого программа не увидит диагностический адаптер.</blockquote></p>
+
+<p>
+<pre><code>qemu-img convert -O raw input.iso output.img</code></pre>
+<p>Затем подключите полученный <code>.img</code>-файл как жёсткий диск (в разделе <code>Носители → Добавить новый диск</code>).--></p></p>
+
+<h2 id="faq-частые-вопросы-по-подключению-iso-в-virtualbox">FAQ: Частые вопросы по подключению ISO в VirtualBox</h2>
+
+<details>
+  <summary>Можно ли подключить ISO к работающей виртуальной машине?</summary>
+  <p>Да, но только как <strong>вторичный диск</strong>. Для этого:</p>
+  <ol>
+    <li>Откройте настройки ВМ (<code>Устройства → Оптические диски</code>).</li>
+    <li>Выберите <code>Выбрать образ диска...</code> и укажите путь к ISO.</li>
+    <li>Образ появится в системе как новый DVD-привод (например, <code>D:</code> в Windows).</li>
+  </ol>
+  <p>Однако <strong>загрузиться с него без перезагрузки ВМ нельзя</strong> — для этого нужно перезапускать машину.</p>
+</details>
+
+<details>
+  <summary>Почему VirtualBox не видит мой ISO-образ, хотя файл целый?</summary>
+  <p>Возможные причины:</p>
+  <ul>
+    <li>Образ записан в <strong>нестандартном формате</strong> (например, <code>.nrg</code> или <code>.dmg</code>). Конвертируйте его в <code>.iso</code> с помощью <em>UltraISO</em> или <em>PowerISO</em>.</li>
+    <li>В настройках ВМ отключён контроллер <code>IDE/SATA</code>. Проверьте раздел <code>Носители</code>.</li>
+    <li>Образ <strong>зашифрован</strong> (например, некоторые корпоративные дистрибутивы). Попробуйте смонтировать его в основной ОС и скопировать файлы на виртуальный диск.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>Как подключить ISO к VirtualBox на macOS?</summary>
+  <p>Процесс аналогичен <em>Windows</em>, но есть нюансы:</p>
+  <ol>
+    <li>Убедитесь, что VirtualBox имеет права на доступ к папке с образом (в противном случае дайте разрешение в <code>Системные настройки → Защита и безопасность</code>).</li>
+    <li>Если используете <code>VBoxManage</code>, пути к файлам указывайте в формате <code>/Users/ИмяПользователя/...</code> (без <code>C:</code>).</li>
+    <li>Для старых версий <em>macOS</em> (до <em>Catalina</em>) может потребоваться отключить <code>System Integrity Protection</code> (SIP).</li>
+  </ol>
+</details>
+
+<details>
+  <summary>Можно ли подключить ISO по сети (например, с NAS)?</summary>
+  <p>Да, но только если:</p>
+  <ul>
+    <li>Файл доступен по протоколу <code>iSCSI</code> или <code>NFS</code>.</li>
+    <li>В настройках ВМ в разделе <code>Носители</code> вы выберете <code>Добавить новый привод → Не подключён</code>, а затем вручную укажете сетевой путь.</li>
+  </ul>
+  <p>Для <em>Windows-хоста</em> проще скопировать ISO на локальный диск — сетевые образы работают медленнее и могут вызывать ошибки при установке.</p>
+</details>
+
+<details>
+  <summary>Как отключить ISO после установки ОС?</summary>
+  <p>Чтобы ВМ не пыталась загружаться с образа после установки:</p>
+  <ol>
+    <li>Запустите ВМ и дождитесь загрузки установленной ОС.</li>
+    <li>В меню VirtualBox выберите <code>Устройства → Оптические диски → Извлечь диск</code>.</li>
+    <li>Либо в настройках ВМ (<code>Носители</code>) нажмите на иконку диска и выберите <code>Удалить диск из виртуального привода</code>.</li>
+  </ol>
+  <p>После этого ВМ будет загружаться с виртуального жёсткого диска.</p>
+</details>
+
+<p><div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если вы работаете с образами автомобильного ПО (например, <em>Launch X431</em> или <em>Autel MaxiSYS</em>), всегда проверяйте совместимость с виртуализацией. Некоторые программы требуют <strong>прямого доступа к USB 3.0</strong> и могут не работать в VirtualBox без дополнительных драйверов (<code>Extension Pack</code>).</p></div></p></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#что-такое-iso-образ-и-зачем-его-подключать-к-virtualbox">Что такое ISO-образ и зачем его подключать к VirtualBox</a></li><li><a href="#подготовка-что-нужно-сделать-до-подключения-iso">Подготовка: что нужно сделать до подключения ISO</a></li><li><a href="#способ-1-подключение-iso-через-графический-интерфейс-virtualbox">Способ 1: Подключение ISO через графический интерфейс VirtualBox</a></li><li><a href="#способ-2-подключение-iso-через-командную-строку-vboxmanage">Способ 2: Подключение ISO через командную строку (VBoxManage)</a></li><li><a href="#способ-3-подключение-iso-через-контекстное-меню-быстрый-метод">Способ 3: Подключение ISO через контекстное меню (быстрый метод)</a></li><li><a href="#настройка-bios-виртуальной-машины-для-загрузки-с-iso">Настройка BIOS виртуальной машины для загрузки с ISO</a></li><li><a href="#распространённые-ошибки-и-их-решения">Распространённые ошибки и их решения</a></li><li><a href="#faq-частые-вопросы-по-подключению-iso-в-virtualbox">FAQ: Частые вопросы по подключению ISO в VirtualBox</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/n/no/norma-probega-avtoshin-dlya-spisaniya-legkovogo-avtomobilya.html" class="related-card">Норма пробега автошин для списания легкового автомобиля: актуальные правила</a></li><li><a href="/articles/i/iv/ivan-zenkevich-god-rozhdeniya.html" class="related-card">Иван Зенкевич: год рождения, биография и факты</a></li><li><a href="/articles/s/st/stiralnaya-mashina-elektrolyuks-ne-nabiraet-vodu-v-chem-prichina.html" class="related-card">Стиральная машина Электролюкс не набирает воду: причины и ремонт</a></li><li><a href="/articles/k/kh/khit-fm-raspisanie-pesen.html" class="related-card">Хит ФМ Расписание песен: как узнать трек и историю эфира</a></li><li><a href="/articles/k/ko/kofemashina-delongi-ne-rabotaet-kofemolka.html" class="related-card">Кофемашина Delonghi не работает кофемолка: ремонт и причины</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/n/no/norma-probega-avtoshin-dlya-spisaniya-legkovogo-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Норма пробега автошин для списания легкового автомобиля: актуальные правила</span><span class="related-bottom-desc">Узнайте, какова норма пробега автошин для списания легкового автомобиля. Разбор законодательства РФ,</span></a><a href="/articles/i/iv/ivan-zenkevich-god-rozhdeniya.html" class="related-bottom-card"><span class="related-bottom-title">Иван Зенкевич: год рождения, биография и факты</span><span class="related-bottom-desc">Когда родился Иван Зенкевич? Год рождения, интересные факты из жизни, образование и карьера популярн</span></a><a href="/articles/s/st/stiralnaya-mashina-elektrolyuks-ne-nabiraet-vodu-v-chem-prichina.html" class="related-bottom-card"><span class="related-bottom-title">Стиральная машина Электролюкс не набирает воду: причины и ремонт</span><span class="related-bottom-desc">Стиральная машина Электролюкс не набирает воду? Разбираем причины: от засора фильтра до поломки клап</span></a><a href="/articles/k/kh/khit-fm-raspisanie-pesen.html" class="related-bottom-card"><span class="related-bottom-title">Хит ФМ Расписание песен: как узнать трек и историю эфира</span><span class="related-bottom-desc">Ищете, где хит ФМ расписание песен? Полный гид по поиску треков в эфире, использованию виджетов, API</span></a><a href="/articles/k/ko/kofemashina-delongi-ne-rabotaet-kofemolka.html" class="related-bottom-card"><span class="related-bottom-title">Кофемашина Delonghi не работает кофемолка: ремонт и причины</span><span class="related-bottom-desc">Почему кофемашина Делонги не мелет кофе? Полный разбор неисправностей, коды ошибок и пошаговая инстр</span></a><a href="/articles/k/kv/kvartsevye-chasy-chto-eto-za-mekhanizm.html" class="related-bottom-card"><span class="related-bottom-title">Кварцевые часы: устройство, принцип работы и особенности механизма</span><span class="related-bottom-desc">Подробно разбираем, что такое кварцевый механизм часов. Сравнение с механикой, плюсы и минусы, устро</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

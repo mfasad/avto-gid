@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Кастом Hero House Гайд: Сборка, Прошивка и Настройка — Авто Гид</title>
+    <meta name="description" content="Полный гайд по кастомным Hero House: выбор железа, прошивка, настройка Home Assistant и устранение ошибок умного дома.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kastom-khiro-khaus-gajd.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Кастом Hero House Гайд: Сборка, Прошивка и Настройка">
+    <meta property="og:description" content="Полный гайд по кастомным Hero House: выбор железа, прошивка, настройка Home Assistant и устранение ошибок умного дома.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Кастом Hero House Гайд: Сборка, Прошивка и Настройка</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Кастом Hero House Гайд: Создание Умного Дома</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-аппаратной-базы-для-проекта">Выбор аппаратной базы для проекта</a></li><li><a href="#процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</a></li><li><a href="#настройка-интеграций-и-протоколов-связи">Настройка интеграций и протоколов связи</a></li><li><a href="#создание-автоматизаций-и-сценариев">Создание автоматизаций и сценариев</a></li><li><a href="#визуализация-и-панели-управления">Визуализация и панели управления</a></li><li><a href="#обслуживание-и-безопасность-системы">Обслуживание и безопасность системы</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современный подход к автоматизации жилища всё чаще уходит от закрытых экосистем в сторону открытых платформ. Энтузиасты и профессионалы выбирают путь создания собственных решений, где <strong>Hero House</strong> выступает в роли идеального шаблона или базы для проектов. Это не просто набор датчиков, а полноценная философия построения среды, где каждый элемент управляется локально и безопасно.</p>
+<p>В данном материале мы разберем, как превратить стандартный набор оборудования в персонализированную систему управления домом. Вы узнаете о тонкостях выбора аппаратной части, процессах прошивки и логике интеграции устройств. <em>Кастомная сборка</em> требует внимательности, но результат дает полную независимость от облачных сервисов.</p>
+<p>Начало пути всегда связано с пониманием архитектуры. <mark>Ключевым преимуществом подхода Hero House является модульность</mark>, позволяющая масштабировать систему от одной комнаты до целого здания без потери производительности. Вам предстоит выбрать между готовыми контроллерами или сборкой собственного сервера на базе одноплатных компьютеров.</p>
+
+<h2 id="выбор-аппаратной-базы-для-проекта">Выбор аппаратной базы для проекта</h2>
+<p>Фундаментом любой системы автоматизации является "железо". Для реализации концепции <strong>Hero House</strong> чаще всего выбирают одноплатные компьютеры, такие как <em>Raspberry Pi 4</em> или <em>Orange Pi</em>. Эти устройства обеспечивают достаточную вычислительную мощность для работы сложных скриптов и баз данных в реальном времени.</p>
+<p>Однако, если бюджет ограничен или требуется распределенная система, можно использовать микроконтроллеры. <em>ESP32</em> и <em>ESP8266</em> отлично справляются с ролью узлов сбора данных. Они дешевы, энергоэффективны и легко настраиваются через платформу <em>ESPHome</em>. Важно учитывать, что для центрального узла потребуется стабильное питание и, желательно, проводное подключение к сети.</p>
+<p>Не стоит забывать и о периферии. Датчики движения, температуры и протечки воды должны быть совместимы с выбранным протоколом связи. <strong>Zigbee</strong> и <strong>Z-Wave</strong> остаются лидерами в этой нише, обеспечивая надежную связь и низкое энергопотребление. Выбор шлюза (координатора) также критичен: дешевые USB-стики могут создавать помехи в радиоканале.</p>
+
+<ul>
+<li>🖥️ <strong>Одноплатные компьютеры:</strong> Идеальны для центрального сервера управления и хранения истории показаний.</li>
+<li>📡 <strong>Микроконтроллеры:</strong> Отлично подходят для удаленных датчиков с батарейным питанием.</li>
+<li>🔌 <strong>Координаторы Zigbee:</strong> Требуют выноса на USB-удлинитель для избежания интерференции с портами USB 3.0.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: Использование дешевых блоков питания для одноплатных компьютеров часто приводит к повреждению карты памяти и сбоям в работе базы данных. Инвестируйте в качественные источники питания с запасом по току.</p>
+</blockquote>
+
+<p>При планировании топологии сети важно предусмотреть резервирование. Если центральный контроллер выйдет из строя, критические функции (например, отопление или охрана) должны продолжать работать автономно. Это достигается правильной логикой программирования микроконтроллеров.</p>
+
+<div class="poll-widget" id="poll-ee2d2a1c"><div class="poll-widget-question">📊 Какая платформа лежит в основе вашего умного дома?</div><div class="poll-widget-option" data-poll="ee2d2a1c" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Home Assistant</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="ee2d2a1c" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">OpenHAB</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="ee2d2a1c" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Domoticz</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="ee2d2a1c" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другая (Tuya, Xiaomi)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="ee2d2a1c" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Пока только планирую</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</h2>
+<p>После подготовки hardware части наступает этап инсталляции ОС. Наиболее популярным решением является <em>Home Assistant OS</em>, который предоставляет готовую среду для развертывания. Процесс установки начинается с записи образа на накопитель. Для этого используется утилита <em>Etcher</em> или <em>Rufus</em>.</p>
+<p>Вам потребуется качественная карта памяти формата microSD или, что более надежно, SSD диск, подключаемый через USB. Скорость записи и чтения напрямую влияет на отзывчивость интерфейса и скорость сохранения логов. После записи образа необходимо настроить сеть для первого входа в систему.</p>
+<p>Для первичной конфигурации используется файл <code>network-config</code> в корне загрузочного раздела. Там прописываются параметры Wi-Fi или проводного соединения. После включения устройство автоматически создаст точку доступа, если кабель не подключен, но лучше сразу настроить статический IP.</p>
+
+<div class="checklist-block"><h4>☑️ Чек-лист подготовки к прошивке</h4><label class="check-item"><input type="checkbox"><span>Скачать актуальный образ Home Assistant OS</span></label><label class="check-item"><input type="checkbox"><span>Проверить целостность скачанного файла (checksum)</span></label><label class="check-item"><input type="checkbox"><span>Подготовить карту памяти объемом от 16 Гб</span></label><label class="check-item"><input type="checkbox"><span>Иметь под рукой USB-удлинитель для Zigbee-координатора</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>После первого запуска система может обновляться несколько минут. Не прерывайте питание в этот момент. Доступ к интерфейсу осуществляется через браузер по адресу <code>http://homeassistant.local:8123</code>. На этом этапе создается учетная запись администратора и выбирается часовой пояс.</p>
+
+<details class="faq-item"><summary>Что делать, если система не загружается?</summary><div class="faq-answer"><p>Если после включения индикаторы моргают хаотично или система уходит в циклическую перезагрузку, проверьте блок питания. Часто проблема кроется в нехватке тока (менее 2.5А для Pi 4) или плохом контакте карты памяти. Попробуйте пересобрать образ на другой карте памяти.</p></div></details>
+
+<h2 id="настройка-интеграций-и-протоколов-связи">Настройка интеграций и протоколов связи</h2>
+<p>Сердцем системы <strong>Hero House</strong> является способность объединять устройства разных производителей. Интеграции позволяют превратить разрозненные гаджеты в единый механизм. Начать следует с настройки протокола <em>Zigbee</em> через аддон <em>Zigbee2MQTT</em> или встроенный <em>ZHA</em>.</p>
+<p>Эти инструменты позволяют прошивать координаторы и подключать устройства напрямую, минуя их родные хабы. Это снижает задержки и повышает отказоустойчивость. Для каждого устройства создается entity, которым можно управлять через автоматизации или вручную.</p>
+<p>Важно правильно распределить устройства в сети. Те, что имеют постоянное питание (розетки, лампы), выступают в роли роутеров Mesh-сети, усиливая сигнал. Батарейные датчики всегда должны быть энд-поинтами (конечными устройствами), чтобы экономить заряд.</p>
+
+<table>
+<thead>
+<tr>
+<th>Протокол</th>
+<th>Частота</th>
+<th>Энергопотребление</th>
+<th>Типичное применение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wi-Fi</td>
+<td>2.4 / 5 ГГц</td>
+<td>Высокое</td>
+<td>Камеры, умные колонки</td>
+</tr>
+<tr>
+<td>Zigbee</td>
+<td>2.4 ГГц</td>
+<td>Низкое</td>
+<td>Датчики, выключатели, лампы</td>
+</tr>
+<tr>
+<td>Bluetooth LE</td>
+<td>2.4 ГГц</td>
+<td>Очень низкое</td>
+<td>Носимые устройства, датчики присутствия</td>
+<tr>
+<td>MQTT</td>
+<td>По сети</td>
+<td>Зависит от базы</td>
+<td>Обмен сообщениями между компонентами</td>
+</tr>
+</tbody>
+</table>
+
+<p>Параллельно настраивается протокол <em>MQTT</em>, который служит транспортной шиной для обмена сообщениями. Брокер <em>Mosquitto</em> устанавливается как аддон и берет на себя маршрутизацию команд. Это позволяет легко интегрировать самописные устройства на Arduino или ESP.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>При построении Zigbee-сети старайтесь, чтобы между координатором и конечными устройствами было минимум 2-3 роутера (устройства с питанием от сети). Это обеспечит надежное покрытие даже в многоэтажных домах.</p></div>
+
+<h2 id="создание-автоматизаций-и-сценариев">Создание автоматизаций и сценариев</h2>
+<p>После подключения устройств наступает время магии — создания автоматизаций. Логика работы <strong>Hero House</strong> строится на триггерах, условиях и действиях. Триггером может быть изменение состояния датчика, время или событие в системе.</p>
+<p>Например, при срабатывании датчика движения в коридоре ночью система проверяет условие освещенности. Если светло — действие не выполняется. Если темно — включается подсветка на 10% яркости. Такие сценарии пишутся на YAML или через визуальный редактор.</p>
+<p>Сложные сценарии требуют использования шаблонов <em>Jinja2</em>. Они позволяют выполнять математические операции, работать со временем и обрабатывать строки. Это дает возможность создавать адаптивные системы, которые "понимают" контекст происходящего.</p>
+
+<ul>
+<li>🌅 <strong>Утренний сценарий:</strong> Плавное включение света, открытие штор, запуск кофеварки по будильнику.</li>
+<li>🔒 <strong>Режим "Никого нет":</strong> Отключение всех потребителей, активация охраны, понижение температуры отопления.</li>
+<li>💧 <strong>Аварийный сценарий:</strong> При протечке — перекрытие воды, отправка уведомления, включение сирены.</li>
+</ul>
+
+<p>Не стоит создавать слишком сложные цепочки зависимостей. Если автоматизация зависит от пяти условий, вероятность её сбоя возрастает. Лучше разбить сложный сценарий на несколько простых, связанных между собой через события.</p>
+
+<blockquote>
+<p>⚠️ Внимание: При тестировании автоматизаций, управляющих светом или розетками, всегда имейте возможность физического отключения питания. Ошибка в логике может привести к непрерывному миганию ламп или включению мощных приборов.</p>
+</blockquote>
+
+<h2 id="визуализация-и-панели-управления">Визуализация и панели управления</h2>
+<p>Интерфейс — это лицо вашей системы. В <em>Home Assistant</em> для этого используются Dashboards. Вы можете создать отдельные панели для планшета на стене, смартфона или ПК. Использование карточек позволяет вывести только нужную информацию.</p>
+<p>Для продвинутой визуализации часто используют <em>Lovelace</em>. Он позволяет создавать кастомные карточки, графики и кнопки. Можно настроить отображение состояния погоды, энергопотребления или статусов камер видеонаблюдения в реальном времени.</p>
+<p>Важно соблюдать принцип минимализма. На главной панели должны быть только часто используемые элементы управления. Редкие настройки и технические данные лучше убрать на отдельные вкладки или скрыть в группы.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Правильно настроенная панель управления (Dashboard) повышает вероятность использования системы всеми членами семьи. Если интерфейс сложен, умный дом останется игрушкой для энтузиаста.</p></div>
+
+<p>Адаптивность интерфейса критична. Убедитесь, что кнопки достаточно крупные для нажатия пальцем на сенсорном экране, а шрифты читаемы при различном освещении. Темная тема обычно предпочтительнее для настенных планшетов, работающих 24/7.</p>
+
+<h2 id="обслуживание-и-безопасность-системы">Обслуживание и безопасность системы</h2>
+<p>Система умного дома требует регулярного обслуживания. <strong>Резервное копирование</strong> — это первое правило. Настройте автоматическое создание бэкапов конфигурации и отправку их на облачное хранилище или NAS. В случае сбоя вы сможете восстановиться за минуты.</p>
+<p>Безопасность также не должна быть запоздалой мыслью. Измените стандартные пароли, используйте сложные ключи API. Если возможен доступ извне, обязательно используйте <em>VPN</em> или надежный reverse-proxy с двухфакторной аутентификацией.</p>
+<p>Следите за обновлениями. Разработчики постоянно закрывают уязвимости и добавляют новые функции. Однако, перед обновлением продакшн-системы всегда тестируйте изменения на резервной копии или в виртуальной среде.</p>
+
+<details>
+<summary>Как часто нужно делать резервное копирование?</summary>
+<p>Рекомендуется делать полный бэкап системы еженедельно. Однако, более критично настроить создание снимка (снапшота) конфигурации перед любым внесением изменений, установкой новых аддонов или обновлением ядра системы. Это позволит откатиться в случае ошибки за секунды.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать старый роутер для умного дома?</summary>
+<p>Да, старый роутер можно перепрошить (например, на OpenWrt) и использовать как отдельную изолированную сеть VLAN для IoT-устройств. Это повысит безопасность, отделив умные лампочки и холодильники от ваших личных компьютеров и смартфонов.</p>
+</details>
+
+<details>
+<summary>Что делать если Zigbee устройства теряются?</summary>
+<p>Если устройства часто становятся недоступны, проверьте расположение координатора. Он не должен находиться рядом с роутером Wi-Fi или USB 3.0 портами без экранирования. Также попробуйте пересобрать сеть (Zigbee Leave/Join) для проблемных устройств.</p>
+</details>
+
+<p>Создание <strong>Hero House</strong> — это непрерывный процесс. Технологии развиваются, появляются новые датчики и протоколы. Гибкость выбранной платформы позволит вам внедрять новинки без полной замены инфраструктуры. Главное — начать с малого и масштабироваться постепенно.</p>
+
+<details>
+<summary>Стоит ли переходить на Matter в будущем?</summary>
+<p>Matter — это перспективный стандарт, но переходить на него прямо сейчас массово рано. Лучше использовать мосты (bridge), которые интегрируют устройства Matter в вашу текущую систему Zigbee/Z-Wave, сохраняя локальное управление.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#выбор-аппаратной-базы-для-проекта">Выбор аппаратной базы для проекта</a></li><li><a href="#процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</a></li><li><a href="#настройка-интеграций-и-протоколов-связи">Настройка интеграций и протоколов связи</a></li><li><a href="#создание-автоматизаций-и-сценариев">Создание автоматизаций и сценариев</a></li><li><a href="#визуализация-и-панели-управления">Визуализация и панели управления</a></li><li><a href="#обслуживание-и-безопасность-системы">Обслуживание и безопасность системы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-zatemnit-khrom-na-avto.html" class="related-card">Как затемнить хром на авто: лучшие методы и средства</a></li><li><a href="/articles/s/sa/samokleyushchijsya-kovrolin-dlya-avto.html" class="related-card">Самоклеющийся ковролин для авто: выбор и монтаж</a></li><li><a href="/articles/t/tk/tkan-s-porolonom-vnutri-kak-nazyvaetsya.html" class="related-card">Ткань с поролоном внутри: названия, виды и применение в авто</a></li><li><a href="/articles/m/ma/magnitnyj-napravitel-dlya-shvejnoj-mashiny-kak-polzovatsya.html" class="related-card">Магнитный направитель для швейной машины: как пользоваться правильно</a></li><li><a href="/articles/u/us/ustanovka-shtorok-na-avtomobil-na-magnitakh.html" class="related-card">Установка шторок на автомобиль на магнитах: пошаговая инструкция</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-zatemnit-khrom-na-avto.html" class="related-bottom-card"><span class="related-bottom-title">Как затемнить хром на авто: лучшие методы и средства</span><span class="related-bottom-desc">Узнайте, как затемнить хром на авто с помощью тонировочного лака, пленки или аэрозоля. Подробная инс</span></a><a href="/articles/s/sa/samokleyushchijsya-kovrolin-dlya-avto.html" class="related-bottom-card"><span class="related-bottom-title">Самоклеющийся ковролин для авто: выбор и монтаж</span><span class="related-bottom-desc">Как выбрать самоклеющийся ковролин для салона авто. Инструкция по укладке, виды материалов, сравнени</span></a><a href="/articles/t/tk/tkan-s-porolonom-vnutri-kak-nazyvaetsya.html" class="related-bottom-card"><span class="related-bottom-title">Ткань с поролоном внутри: названия, виды и применение в авто</span><span class="related-bottom-desc">Как называется ткань с поролоном внутри? Обзор материалов для автосалона: поролоновая основа, синтеп</span></a><a href="/articles/m/ma/magnitnyj-napravitel-dlya-shvejnoj-mashiny-kak-polzovatsya.html" class="related-bottom-card"><span class="related-bottom-title">Магнитный направитель для швейной машины: как пользоваться правильно</span><span class="related-bottom-desc">Подробная инструкция по установке и использованию магнитного направителя для швейных машин. Советы п</span></a><a href="/articles/u/us/ustanovka-shtorok-na-avtomobil-na-magnitakh.html" class="related-bottom-card"><span class="related-bottom-title">Установка шторок на автомобиль на магнитах: пошаговая инструкция</span><span class="related-bottom-desc">Подробный гайд по монтажу магнитных шторок в авто. Разбор типов креплений, выбор материалов и секрет</span></a><a href="/articles/f/fa/factory-five-racing-kit-kar-kupit.html" class="related-bottom-card"><span class="related-bottom-title">Factory Five Racing: купить кит-кар, цены и модели</span><span class="related-bottom-desc">Где купить Factory Five Racing кит-кар? Обзор моделей&#x27;89 Coupe, Hot Rod и GTM. Цены, комплектации, о</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

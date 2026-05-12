@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Почему не находит VIN-код машины в запчастях: 7 причин и решения — Авто Гид</title>
+    <meta name="description" content="Разбираемся, почему поиск по VIN-коду не дает результатов в каталогах запчастей: от ошибок ввода до особенностей баз данных. Инструкции для автовладельцев и мастеров.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/p/po/pochemu-ne-nakhodit-vin-kod-mashiny-v-zapchastyakh.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Почему не находит VIN-код машины в запчастях: 7 причин и решения">
+    <meta property="og:description" content="Разбираемся, почему поиск по VIN-коду не дает результатов в каталогах запчастей: от ошибок ввода до особенностей баз данных. Инструкции для автовладельцев и мастеров.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/remont-dvigatelya/">Ремонт Двигателя</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Почему не находит VIN-код машины в запчастях: 7 причин и решения</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Почему поиск по VIN-коду не находит запчасти для вашего авто — полный разбор причин</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#1-ошибки-при-вводе-vin-кода-где-вы-могли-ошибиться">1. Ошибки при вводе VIN-кода: где вы могли ошибиться</a></li><li><a href="#2-vin-код-не-привязан-к-базе-данных-поставщика">2. VIN-код не привязан к базе данных поставщика</a></li><li><a href="#3-автомобиль-собран-на-локальном-производстве-ckdskb">3. Автомобиль собран на локальном производстве (CKD/SKB)</a></li><li><a href="#4-модификации-и-рестайлинги-когда-vin-не-отражает-реальную-комплектацию">4. Модификации и рестайлинги: когда VIN не отражает реальную комплектацию</a></li><li><a href="#5-проблемы-с-онлайн-каталогами-почему-они-глючат">5. Проблемы с онлайн-каталогами: почему они «глючат»</a></li><li><a href="#6-автомобиль-после-рестайлинга-или-тюнинга">6. Автомобиль после рестайлинга или тюнинга</a></li><li><a href="#7-vin-код-подделан-или-поврежден">7. VIN-код подделан или поврежден</a></li><li><a href="#faq-частые-вопросы-о-поиске-по-vin-коду">FAQ: Частые вопросы о поиске по VIN-коду</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Вы пытаетесь найти деталь для своего автомобиля, вводите <strong>VIN-код</strong> в поисковую строку онлайн-каталога — и получаете пустой результат или сообщение «ничего не найдено». Ситуация знакома многим автовладельцам, особенно когда речь идет о редких моделях, старых машинах или нестандартных комплектациях. Но почему так происходит? Ведь VIN-код — это уникальный идентификатор автомобиля, который должен однозначно определять все его технические характеристики.</p>
+
+<p>На практике же поиск по VIN часто дает сбои, и причины этому могут быть самые разные: от банальных ошибок при вводе до особенностей работы баз данных поставщиков. В этой статье мы разберем <strong>7 ключевых причин</strong>, по которым каталоги запчастей «не видят» ваш VIN-код, а также дадим пошаговые инструкции, как обойти эту проблему. Особое внимание уделим нюансам для <em>европейских</em>, <em>американских</em> и <em>азиатских</em> автомобилей — у каждого региона свои «подводные камни».</p>
+
+<p>Если вы уже столкнулись с этой проблемой, ответьте на быстрый опрос — это поможет нам точнее проанализировать ситуацию:</p>
+
+<div class="poll-widget" id="poll-1b079ccc"><div class="poll-widget-question">📊 Какой тип автомобиля у вас не находит запчасти по VIN?</div><div class="poll-widget-option" data-poll="1b079ccc" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Европейский (VW, BMW, Mercedes и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1b079ccc" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Азиатский (Toyota, Hyundai, Kia и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1b079ccc" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Американский (Ford, Chevrolet, Dodge и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1b079ccc" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Российский/СНГ (Лада, УАЗ, Газель и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1b079ccc" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Китайский (Geely, Chery, Haval и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Далее — подробный разбор каждой причины с практическими советами.</p>
+
+<h2 id="1-ошибки-при-вводе-vin-кода-где-вы-могли-ошибиться">1. Ошибки при вводе VIN-кода: где вы могли ошибиться</h2>
+
+<p>Самая банальная, но и самая распространенная причина — <strong>неправильный ввод VIN-кода</strong>. Даже одна лишняя цифра или буква может сделать поиск бесполезным. Обратите внимание на следующие моменты:</p>
+
+<ul>
+  <li>🔢 <strong>Длина VIN-кода</strong> должна быть ровно <code>17 символов</code>. Если у вас меньше или больше — вы точно где-то ошиблись. Например, часто путают букву <code>I</code> (ай) с цифрой <code>1</code>, а букву <code>O</code> с цифрой <code>0</code>.</li>
+  <li>📍 <strong>Местонахождение VIN</strong>: код может быть указан не только в ПТС, но и на табличке под капотом, на лобовом стекле (со стороны водителя) или в дверном проеме. Сверьте символы в разных источниках — они должны совпадать.</li>
+  <li>🔤 <strong>Регистр букв</strong> не важен (можно вводить заглавными или строчными), но некоторые старые системы могут реагировать на это. Лучше использовать <code>ЗАГЛАВНЫЕ</code> буквы.</li>
+</ul>
+
+<p>Чтобы исключить ошибку, воспользуйтесь <a href="https://vin-decoder.zr.ru/" target="_blank">онлайн-декодером VIN</a> (например, от «За рулем» или <em>AutoDNA</em>). Если декодер выдает ошибку — проблема точно в неверном коде. Если данные распознаются, но поиск запчастей все равно не работает — читаем дальше.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> На некоторых автомобилях (например, <em>Mercedes-Benz</em> или <em>BMW</em>) VIN-код может содержать <strong>пробелы или дефисы</strong> в документации. При вводе в каталоги запчастей их нужно <strong>удалять</strong> — иначе система не распознает код.</blockquote>
+
+<h2 id="2-vin-код-не-привязан-к-базе-данных-поставщика">2. VIN-код не привязан к базе данных поставщика</h2>
+
+<p>Даже если ваш VIN-код корректен, это не гарантирует, что он есть в базе данных конкретного продавца запчастей. Вот почему так происходит:</p>
+
+<ul>
+  <li>📦 <strong>Региональные ограничения</strong>: многие каталоги (например, <em>ETKA</em> для <em>Volkswagen Group</em> или <em>EPC</em> для <em>Toyota</em>) ориентированы на конкретные рынки. Если ваша машина была выпущена для <em>США</em>, а вы ищете запчасти в европейском каталоге — VIN может не распознаваться.</li>
+  <li>⏳ <strong>Устаревшие данные</strong>: базы обновляются не мгновенно. Например, если ваш автомобиль выпущен меньше года назад, его VIN мог еще не попасть в общедоступные каталоги.</li>
+  <li>🔧 <strong>Спецверсии и ограниченные серии</strong>: машины с уникальными комплектациями (например, <em>AMG</em> для <em>Mercedes</em> или <em>M</em> для <em>BMW</em>) могут иметь VIN, которые не распознаются стандартными системами.</li>
+</ul>
+
+<p>Решение:</p>
+<ol>
+  <li>Попробуйте другой каталог. Например, для <em>японских авто</em> подойдет <em>Toyodiy</em> или <em>Amayama</em>, для <em>корейских</em> — <em>Hyundai-Kia Parts</em>, для <em>европейских</em> — <em>Autodoc</em> или <em>Exist.ru</em>.</li>
+  <li>Если машина новая (младше 2023 года), свяжитесь с официальным дилером — у них могут быть актуальные базы.</li>
+</ol>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для автомобилей <em>Volkswagen Group</em> (VW, Audi, Skoda, Seat) попробуйте ввести не полный VIN, а только <strong>первые 7 символов</strong> (WMI + VDS). Иногда этого достаточно для поиска запчастей.</p></div>
+
+<h2 id="3-автомобиль-собран-на-локальном-производстве-ckdskb">3. Автомобиль собран на локальном производстве (CKD/SKB)</h2>
+
+<p>Если ваша машина была собрана не на основном заводе бренда, а на локальном производстве (например, <em>Toyota</em> в Санкт-Петербурге, <em>Hyundai</em> в Таганроге или <em>Renault</em> в Москве), ее VIN-код может иметь особенности:</p>
+
+<ul>
+  <li>🏭 <strong>Другой WMI</strong> (первые 3 символа VIN). Например, у <em>Kia Rio</em>, собранного в России, WMI начинается с <code>XW8</code>, а у корейской версии — с <code>KNA</code>.</li>
+  <li>🔄 <strong>Измененные детали</strong>: для локального рынка могут использоваться другие поставщики комплектующих (например, аккумуляторы, свечи, фильтры), которые не учтены в глобальных каталогах.</li>
+</ul>
+
+<p>Как проверить:</p>
+<ol>
+  <li>Посмотрите первые 3 символа вашего VIN и сравните с <a href="https://vpic.nhtsa.dot.gov/decoder/" target="_blank">официальной базой NHTSA</a> (для американских и европейских авто) или <a href="https://vinformer.su/" target="_blank">Vinformer</a> (для российских).</li>
+  <li>Если WMI отличается от «родного» для бренда — ищите запчасти в каталогах для вашего региона (например, для <em>Лада Веста</em> — на <em>Exist.ru</em> или <em>Emex</em>).</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>Бренд</th>
+      <th>Страна сборки</th>
+      <th>Пример WMI</th>
+      <th>Где искать запчасти</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>Toyota RAV4</em></td>
+      <td>Япония</td>
+      <td><code>JTM</code></td>
+      <td><em>Toyodiy</em>, <em>Amayama</em></td>
+    </tr>
+    <tr>
+      <td><em>Toyota RAV4</em></td>
+      <td>Россия (Санкт-Петербург)</td>
+      <td><code>XW8</code></td>
+      <td><em>Exist.ru</em>, <em>Autodoc</em> (раздел "Россия")</td>
+    </tr>
+    <tr>
+      <td><em>Hyundai Solaris</em></td>
+      <td>Южная Корея</td>
+      <td><code>KMH</code></td>
+      <td><em>Hyundai-Kia Parts</em></td>
+    </tr>
+    <tr>
+      <td><em>Hyundai Solaris</em></td>
+      <td>Россия (Таганрог)</td>
+      <td><code>XW8</code></td>
+      <td><em>Emex</em>, <em>Autopiter.ru</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="4-модификации-и-рестайлинги-когда-vin-не-отражает-реальную-комплектацию">4. Модификации и рестайлинги: когда VIN не отражает реальную комплектацию</h2>
+
+<p>VIN-код фиксирует базовую информацию об автомобиле, но <mark>не всегда учитывает изменения после рестайлинга или специальные пакеты опций</mark>. Например:</p>
+
+<ul>
+  <li>🔧 <strong>Двигатель</strong>: на <em>Volkswagen Passat B6</em> мог устанавливаться один из 10 разных моторов, но VIN-код часто указывает только на кузов и год выпуска.</li>
+  <li>⚙️ <strong>Коробка передач</strong>: <em>Ford Focus 3</em> мог комплектоваться механикой, роботом <em>Powershift</em> или классическим автоматом — но VIN этого не отражает.</li>
+  <li>🔥 <strong>Спецверсии</strong>: <em>BMW M5 F90</em> и <em>BMW 5 Series F10</em> могут иметь одинаковый кузов, но совершенно разные детали двигателя и подвески.</li>
+</ul>
+
+<p>Что делать:</p>
+<ol>
+  <li>Уточните <strong>точный код двигателя</strong> (находится на блоке цилиндров или в документах). Например, для <em>VW/Audi</em> это может быть <code>CBFA</code>, <code>CJXB</code> и т.д.</li>
+  <li>Используйте <strong>альтернативные параметры поиска</strong>:
+    <ul>
+      <li>Модель + год + объем двигателя</li>
+      <li>Код кузова (например, <code>E39</code> для <em>BMW 5 Series</em>)</li>
+      <li>Номер оригинальной детали (если известен)</li>
+    </ol>
+  </li>
+</ol>
+
+<details class="faq-item"><summary>Где найти код двигателя на популярных авто</summary><div class="faq-answer"><p>На большинстве машин код двигателя указан на <strong>табличке под капотом</strong> (рядом с VIN) или выбит на <strong>блоке цилиндров</strong>. Например:
+<ul>
+  <li><em>VW/Audi</em>: на клапанной крышке или передней части блока.</li>
+  <li><em>Toyota</em>: на передней части двигателя (справа по ходу движения).</li>
+  <li><em>BMW</em>: на верхней части блока (может быть скрыт пластиковой крышкой).</li>
+</ul>
+<p>Если не можете найти — сверьтесь с <a href="https://etlib.ru/blog/1137-kak-uznat-model-dvigatelya" target="_blank">инструкцией по модели</a>.</p></div></details></p>
+
+<h2 id="5-проблемы-с-онлайн-каталогами-почему-они-глючат">5. Проблемы с онлайн-каталогами: почему они «глючат»</h2>
+
+<p>Даже если ваш VIN-код корректен и соответствует базе, сами каталоги запчастей могут работать нестабильно. Распространенные проблемы:</p>
+
+<ul>
+  <li>🌐 <strong>Геоблокировка</strong>: некоторые сайты (например, <em>RockAuto</em>) ограничивают доступ для пользователей из определенных стран. Решение — использовать VPN или искать альтернативы.</li>
+  <li>🔄 <strong>Ошибки синхронизации</strong>: базы данных обновляются не ежедневно. Если вы ищете запчасть для машины 2026 года выпуска, дождитесь обновления каталога (обычно раз в 1–3 месяца).</li>
+  <li>🛠️ <strong>Неполные данные</strong>: многие каталоги (особенно бесплатные) содержат информацию только о популярных моделях. Для редких авто (например, <em>Mitsubishi Pajero Sport</em> или <em>SsangYong Actyon</em>) лучше обращаться к официальным дилерам.</li>
+</ul>
+
+<p>Проверенный способ обойти ограничения:</p>
+<ol>
+  <li>Используйте <strong>несколько каталогов</strong> одновременно. Например:
+    <ul>
+      <li>Для <em>европейских авто</em>: <em>Autodoc</em> + <em>Exist.ru</em> + <em>Oscaro</em>.</li>
+      <li>Для <em>азиатских авто</em>: <em>Amayama</em> + <em>Toyodiy</em> + <em>SSangYong Parts</em>.</li>
+    </ol>
+  </li>
+  <li>Если каталог требует регистрацию, создайте аккаунт — часто для зарегистрированных пользователей доступно больше данных.</li>
+</ol>
+
+<blockquote>⚠️ <strong>Внимание:</strong> На сайтах вроде <em>AliExpress</em> или <em>eBay</em> поиск по VIN-коду часто работает криво из-за большого количества контрафактных деталей. Для точного подбора используйте только специализированные авто-каталоги.</blockquote>
+
+
+<p>Проверьте отзывы о сайте на форумах (например, <em>Drive2</em> или <em>Autolada</em>)|Убедитесь, что на сайте есть контакты поддержки (телефон, email, чат)|Попробуйте найти деталь по VIN для популярной модели (например, <em>Toyota Corolla</em>) — если не находит, каталог ненадежен|Проверьте, есть ли на сайте информация о последнем обновлении базы данных--></p>
+
+<h2 id="6-автомобиль-после-рестайлинга-или-тюнинга">6. Автомобиль после рестайлинга или тюнинга</h2>
+
+<p>Если ваша машина подвергалась серьезным модификациям (например, <strong>свап двигателя</strong>, замена коробки передач или переоборудование под газ), ее текущая комплектация может не совпадать с данными по VIN-коду. В этом случае:</p>
+
+<ul>
+  <li>🔧 <strong>Двигатель</strong>: если был установлен другой мотор (например, вместо <code>1.6 MPI</code> стоит <code>1.8 TSI</code>), ищите запчасти по <strong>коду нового двигателя</strong>, а не по VIN.</li>
+  <li>⚙️ <strong>Коробка передач</strong>: при замене КПП (например, с механики на автомат) ориентируйтесь на <strong>модель и код коробки</strong> (находится на ее корпусе).</li>
+  <li>🔥 <strong>Тюнинг-комплекты</strong>: если установлены неоригинальные детали (например, турбокит или спортивная подвеска), их придется подбирать по параметрам, а не по VIN.</li>
+</ul>
+
+<p>Как действовать:</p>
+<ol>
+  <li>Сфотографируйте таблички с кодом двигателя, коробки и других агрегатов.</li>
+  <li>Обратитесь на форумы по вашей модели (например, <em>Club-Polo</em> для <em>VW Polo</em> или <em>Toyota-Club</em>) — там подскажут, какие детали подойдут для вашей модификации.</li>
+  <li>Для редких случаев (например, после свапа) лучше обратиться к мастеру, который занимался переделкой — он знает, какие запчасти совместимы.</li>
+</ol>
+
+<h2 id="7-vin-код-подделан-или-поврежден">7. VIN-код подделан или поврежден</h2>
+
+<p>В редких случаях проблема может быть в самом VIN-коде:</p>
+
+<ul>
+  <li>🚨 <strong>Подделка</strong>: если автомобиль был в угоне или перебивал VIN, код в базе может не совпадать с реальным. Проверить это можно через <a href="https://гибдд.рф/check/auto" target="_blank">сервис ГИБДД</a> (для российских авто) или <a href="https://www.carvertical.com/" target="_blank>CarVertical</a> (для импортных).</li>
+  <li>🔍 <strong>Повреждение</strong>: если табличка с VIN-кодом поцарапана или корродировала, символы могут быть неразборчивы. В этом случае сверьтесь с ПТС или другими документами.</li>
+</ul>
+
+<p>Если вы подозреваете, что VIN-код не оригинальный:</p>
+<ol>
+  <li>Проверьте историю автомобиля через <em>Carfax</em> или <em>AutoCheck</em> (для американских машин) или <em>Автокод</em> (для российских).</li>
+  <li>Обратитесь в ГИБДД с заявлением о проверке VIN — они могут сверить код с базой данных.</li>
+  <li>Если машина куплена недавно, вернитесь к продавцу с требованием предоставить оригинальные документы.</li>
+</ol>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если VIN-код не проходит проверку в нескольких сервисах (ГИБДД, CarVertical, Autocheck), это серьезный повод усомниться в легальности автомобиля. В этом случае лучше отказаться от покупки запчастей и обратиться в правоохранительные органы.</p></div>
+
+<h2 id="faq-частые-вопросы-о-поиске-по-vin-коду">FAQ: Частые вопросы о поиске по VIN-коду</h2>
+
+<details>
+  <summary>Можно ли найти запчасти по VIN-коду для автомобиля старше 20 лет?</summary>
+  <p>Да, но с оговорками. Для старых машин (до 2000 года) VIN-коды часто не поддерживаются современными каталогами. В этом случае:</p>
+  <ul>
+    <li>Используйте <strong>каталоги для классических авто</strong> (например, <em>Classic Car Parts</em> или <em>Oldtimer-Teile</em>).</li>
+    <li>Ищите детали по <strong>коду кузова</strong> или <strong>номеру детали</strong> (если известен).</li>
+    <li>Обращайтесь в клубы любителей вашей марки — там часто продают б/у запчасти.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>Почему один и тот же VIN-код дает разные результаты в разных каталогах?</summary>
+  <p>Это нормально. Каталоги используют разные источники данных. Например:</p>
+  <ul>
+    <li><em>Autodoc</em> ориентируется на европейский рынок и может не учитывать американские модификации.</li>
+    <li><em>RockAuto</em> специализируется на американских авто и может не знать о европейских версиях.</li>
+    <li>Официальные каталоги (например, <em>ETKA</em> для <em>VW</em>) точнее, но требуют подписки.</li>
+  </ul>
+  <p>Рекомендация: сверяйте данные из 2–3 источников.</p>
+</details>
+
+<details>
+  <summary>Что делать, если VIN-код находит машину, но не находит нужную запчасть?</summary>
+  <p>Возможные причины и решения:</p>
+  <ul>
+    <li><strong>Деталь не оригинальная</strong> → ищите по параметрам (размер, артикул).</li>
+    <li><strong>Запчасть устарела</strong> → проверьте аналоги (например, через <em>Exist.ru</em> или <em>Autodoc</em>).</li>
+    <li><strong>Ошибка в каталоге</strong> → напишите в поддержку сайта с уточнением модели и кода детали.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>Можно ли подобрать запчасти по VIN-коду для китайских автомобилей?</summary>
+  <p>Да, но с нюансами. Для китайских машин (например, <em>Geely</em>, <em>Chery</em>, <em>Haval</em>):</p>
+  <ul>
+    <li>Используйте специализированные каталоги: <em>China Auto Parts</em>, <em>Alibaba (раздел Auto Parts)</em>.</li>
+    <li>VIN-коды китайских авто часто начинаются с <code>L</code> (например, <code>LVS</code> для <em>Geely</em>), но не все каталоги их распознают.</li>
+    <li>Для точного подбора лучше обратиться к официальному дилеру — у них самые актуальные базы.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>Почему при вводе VIN-кода сайт просит указать модель вручную?</summary>
+  <p>Это значит, что система не может однозначно определить модификацию вашего авто. Причины:</p>
+  <ul>
+    <li>VIN-код соответствует нескольким версиям (например, <em>Skoda Octavia</em> может быть и с двигателем <code>1.6</code>, и с <code>1.8 TSI</code>).</li>
+    <li>В базе нет точных данных по вашему региону (например, машина собрана в России, а каталог ориентирован на Европу).</li>
+    <li>Система требует уточнения для фильтрации результатов (например, год выпуска или тип кузова).</li>
+  </ul>
+  <p>Решение: укажите дополнительные параметры (модель, год, объем двигателя) вручную.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#1-ошибки-при-вводе-vin-кода-где-вы-могли-ошибиться">1. Ошибки при вводе VIN-кода: где вы могли ошибиться</a></li><li><a href="#2-vin-код-не-привязан-к-базе-данных-поставщика">2. VIN-код не привязан к базе данных поставщика</a></li><li><a href="#3-автомобиль-собран-на-локальном-производстве-ckdskb">3. Автомобиль собран на локальном производстве (CKD/SKB)</a></li><li><a href="#4-модификации-и-рестайлинги-когда-vin-не-отражает-реальную-комплектацию">4. Модификации и рестайлинги: когда VIN не отражает реальную комплектацию</a></li><li><a href="#5-проблемы-с-онлайн-каталогами-почему-они-глючат">5. Проблемы с онлайн-каталогами: почему они «глючат»</a></li><li><a href="#6-автомобиль-после-рестайлинга-или-тюнинга">6. Автомобиль после рестайлинга или тюнинга</a></li><li><a href="#7-vin-код-подделан-или-поврежден">7. VIN-код подделан или поврежден</a></li><li><a href="#faq-частые-вопросы-о-поиске-по-vin-коду">FAQ: Частые вопросы о поиске по VIN-коду</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/m/ma/mashina-dergaetsya-i-morgaet-chek.html" class="related-card">Машина дергается и моргает чек: причины и решения 2026</a></li><li><a href="/articles/s/sh/shchetki-generatora-dlya-chego.html" class="related-card">Щетки генератора в авто: зачем нужны, признаки износа, замена</a></li><li><a href="/articles/d/da/davlenie-v-gidrousilitele-rulya-legkovogo-avtomobilya.html" class="related-card">Давление в ГУР: нормы, проверка и регулировка</a></li><li><a href="/articles/k/ka/kak-pomenyat-salonnyj-filtr-zaz-shans.html" class="related-card">Замена салонного фильтра ZAZ Chance: пошаговая инструкция 2026</a></li><li><a href="/articles/c/ch/chto-nuzhno-dlya-zapravki-avtokonditsionerov.html" class="related-card">Заправка автокондиционера: хладагент, масло и оборудование</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/m/ma/mashina-dergaetsya-i-morgaet-chek.html" class="related-bottom-card"><span class="related-bottom-title">Машина дергается и моргает чек: причины и решения 2026</span><span class="related-bottom-desc">Разбираем 10+ причин рывков автомобиля и мигания чека. Диагностика, ремонт, советы от экспертов. Акт</span></a><a href="/articles/s/sh/shchetki-generatora-dlya-chego.html" class="related-bottom-card"><span class="related-bottom-title">Щетки генератора в авто: зачем нужны, признаки износа, замена</span><span class="related-bottom-desc">Узнайте, для чего служат щетки генератора в автомобиле, как проверить их состояние и когда требуется</span></a><a href="/articles/d/da/davlenie-v-gidrousilitele-rulya-legkovogo-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Давление в ГУР: нормы, проверка и регулировка</span><span class="related-bottom-desc">Какое давление в гидроусилителе руля легкого автомобиля? Таблица норм, симптомы неисправности, регул</span></a><a href="/articles/k/ka/kak-pomenyat-salonnyj-filtr-zaz-shans.html" class="related-bottom-card"><span class="related-bottom-title">Замена салонного фильтра ZAZ Chance: пошаговая инструкция 2026</span><span class="related-bottom-desc">Как самостоятельно поменять салонный фильтр на ЗАЗ Шанс: фото, видео, выбор фильтра, инструменты и ч</span></a><a href="/articles/c/ch/chto-nuzhno-dlya-zapravki-avtokonditsionerov.html" class="related-bottom-card"><span class="related-bottom-title">Заправка автокондиционера: хладагент, масло и оборудование</span><span class="related-bottom-desc">Что нужно для заправки автокондиционера? Полный обзор оборудования, типы фреона, правила вакуумирова</span></a><a href="/articles/p/po/pochemu-rychit-mashina-pri-nabore-skorosti.html" class="related-bottom-card"><span class="related-bottom-title">Почему рычит машина при разгоне: 7 причин и способы устранения</span><span class="related-bottom-desc">Машина рычит при наборе скорости? Разбираем причины: от неисправностей трансмиссии до проблем с выхл</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

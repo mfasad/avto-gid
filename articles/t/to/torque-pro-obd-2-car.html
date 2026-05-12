@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Torque Pro OBD2: Настройка, PID коды и диагностика авто — Авто Гид</title>
+    <meta name="description" content="Полный гид по Torque Pro OBD2: как подключить, настроить датчики, расшифровать ошибки и создать дашборд. Советы экспертов для Android.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/t/to/torque-pro-obd-2-car.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Torque Pro OBD2: Настройка, PID коды и диагностика авто">
+    <meta property="og:description" content="Полный гид по Torque Pro OBD2: как подключить, настроить датчики, расшифровать ошибки и создать дашборд. Советы экспертов для Android.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Torque Pro OBD2: Настройка, PID коды и диагностика авто</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Torque Pro OBD2: Полный гид по настройке и диагностике</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-и-подключение-obd2-адаптера">Выбор и подключение OBD2 адаптера</a></li><li><a href="#первичная-настройка-torque-pro">Первичная настройка Torque Pro</a></li><li><a href="#интерфейс-и-создание-дашбордов">Интерфейс и создание дашбордов</a></li><li><a href="#работа-с-кодами-ошибок-и-их-расшифровка">Работа с кодами ошибок и их расшифровка</a></li><li><a href="#расширенные-pid-и-пользовательские-датчики">Расширенные PID и пользовательские датчики</a></li><li><a href="#логирование-данных-и-анализ-поездок">Логирование данных и анализ поездок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современная автомобильная диагностика перестала быть уделом избранных специалистов с дорогими сканерами стоимостью в тысячи долларов. Сегодня превратить ваш смартфон в мощный диагностический комплекс можно за считанные минуты и с минимальными вложениями. <strong>Приложение Torque Pro</strong> стало золотым стандартом в мире мобильной диагностики для платформы Android, позволяя владельцам автомобилей читать коды ошибок, отслеживать параметры двигателя в реальном времени и даже корректировать некоторые настройки ЭБУ.</p>
+
+<p>Использование адаптера <em>OBD2</em> в связке с этим программным обеспечением открывает доступ к глубинным данным бортового компьютера, которые часто скрыты от глаз обычного водителя. Вы сможете не только погасить лампочку <code>Check Engine</code>, но и понять причину её появления, проанализировать работу лямбда-зондов или проверить температуру выхлопных газов. Это особенно актуально для тех, кто хочет контролировать техническое состояние своего <em>железного коня</em> без постоянных визитов в сервисный центр.</p>
+
+<p>Однако, чтобы получить достоверные данные, недостаточно просто скачать приложение и воткнуть сканер в разъем. Существует множество нюансов, касающихся совместимости протоколов, правильной калибровки датчиков и выбора качественного Bluetooth-адаптера. В этой статье мы подробно разберем весь путь от выбора оборудования до создания собственного уникального дашборда с нужными показателями.</p>
+
+<h2 id="выбор-и-подключение-obd2-адаптера">Выбор и подключение OBD2 адаптера</h2>
+
+<p>Первым и самым критичным этапом является выбор аппаратной части. Рынок переполнен дешевыми китайскими клонами, которые могут работать нестабильно или вовсе не поддерживать нужные вам протоколы связи. <strong>Torque Pro</strong> поддерживает широкий спектр устройств, но для комфортной работы лучше ориентироваться на проверенные чипсеты. Бюджетные модели на базе чипа <em>ELM327</em> версии 1.5 часто работают стабильнее, чем их более новые аналоги версии 2.1, которые иногда имеют урезанный функционал.</p>
+
+<p>Процесс подключения физически прост: найдите диагностический разъем в салоне автомобиля. Обычно он расположен под рулевой колонкой, возле педального узла или в бардачке. После подключения адаптера и включения зажигания (или запуска двигателя) светодиод на устройстве должен замигать, сигнализируя о готовности к работе. В настройках Bluetooth вашего смартфона необходимо найти устройство, часто называющееся <code>OBDII</code> или <code>VLink</code>, и ввести стандартный пин-код, который чаще всего равен <code>1234</code> или <code>0000</code>.</p>
+
+<p>Важно понимать, что качество связи напрямую влияет на скорость обновления данных на экране. Дешевые адаптеры могут иметь задержку или обрывать соединение при вибрации, что делает невозможным отслеживание быстро меняющихся параметров, таких как угол опережения зажигания или краткосрочный топливный коррект.</p>
+
+<ul>
+<li>🔌 <strong>ELM327 v1.5</strong> — классический выбор, высокая совместимость со старыми и новыми авто.</li>
+<li>🚀 <strong>Vgate iCar Pro</strong> — более современный адаптер с поддержкой iOS и Android, стабильный Bluetooth 4.0.</li>
+<li>📡 <strong>ThinkDiag</strong> — профессиональное решение с собственным ПО, но работающее и через сторонние приложения.</li>
+<li>⚠️ <strong>Китайские мини-адаптеры</strong> — часто требуют перепайки или смены прошивки для нормальной работы.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не оставляйте адаптер OBD2 в разъеме автомобиля на длительное время, когда машина стоит без движения. Некоторые устройства не имеют режима глубокого сна и могут полностью разрядить аккумулятор вашего автомобиля за несколько дней простоя.</p>
+</blockquote>
+
+<div class="poll-widget" id="poll-f553add8"><div class="poll-widget-question">📊 Какой адаптер OBD2 вы используете?</div><div class="poll-widget-option" data-poll="f553add8" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Дешевый китайский клон (ELM327)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f553add8" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Оригинальный брендовый сканер</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f553add8" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Профессиональный мультимарочник</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f553add8" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Пока не знаю, только выбираю</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="первичная-настройка-torque-pro">Первичная настройка Torque Pro</h2>
+
+<p>После успешного сопряжения смартфона с адаптером необходимо правильно сконфигурировать само приложение. При первом запуске <strong>Torque Pro</strong> предложит создать профиль автомобиля. Это важный шаг, так как программа будет использовать данные о объеме двигателя и типе топлива для более точных расчетов некоторых параметров, таких как мгновенный расход.</p>
+
+<p>Основная настройка происходит в разделе <code>Настройки → Настройки OBD2 → Выбор интерфейса связи</code>. Здесь нужно выбрать <em>Bluetooth</em> и нажать кнопку "Настроить Bluetooth устройство", выбрав ваш адаптер из списка. Если соединение прошло успешно, приложение покажет количество поддерживаемых протоколов и версию ЭБУ. В случае ошибок подключения попробуйте сменить протокол вручную или увеличить таймаут соединения в расширенных настройках.</p>
+
+<p>Отдельное внимание стоит уделить калибровке. Хотя приложение имеет множество предустановленных профилей, для получения точных данных о расходе топлива и мощности может потребоваться создание собственного профиля калибровки. Это делается путем проезда определенного расстояния с известным расходом топлива, после чего программа скорректирует свои алгоритмы под особенности вашего двигателя.</p>
+
+<div class="checklist-block"><h4>☑️ Первичная настройка Torque Pro</h4><label class="check-item"><input type="checkbox"><span>Создать профиль автомобиля (марка, модель, год)</span></label><label class="check-item"><input type="checkbox"><span>Выбрать тип топлива и объем двигателя</span></label><label class="check-item"><input type="checkbox"><span>Настроить подключение Bluetooth</span></label><label class="check-item"><input type="checkbox"><span>Провести тест связи с ЭБУ</span></label><label class="check-item"><input type="checkbox"><span>Откалибровать профиль расхода топлива</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<h2 id="интерфейс-и-создание-дашбордов">Интерфейс и создание дашбордов</h2>
+
+<p>Главная сила <strong>Torque Pro</strong> заключается в гибкости отображения информации. Стандартный экран с двумя или четырьмя датчиками — это лишь верхушка айсберга. Пользователь может создавать неограниченное количество профилей отображения, выводя на экран именно те параметры, которые важны в данный момент. Вы можете сделать отдельный экран для трек-дня с тахометром и температурой масла, и другой — для экономичной езды с отображением мгновенного расхода и напряжения батареи.</p>
+
+<p>Для редактирования экрана достаточно нажать и удерживать палец на свободном месте или на существующем датчике. Меню позволяет добавлять новые индикаторы, менять их размер, цвет и тип отображения (цифры, график, аналоговая стрелка). Поддерживается даже вывод видео с камеры заднего вида при переключении на задний ход, если ваше головное устройство и телефон синхронизированы соответствующим образом.</p>
+
+<p>Использование <em>плагинов</em> и скинов позволяет изменить внешний вид интерфейса до неузнаваемости. Существуют темы, имитирующие приборные панели спортивных автомобилей или классические аналоговые приборы. Однако стоит помнить, что обилие графических элементов может нагружать процессор смартфона, вызывая подтормаживание обновления данных в реальном времени.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Единицы измерения</th>
+<th>Важность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RPM</td>
+<td>Обороты двигателя в минуту</td>
+<td>об/мин</td>
+<td>Критично</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Скорость автомобиля</td>
+<td>км/ч или mph</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Coolant Temp</td>
+<td>Температура охлаждающей жидкости</td>
+<td>Градусы Цельсия</td>
+<td>Критично</td>
+</tr>
+<tr>
+<td>Intake Air Temp</td>
+<td>Температура всасываемого воздуха</td>
+<td>Градусы Цельсия</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Throttle Position</td>
+<td>Положение дроссельной заслонки</td>
+<td>Проценты (%)</td>
+<td>Средняя</td>
+</tr>
+</tbody>
+</table>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте виджет "Performance" для вывода сразу 6-9 датчиков на один экран, если диагонали вашего смартфона достаточно для комфортного чтения мелких цифр во время движения.</p></div>
+
+<h2 id="работа-с-кодами-ошибок-и-их-расшифровка">Работа с кодами ошибок и их расшифровка</h2>
+
+<p>Одной из основных функций, ради которой пользователи устанавливают <strong>Torque Pro</strong>, является диагностика неисправностей. Приложение умеет считывать как текущие ошибки (Pending), так и сохраненные в истории (Stored). Каждая ошибка имеет свой alphanumeric код, например, <code>P0300</code> (случайные пропуски воспламенения) или <code>P0171</code> (слишком бедная смесь).</p>
+
+<p>После считывания кодов программа предоставляет краткое описание проблемы на английском языке. Для более глубокого понимания причин возникновения неисправности часто требуется обратиться к базе данных или форумам. Приложение позволяет очищать коды ошибок, что выключает лампочку <code>Check Engine</code> на приборной панели. Однако следует помнить, что удаление кода не устраняет саму поломку, а лишь сбрасывает флаг ошибки.</p>
+
+<p>Важной функцией является мониторинг готовности систем (I/M Readiness). Перед прохождением технического осмотра или экологического тестирования необходимо убедиться, что все системы автомобиля проверены ЭБУ и готовы к тесту. Если после сброса ошибок вы сразу поедете на проверку, тест может быть не пройден из-за статуса "Not Ready".</p>
+
+<details class="faq-item"><summary>Что такое Freeze Frame?</summary><div class="faq-answer"><p>Freeze Frame (стоп-кадр) — это снимок параметров двигателя в тот самый момент, когда была зафиксирована ошибка. Анализируя эти данные (обороты, скорость, температуру), можно точнее определить условия, при которых возникает неисправность.</p></div></details>
+
+<h2 id="расширенные-pid-и-пользовательские-датчики">Расширенные PID и пользовательские датчики</h2>
+
+<p>Стандартный набор параметров, поддерживаемый протоколом <em>OBD2</em>, иногда бывает недостаточен для глубокой диагностики или тюнинга. В таких случаях на помощь приходят расширенные PID (Parameter ID). <strong>Torque Pro</strong> позволяет добавлять пользовательские датчики, вводя их идентификаторы вручную. Это особенно актуально для владельцев автомобилей группы VAG, BMW или Mercedes, где многие параметры скрыты в заводских разделах.</p>
+
+<p>Для добавления нового датчика необходимо знать его HEX-код и формулу пересчета raw-данных в понятные величины. Формулы могут быть простыми линейными уравнениями или сложными математическими выражениями. Сообщество пользователей создало огромную базу готовых PID-файлов для различных марок автомобилей, которые можно импортировать в приложение.</p>
+
+<p>С помощью пользовательских датчиков можно вывести на экран такие параметры, как:</p>
+<ul>
+<li>🌡️ Температура трансмиссионного масла (ATF).</li>
+<li>🔋 Заряд каждой отдельной ячейки гибридной батареи.</li>
+<li>💨 Давление наддува в реальном времени (Boost pressure).</li>
+<li>⏱️ Время разгона до 100 км/ч (0-100 km/h timer).</li>
+</ul>
+
+<p>Работа с пользовательскими PID требует осторожности. Неверно заданная формула может привести к отображению абсурдных значений, что собьет с толку при диагностике. Всегда перепроверяйте синтаксис формулы и соответствие типа данных (байт, слово, беззнаковое значение).</p>
+
+<blockquote>
+<p>⚠️ Внимание: При добавлении пользовательских PID-кодов убедитесь, что ваш ЭБУ поддерживает запрос этих конкретных идентификаторов. Частый опрос неподдерживаемых параметров может привести к переполнению буфера адаптера и временной потере связи с автомобилем.</p>
+</blockquote>
+
+<h2 id="логирование-данных-и-анализ-поездок">Логирование данных и анализ поездок</h2>
+
+<p>Функция логирования (записи данных) превращает смартфон в полноценный регистратор параметров движения. <strong>Torque Pro</strong> может записывать все выбранные датчики в файл формата CSV или KML с привязкой к координатам GPS. Это незаменимый инструмент для тюнеров, занимающихся настройкой двигателя, или для водителей, желающих проанализировать свой стиль вождения.</p>
+
+<p>Запись лога можно настроить на автоматическое включение при запуске двигателя или активировать вручную перед поездкой. После завершения пути файл можно экспортировать на компьютер для детального анализа в табличных редакторах или специализированном ПО. На основе GPS-данных программа строит треки на карте, показывая скорость и обороты в каждой точке маршрута.</p>
+
+<p>Анализ логов позволяет выявить такие проблемы, как:</p>
+<ul>
+<li>📉 Провалы мощности или детонация под нагрузкой.</li>
+<li>⛽ Неоправданно высокий расход топлива на определенных режимах.</li>
+<li>🌡️ Критический нагрев компонентов при длительной езде.</li>
+</ul>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Регулярное логирование параметров двигателя помогает заметить тенденцию к ухудшению работы систем (например, постепенное изменение топливных коррекций) задолго до того, как загорится лампа неисправности.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Почему Torque Pro не видит мой адаптер ELM327?</summary>
+<p>Чаще всего проблема кроется в неправильном выборе версии Bluetooth (Classic vs LE) или недостаточных правах доступа приложения к геолокации. Убедитесь, что в настройках Android для Torque Pro разрешен доступ к местоположению, так как это обязательное требование для работы с Bluetooth-сканерами на современных версиях ОС.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать Torque Pro на iOS (iPhone)?</summary>
+<p>Оригинальное приложение Torque предназначено только для платформы Android. Для устройств на базе iOS существуют аналоги, такие как OBD Fusion, DashCommand или Car Scanner, которые используют те же протоколы связи, но имеют другой интерфейс и функционал.</p>
+</details>
+
+<details>
+<summary>Влияет ли использование Torque Pro на гарантию автомобиля?</summary>
+<p>Само по себе чтение данных через OBD2 разъем не является вмешательством в работу электроники и не должно влиять на гарантию. Однако, если вы используете приложение для изменения калибровок (chip tuning) и это приведет к поломке двигателя, дилер может отказать в гарантийном обслуживании, обнаружив следы перепрошивки в логах ЭБУ.</p>
+</details>
+
+<details>
+<summary>Как часто нужно обновлять базу PID-кодов?</summary>
+<p>Базовая база протокола OBD2 статична и редко меняется. Однако, если вы работаете с новыми моделями автомобилей или используете специфические пользовательские датчики, рекомендуется периодически проверять форумы сообщества на предмет обновленных формул и идентификаторов для вашего конкретного двигателя.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#выбор-и-подключение-obd2-адаптера">Выбор и подключение OBD2 адаптера</a></li><li><a href="#первичная-настройка-torque-pro">Первичная настройка Torque Pro</a></li><li><a href="#интерфейс-и-создание-дашбордов">Интерфейс и создание дашбордов</a></li><li><a href="#работа-с-кодами-ошибок-и-их-расшифровка">Работа с кодами ошибок и их расшифровка</a></li><li><a href="#расширенные-pid-и-пользовательские-датчики">Расширенные PID и пользовательские датчики</a></li><li><a href="#логирование-данных-и-анализ-поездок">Логирование данных и анализ поездок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otremontirovat-betonnyj-pol-v-garazhe.html" class="related-card">Ремонт бетонного пола в гараже: пошаговая инструкция 2026</a></li><li><a href="/articles/k/kr/krysha-iz-sendvichnye-paneli-na-garazh.html" class="related-card">Крыша из сэндвич-панелей на гараж: монтаж, цены, ошибки</a></li><li><a href="/articles/k/ko/kompyuternyj-diagnosticheskij-skaner-avtoas-kargo.html" class="related-card">Компьютерный диагностический сканер Автоас Карго: функции и возможности</a></li><li><a href="/articles/f/fu/fundament-pod-podemnik-avtomobilnyj-dvukhstoechnyj-razmery.html" class="related-card">Фундамент под двухстоечный автоподъемник: размеры, требования, монтаж</a></li><li><a href="/articles/r/ra/razmery-garazha-na-dve-mashiny-s-dvumya-vorotami.html" class="related-card">Размеры гаража на две машины с двумя воротами: стандарты и нормы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-otremontirovat-betonnyj-pol-v-garazhe.html" class="related-bottom-card"><span class="related-bottom-title">Ремонт бетонного пола в гараже: пошаговая инструкция 2026</span><span class="related-bottom-desc">Как отремонтировать бетонный пол в гараже своими руками: причины разрушений, выбор материалов, техно</span></a><a href="/articles/k/kr/krysha-iz-sendvichnye-paneli-na-garazh.html" class="related-bottom-card"><span class="related-bottom-title">Крыша из сэндвич-панелей на гараж: монтаж, цены, ошибки</span><span class="related-bottom-desc">Монтаж крыши из сэндвич-панелей на гараж: пошаговая инструкция, выбор толщины, сравнение с профнасти</span></a><a href="/articles/k/ko/kompyuternyj-diagnosticheskij-skaner-avtoas-kargo.html" class="related-bottom-card"><span class="related-bottom-title">Компьютерный диагностический сканер Автоас Карго: функции и возможности</span><span class="related-bottom-desc">Обзор функционала сканера Автоас Карго для диагностики грузовиков. Поддерживаемые системы, работа с </span></a><a href="/articles/f/fu/fundament-pod-podemnik-avtomobilnyj-dvukhstoechnyj-razmery.html" class="related-bottom-card"><span class="related-bottom-title">Фундамент под двухстоечный автоподъемник: размеры, требования, монтаж</span><span class="related-bottom-desc">Размеры и глубина фундамента для двухстоечного подъемника: нормы СНиП, расчет нагрузки, пошаговая ин</span></a><a href="/articles/r/ra/razmery-garazha-na-dve-mashiny-s-dvumya-vorotami.html" class="related-bottom-card"><span class="related-bottom-title">Размеры гаража на две машины с двумя воротами: стандарты и нормы</span><span class="related-bottom-desc">Оптимальные размеры гаража на 2 авто. Расчет габаритов, расстояний, высоты и ширины ворот по ГОСТ и </span></a><a href="/articles/k/ka/kak-vytashchit-posudomoechnuyu-mashinu-bosh.html" class="related-bottom-card"><span class="related-bottom-title">Как вытащить посудомоечную машину Bosch: полная инструкция</span><span class="related-bottom-desc">Подробное руководство по демонтажу посудомойки Бош. Отключение коммуникаций, снятие креплений и безо</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

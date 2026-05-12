@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как узнать объем 3D-модели в AutoCAD: 5 способов + FAQ — Авто Гид</title>
+    <meta name="description" content="Пошаговая инструкция для автомобильных инженеров: как вычислить объем 3D-тела в AutoCAD с помощью команд MASSPROP, REGION и других инструментов. Сравнение методов для деталей кузова и двигателя.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-uznat-obem-3d-tela-v-avtokade.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как узнать объем 3D-модели в AutoCAD: 5 способов + FAQ">
+    <meta property="og:description" content="Пошаговая инструкция для автомобильных инженеров: как вычислить объем 3D-тела в AutoCAD с помощью команд MASSPROP, REGION и других инструментов. Сравнение методов для деталей кузова и двигателя.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как узнать объем 3D-модели в AutoCAD: 5 способов + FAQ</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как точно рассчитать объем 3D-модели в AutoCAD: от простых тел до сложных автодеталей</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#почему-автомобильным-инженерам-нужно-уметь-считать-объемы-в-autocad">Почему автомобильным инженерам нужно уметь считать объемы в AutoCAD</a></li><li><a href="#метод-1-команда-massprop-универсальный-инструмент-для-твердотельных-моделей">Метод 1: Команда MASSPROP — универсальный инструмент для твердотельных моделей</a></li><li><a href="#метод-2-использование-региона-region-для-плоских-и-экструдированных-деталей">Метод 2: Использование региона (REGION) для плоских и экструдированных деталей</a></li><li><a href="#метод-3-расчет-объема-через-свойства-материалов-для-сборок">Метод 3: Расчет объема через свойства материалов (для сборок)</a></li><li><a href="#метод-4-скрипты-lisp-для-пакетной-обработки-деталей">Метод 4: Скрипты LISP для пакетной обработки деталей</a></li><li><a href="#метод-5-расчет-объема-через-сечения-для-сложных-поверхностей">Метод 5: Расчет объема через сечения (для сложных поверхностей)</a></li><li><a href="#сравнение-методов-какой-выбрать-для-вашей-задачи">Сравнение методов: какой выбрать для вашей задачи</a></li><li><a href="#faq-частые-вопросы-по-расчету-объемов-в-autocad">FAQ: Частые вопросы по расчету объемов в AutoCAD</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><h2 id="почему-автомобильным-инженерам-нужно-уметь-считать-объемы-в-autocad">Почему автомобильным инженерам нужно уметь считать объемы в AutoCAD</h2>
+
+<p>Расчет объема трехмерных моделей в <em>AutoCAD</em> — критически важный навык для специалистов, работающих с автомобильными деталями. От точности этих вычислений зависит всё: от веса будущей запчасти до расхода материала при 3D-печати прототипов кузовных панелей или элементов подвески. Например, ошибка в расчете объема поршня двигателя может привести к дисбалансу в работе цилиндров, а неверный объем топливного бака — к проблемам с запасом хода.</p>
+
+<p>В автомобильной индустрии <strong>AutoCAD</strong> используется не только для черчения, но и для подготовки данных для ЧПУ-станков, литья под давлением или аддитивных технологий. Знание нескольких методов расчета объема позволяет выбрать оптимальный подход в зависимости от сложности детали: от простого цилиндра амортизатора до сложной геометрии турбинного колеса. В этой статье мы разберем 5 рабочих способов — от базовых команд до скриптов для пакетной обработки.</p>
+
+<p>Особое внимание уделим нюансам, которые часто упускают даже опытные пользователи: как учитывать полости в деталях, почему объем тела может отличаться от объема его оболочки, и как избежать ошибок при работе с импортированными STEP-файлами от поставщиков запчастей. Начнем с самого универсального метода.</p>
+
+<h2 id="метод-1-команда-massprop-универсальный-инструмент-для-твердотельных-моделей">Метод 1: Команда MASSPROP — универсальный инструмент для твердотельных моделей</h2>
+
+<p>Команда <code>MASSPROP</code> (или <code>МАССХАР</code> в русифицированной версии) — это стандартный способ получить физические свойства 3D-тела, включая объем. Она работает с <strong>твердотельными моделями</strong> (solid), созданными через выдавливание, вращение или лофтинг. Алгоритм действий:</p>
+
+<ol>
+  <li>Выделите 3D-тело в пространстве модели (если тел несколько — выделяйте по одному).</li>
+  <li>Введите в командной строке <code>MASSPROP</code> и нажмите <code>Enter</code>.</li>
+  <li>В открывшемся текстовом окне найдите строку <code>Volume</code> — это и есть искомый объем в кубических единицах текущей системы координат.</li>
+</ol>
+
+<p>Для автомобильных деталей важно помнить: <code>MASSPROP</code> учитывает только "сплошную" часть тела. Если ваша модель имеет внутренние полости (например, охлаждающие каналы в головке блока цилиндров), их объем будет включен в общий расчет. Чтобы получить объем только материала, нужно либо вычесть объем полостей, либо использовать <code>SUBTRACT</code> для создания "пустот".</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если после команды MASSPROP объем отображается как 0, проверьте, является ли объект действительно 3D-телом. Часто пользователи путают тела (solids) с поверхностями (surfaces) или сетками (meshes).</p></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Тип детали</th>
+      <th>Пример</th>
+      <th>Нюансы расчета MASSPROP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Литые детали</td>
+      <td>Корпус коробки передач</td>
+      <td>Учитывает объем литников и прибылей, если они смоделированы</td>
+    </tr>
+    <tr>
+      <td>Тонкостенные</td>
+      <td>Выхлопная труба</td>
+      <td>Объем рассчитывается по средней линии стенки, возможны погрешности</td>
+    </tr>
+    <tr>
+      <td>Сборки</td>
+      <td>Двигатель в сборе</td>
+      <td>Требуется предварительное объединение (<code>UNION</code>) или расчет по отдельности</td>
+    </tr>
+    <tr>
+      <td>Детали с резьбой</td>
+      <td>Шпилька крепления колеса</td>
+      <td>Мелкие витки резьбы могут игнорироваться при низкой точности модели</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>⚠️ <strong>Внимание:</strong> При работе с импортированными моделями (STEP, IGES) после команды <code>MASSPROP</code> иногда появляется предупреждение <code>"Body is not a valid solid"». Это означает, что тело имеет дефекты геометрии (например, несовпадающие грани). Исправьте модель командой <code>SOLIDEDIT</code> → <code>Body</code> → <code>Check</code>.</blockquote>
+
+<h2 id="метод-2-использование-региона-region-для-плоских-и-экструдированных-деталей">Метод 2: Использование региона (REGION) для плоских и экструдированных деталей</h2>
+
+<p>Если ваша деталь представляет собой экструдированный профиль (например, лонжерон кузова или ребро жесткости), можно рассчитать объем через площадь сечения и высоту выдавливания. Этот метод полезен, когда тело еще не создано, но есть его 2D-контур.</p>
+
+<p>Последовательность действий:</p>
+<ol>
+  <li>Создайте замкнутый контур детали в 2D (например, сечение лонжерона).</li>
+  <li>Преобразуйте его в регион командой <code>REGION</code>.</li>
+  <li>Узнайте площадь региона командой <code>LIST</code> (или <code>СПИСОК</code>).</li>
+  <li>Умножьте площадь на высоту выдавливания (используйте калькулятор или команду <code>CAL</code>).</li>
+</ol>
+
+<p>Формула для расчета:</p>
+<pre><code>Объем = Площадь_сечения × Высота_выдавливания</code></pre>
+
+<p>Этот метод часто используют при проектировании <strong>профилей для роликовой сварки</strong> или <strong>трубчатых рам</strong>, где важно заранее оценить массу погонного метра. Например, для расчета веса алюминиевого бампера достаточно знать площадь его поперечного сечения и длину.</p>
+
+
+<p>Создать замкнутый контур без самопересечений|Проверить отсутствие разрывов командой PEDIT → Join|Преобразовать в регион (REGION)|Убедиться, что регион один (команда LIST покажет количество объектов)--></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если контур содержит сплайны или дуги, команда <code>REGION</code> может создать несколько отдельных регионов вместо одного. В этом случае используйте <code>UNION</code> для их объединения перед расчетом площади.</blockquote>
+
+<h2 id="метод-3-расчет-объема-через-свойства-материалов-для-сборок">Метод 3: Расчет объема через свойства материалов (для сборок)</h2>
+
+<p>Когда вы работаете со <strong>сборкой деталей</strong> (например, с узлом подвески или коробкой передач), удобно использовать <em>Диспетчер материалов</em> (<code>MATERIALS</code>). Этот метод не только покажет объем, но и автоматически рассчитает массу с учетом плотности материала.</p>
+
+<p>Инструкция:</p>
+<ol>
+  <li>Откройте панель <code>Мaterials</code> (вкладка <code>View</code> → <code>Palettes</code> → <code>Materials</code>).</li>
+  <li>Назначьте материалы всем деталям сборки (например, сталь для вала, алюминий для корпуса).</li>
+  <li>Выделите сборку и откройте <code>Physical Materials Properties</code> (значок весов на панели материалов).</li>
+  <li>В таблице найдите столбец <code>Volume</code> — там будут объемы каждой детали и общий.</li>
+</ol>
+
+<p>Преимущество этого метода в том, что он учитывает <mark>реальные физические свойства материалов из библиотеки AutoCAD</mark>, включая плотность, что критично для расчета центра масс автомобильных узлов. Например, при проектировании карданного вала важно знать не только его объем, но и распределение массы по длине.</p>
+
+<div class="poll-widget" id="poll-e847ea6b"><div class="poll-widget-question">📊 Какой метод расчета объема вы используете чаще?</div><div class="poll-widget-option" data-poll="e847ea6b" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Команда MASSPROP</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e847ea6b" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Через регион и экструзию</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e847ea6b" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Свойства материалов</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e847ea6b" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Скрипты LISP</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e847ea6b" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой способ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<ul>
+  <li>🔧 <strong>Для двигателей:</strong> Позволяет быстро оценить массу поршневой группы с учетом материалов (алюминиевый поршень vs стальной шатун).</li>
+  <li>🚗 <strong>Для кузовных деталей:</strong> Помогает сравнить вес стальной и композитной версий бампера.</li>
+  <li>⚙️ <strong>Для трансмиссии:</strong> Автоматически суммирует объемы шестерен и валов в КПП.</li>
+</ul>
+
+<h2 id="метод-4-скрипты-lisp-для-пакетной-обработки-деталей">Метод 4: Скрипты LISP для пакетной обработки деталей</h2>
+
+<p>Если вам нужно рассчитать объемы десятков или сотен деталей (например, при подготовке спецификации для заказа литья), ручные методы становятся неэффективными. В этом случае поможет <strong>автоматизация через LISP</strong>.</p>
+
+<p>Пример простого скрипта для вывода объемов всех тел в модели:</p>
+<pre><code>(defun c:volumes (/ ss i ent vol total)
+<p>(setq ss (ssget '((0 . "3DSOLID"))))</p>
+<p>(setq i 0)</p>
+<p>(setq total 0)</p>
+<p>(repeat (sslength ss)</p>
+<p>(setq ent (ssname ss i))</p>
+<p>(setq vol (vla-get-Volume (vlax-ename->vla-object ent)))</p>
+<p>(setq total (+ total vol))</p>
+<p>(princ (strcat "\nОбъем тела " (itoa (setq i (1+ i))) ": " (rtos vol 2 4)))</p>
+<p>)</p>
+<p>(princ (strcat "\nОбщий объем: " (rtos total 2 4)))</p>
+<p>(princ)</p>
+<p>)</code></pre></p>
+
+<p>Чтобы использовать этот скрипт:</p>
+<ol>
+  <li>Скопируйте код в текстовый редактор и сохраните как <code>volumes.lsp</code>.</li>
+  <li>Загрузите в AutoCAD командой <code>APPLOAD</code>.</li>
+  <li>Введите в командной строке <code>VOLUMES</code>.</li>
+</ol>
+
+<p>Скрипт последовательно переберет все 3D-тела в чертеже, выведет их объемы в текстовое окно и подсчитает суммарный объем. Это незаменимо при работе с <strong>каталогами деталей</strong> или подготовке данных для <em>CAE-анализа</em> (например, расчета прочности рамы автомобиля).</p>
+
+<details class="faq-item"><summary>Как модифицировать скрипт для вывода в Excel</summary><div class="faq-answer"><p>
+<p>Добавьте в начало скрипта строку (vl-load-com), а перед циклом — (setq f (open "volumes.csv" "w")). Внутри цикла используйте (write-line (strcat (rtos vol) ",") f), а в конце — (close f).</p></div></details></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Скрипты LISP могут некорректно работать с динамическими блоками или телами, созданными через <code>MESH</code>. Перед запуском проверьте, что все объекты являются стандартными 3D-телами (команда <code>LIST</code> должна показывать тип <code>3DSOLID</code>).</blockquote>
+
+<h2 id="метод-5-расчет-объема-через-сечения-для-сложных-поверхностей">Метод 5: Расчет объема через сечения (для сложных поверхностей)</h2>
+
+<p>Для деталей со сложной геометрией, которые нельзя описать стандартными телами (например, <strong>лопасти турбины</strong> или <strong>эргономичные ручки дверей</strong>), применяют метод сечений. Он основан на разбиении модели на тонкие слои и суммировании их объемов.</p>
+
+<p>Алгоритм:</p>
+<ol>
+  <li>Создайте несколько параллельных секущих плоскостей вдоль оси детали (команда <code>SECTIONPLANE</code>).</li>
+  <li>Для каждого сечения получите площадь командой <code>AREA</code>.</li>
+  <li>Умножьте каждую площадь на расстояние между сечениями (шаг).</li>
+  <li>Суммируйте все полученные значения.</li>
+</ol>
+
+<p>Точность этого метода зависит от количества сечений: чем их больше, тем точнее результат. Для автомобильных деталей обычно достаточно 10–20 сечений. Например, при расчете объема <em>впускного коллектора</em> с изогнутой геометрией этот метод дает погрешность не более 2–3%, что приемлемо для инженерных расчетов.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Метод сечений незаменим для обратного инжиниринга, когда у вас есть только облако точек или STL-модель без параметрической истории.</p></div>
+
+<ul>
+  <li>📏 <strong>Для кузовных панелей:</strong> Позволяет оценить объем материала для гибки или штамповки.</li>
+  <li>🌀 <strong>Для деталей с переменной толщиной:</strong> Например, для расчета объема резины в амортизаторе.</li>
+  <li>🔄 <strong>Для симметричных деталей:</strong> Достаточно рассчитать объем половины и удвоить результат.</li>
+</ul>
+
+<h2 id="сравнение-методов-какой-выбрать-для-вашей-задачи">Сравнение методов: какой выбрать для вашей задачи</h2>
+
+<p>Выбор метода зависит от типа детали, требуемой точности и этапа проектирования. Ниже представлена сравнительная таблица, которая поможет определиться с оптимальным подходом.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Метод</th>
+      <th>Тип детали</th>
+      <th>Точность</th>
+      <th>Скорость</th>
+      <th>Когда использовать</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MASSPROP</td>
+      <td>Твердотельные модели</td>
+      <td>Высокая</td>
+      <td>Быстро</td>
+      <td>Для большинства стандартных деталей</td>
+    </tr>
+    <tr>
+      <td>REGION + экструзия</td>
+      <td>Профили, трубы</td>
+      <td>Средняя</td>
+      <td>Очень быстро</td>
+      <td>Для предварительных расчетов</td>
+    </tr>
+    <tr>
+      <td>Свойства материалов</td>
+      <td>Сборки, узлы</td>
+      <td>Высокая</td>
+      <td>Средне</td>
+      <td>Когда нужна масса с учетом плотности</td>
+    </tr>
+    <tr>
+      <td>LISP-скрипты</td>
+      <td>Множество деталей</td>
+      <td>Высокая</td>
+      <td>Медленно (но автоматизировано)</td>
+      <td>Для пакетной обработки каталогов</td>
+    </tr>
+    <tr>
+      <td>Метод сечений</td>
+      <td>Сложные поверхности</td>
+      <td>Зависит от количества сечений</td>
+      <td>Долго</td>
+      <td>Для обратного инжиниринга</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Для автомобильных инженеров наиболее универсальным является комбинация <code>MASSPROP</code> для отдельных деталей и <em>свойств материалов</em> для сборок. Например, при проектировании <strong>выхлопной системы</strong> удобно рассчитать объем каждого колена отдельно, а затем суммировать массу с учетом нержавеющей стали.</p>
+
+<p>Если вы работаете с <strong>3D-сканированными моделями</strong> (например, восстановленными деталями ретро-авто), метод сечений или специализированные плагины вроде <em>AutoCAD Plant 3D</em> могут дать более точные результаты, чем стандартные инструменты.</p>
+
+<h2 id="faq-частые-вопросы-по-расчету-объемов-в-autocad">FAQ: Частые вопросы по расчету объемов в AutoCAD</h2>
+
+<details>
+  <summary>Почему команда MASSPROP показывает объем 0 для моей модели?</summary>
+  <p>Это типичная проблема, когда объект не является 3D-телом. Проверьте:</p>
+  <ul>
+    <li>Что модель создана как <code>Solid</code>, а не <code>Surface</code> или <code>Mesh</code> (команда <code>LIST</code> покажет тип объекта).</li>
+    <li>Что тело не имеет дефектов геометрии (используйте <code>SOLIDEDIT</code> → <code>Check</code>).</li>
+    <li>Что модель не является динамическим блоком (разверните его командой <code>BEDIT</code>).</li>
+  </ul>
+  <p>Если модель импортирована из STEP/IGES, попробуйте пересохранить её в DWG или воспользуйтесь командой <code>_AUDIT</code> для исправления ошибок.</p>
+</details>
+
+<details>
+  <summary>Как рассчитать объем полости внутри детали (например, охлаждающего канала)?</summary>
+  <p>Есть два подхода:</p>
+  <ol>
+    <li><strong>Вычитание:</strong> Создайте вспомогательное тело, повторяющее форму полости, и вычтите его из основной детали командой <code>SUBTRACT</code>. Затем используйте <code>MASSPROP</code> для результата.</li>
+    <li><strong>Прямой расчет:</strong> Если полость смоделирована как отдельное тело, просто примените к ней <code>MASSPROP</code>.</li>
+  </ol>
+  <p>Для сложных каналов (например, в <em>головке блока цилиндров</em>) удобно использовать команду <code>INTERFERE</code>, чтобы создать тело пересечения, а затем вычесть его из основной детали.</p>
+</details>
+
+<details>
+  <summary>Можно ли рассчитать объем по STL-модели?</summary>
+  <p>Да, но с ограничениями. STL-файлы представляют собой сетку (mesh), и стандартные команды вроде <code>MASSPROP</code> к ним не применяются. Варианты:</p>
+  <ul>
+    <li>Импортируйте STL и преобразуйте в тело командой <code>MESHSMOOTH</code> → <code>Convert to Solid</code> (требуется <em>AutoCAD 2020+</em>).</li>
+    <li>Используйте метод сечений (описан выше).</li>
+    <li>Примените специализированные плагины, например, <em>MeshLab</em> для предварительной обработки.</li>
+  </ul>
+  <p>Учтите, что точность будет зависеть от плотности сетки: для автомобильных деталей рекомендуется не менее 10 000 полигонов.</p>
+</details>
+
+<details>
+  <summary>Как экспортировать объемы деталей в Excel для дальнейшего анализа?</summary>
+  <p>Самый простой способ — использовать <strong>Data Extraction</strong>:</p>
+  <ol>
+    <li>Введите команду <code>DATAEXTRACTION</code>.</li>
+    <li>Выберите объекты (3D-тела) и нажмите <code>Next</code>.</li>
+    <li>В списке свойств отметьте <code>Volume</code>.</li>
+    <li>На шаге вывода выберите <code>Microsoft Excel</code>.</li>
+  </ol>
+  <p>Для автоматизации можно модифицировать LISP-скрипт из <strong>Метода 4</strong>, добавив экспорт в CSV.</p>
+</details>
+
+<details>
+  <summary>Почему объем тела в AutoCAD отличается от расчетов в SolidWorks или Inventor?</summary>
+  <p>Разница обычно связана с:</p>
+  <ul>
+    <li><strong>Точностью модели:</strong> В AutoCAD по умолчанию используется точность до 6 знаков после запятой, а в других CAD-системах может быть иначе.</li>
+    <li><strong>Методом триангуляции:</strong> При импорте/экспорте модели между программами поверхности аппроксимируются по-разному.</li>
+    <li><strong>Единицами измерения:</strong> Проверьте, что в обоих программах используются одинаковые единицы (мм, см, дюймы).</li>
+  </ul>
+  <p>Для критических деталей (например, <em>поршни двигателя</em>) рекомендуется кросс-проверка в двух CAD-системах или использование контрольных тел простой формы (куб, цилиндр) для калибровки.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#почему-автомобильным-инженерам-нужно-уметь-считать-объемы-в-autocad">Почему автомобильным инженерам нужно уметь считать объемы в AutoCAD</a></li><li><a href="#метод-1-команда-massprop-универсальный-инструмент-для-твердотельных-моделей">Метод 1: Команда MASSPROP — универсальный инструмент для твердотельных моделей</a></li><li><a href="#метод-2-использование-региона-region-для-плоских-и-экструдированных-деталей">Метод 2: Использование региона (REGION) для плоских и экструдированных деталей</a></li><li><a href="#метод-3-расчет-объема-через-свойства-материалов-для-сборок">Метод 3: Расчет объема через свойства материалов (для сборок)</a></li><li><a href="#метод-4-скрипты-lisp-для-пакетной-обработки-деталей">Метод 4: Скрипты LISP для пакетной обработки деталей</a></li><li><a href="#метод-5-расчет-объема-через-сечения-для-сложных-поверхностей">Метод 5: Расчет объема через сечения (для сложных поверхностей)</a></li><li><a href="#сравнение-методов-какой-выбрать-для-вашей-задачи">Сравнение методов: какой выбрать для вашей задачи</a></li><li><a href="#faq-частые-вопросы-по-расчету-объемов-в-autocad">FAQ: Частые вопросы по расчету объемов в AutoCAD</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/v/vi/vidy-avtomobilnykh-domkratov-dlya-legkovykh-avtomobilej.html" class="related-card">Виды автомобильных домкратов: выбор для легковых авто</a></li><li><a href="/articles/t/tr/truba-dymokhoda-dlya-burzhujki.html" class="related-card">Труба дымохода для буржуйки: выбор, монтаж и правила</a></li><li><a href="/articles/p/pr/proekt-garazha-na-2-mashiny-s-masterskoj-i-pogrebom.html" class="related-card">Проект гаража на 2 машины с мастерской и погребом: 50+ фото и схем 2026</a></li><li><a href="/articles/k/kr/krytyj-parking-v-spb.html" class="related-card">Крытый паркинг в СПБ: цены, адреса и отзывы водителей</a></li><li><a href="/articles/m/mo/mozhno-li-delat-polusukhuyu-styazhku-v-garazhe.html" class="related-card">Полусухая стяжка в гараже: технология, плюсы и нюансы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/v/vi/vidy-avtomobilnykh-domkratov-dlya-legkovykh-avtomobilej.html" class="related-bottom-card"><span class="related-bottom-title">Виды автомобильных домкратов: выбор для легковых авто</span><span class="related-bottom-desc">Обзор всех видов домкратов для легковых автомобилей. Сравнение ромбических, подкатных и надувных мод</span></a><a href="/articles/t/tr/truba-dymokhoda-dlya-burzhujki.html" class="related-bottom-card"><span class="related-bottom-title">Труба дымохода для буржуйки: выбор, монтаж и правила</span><span class="related-bottom-desc">Как выбрать трубу дымохода для буржуйки? Обзор материалов, схем монтажа, расчет тяги и требования бе</span></a><a href="/articles/p/pr/proekt-garazha-na-2-mashiny-s-masterskoj-i-pogrebom.html" class="related-bottom-card"><span class="related-bottom-title">Проект гаража на 2 машины с мастерской и погребом: 50+ фото и схем 2026</span><span class="related-bottom-desc">Готовые проекты гаражей на 2 авто с мастерской и погребом: планировка, размеры, материалы, сметы. Ск</span></a><a href="/articles/k/kr/krytyj-parking-v-spb.html" class="related-bottom-card"><span class="related-bottom-title">Крытый паркинг в СПБ: цены, адреса и отзывы водителей</span><span class="related-bottom-desc">Ищете надежный крытый паркинг в СПБ? Полный обзор тарифов, охраны и удобных мест для стоянки авто в </span></a><a href="/articles/m/mo/mozhno-li-delat-polusukhuyu-styazhku-v-garazhe.html" class="related-bottom-card"><span class="related-bottom-title">Полусухая стяжка в гараже: технология, плюсы и нюансы</span><span class="related-bottom-desc">Можно ли делать полусухую стяжку в гараже? Подробный разбор технологии, сравнение с бетоном, требова</span></a><a href="/articles/g/ga/garazh-naves-na-2-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Гараж-навес на 2 машины: 7 ключевых критериев выбора + цены 2026</span><span class="related-bottom-desc">Как выбрать навес для двух автомобилей: сравнение материалов (металл, поликарбонат), размеры, цены и</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как сделать чертеж из модели в NX: пошаговая инструкция — Авто Гид</title>
+    <meta name="description" content="Подробный гайд по созданию чертежей из 3D моделей в Siemens NX. Настройка видов, разрезов, размеров и оформление по ГОСТ.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-v-nx-sdelat-chertezh-iz-modeli.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как сделать чертеж из модели в NX: пошаговая инструкция">
+    <meta property="og:description" content="Подробный гайд по созданию чертежей из 3D моделей в Siemens NX. Настройка видов, разрезов, размеров и оформление по ГОСТ.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как сделать чертеж из модели в NX: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как сделать чертеж из модели в NX: полный гайд</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-рабочего-окружения-и-выбор-шаблона">Подготовка рабочего окружения и выбор шаблона</a></li><li><a href="#создание-и-настройка-базовых-видов">Создание и настройка базовых видов</a></li><li><a href="#работа-с-разрезами-и-выносными-элементами">Работа с разрезами и выносными элементами</a></li><li><a href="#нанесение-размеров-и-допусков">Нанесение размеров и допусков</a></li><li><a href="#таблицы-спецификации-и-оформление">Таблицы, спецификации и оформление</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современное машиностроение невозможно представить без связки трехмерного моделирования и двумерной конструкторской документации. Программный комплекс <em>Siemens NX</em> занимает лидирующие позиции в этой области, предоставляя инженерам мощнейшие инструменты для параметрического проектирования. Однако даже опытные пользователи иногда сталкиваются с трудностями при переходе от твердотельной модели к оформленному чертежу, соответствующему требованиям ЕСКД или ISO. Понимание логики работы модуля <strong>Drafting</strong> является ключевым навыком для любого конструктора.</p>
+
+<p>Процесс создания чертежа — это не просто автоматическая генерация линий, а осознанная работа по выделению нужных видов и нанесению размеров. В отличие от простых программ, <em>NX</em> требует от пользователя четкого понимания структуры сборки и свойств видов. Если вы только начинаете осваивать этот софт, важно сразу привыкать к правильному алгоритму действий. Ошибки на этапе настройки шаблона могут привести к необходимости переделывать всю документацию заново.</p>
+
+<p>В данной статье мы подробно разберем все этапы подготовки чертежной документации. Мы рассмотрим настройку рабочего окружения, создание видов, работу с разрезами и, конечно же, оформление размеров. Особое внимание уделим нюансам, которые часто упускают новички, но которые критически важны для профессиональной работы. Глубокое понимание <strong>ассоциативности</strong> изменений позволит вам экономить часы работы при внесении правок в конструкцию.</p>
+
+<h2 id="подготовка-рабочего-окружения-и-выбор-шаблона">Подготовка рабочего окружения и выбор шаблона</h2>
+
+<p>Первым шагом перед началом работы является правильный выбор начального шаблона. В <em>Siemens NX</em> шаблоны определяют не только формат листа, но и набор стилей, слоев и настроек отображения. Переход в режим черчения осуществляется через меню <code>Файл → Новый</code> или кнопку <code>Новый</code> на панели быстрого доступа. Важно выбрать шаблон, соответствующий стандартам вашего предприятия или требованиям заказчика.</p>
+
+<p>При выборе шаблона обращайте внимание на формат листа (А4, А3, А2 и т.д.) и ориентацию. Стандартные шаблоны часто содержат уже заполненную основную надпись, что значительно ускоряет процесс. Если вы работаете в крупной организации, убедитесь, что используете актуальную версию корпоративного шаблона. Неправильно выбранный формат может привести к проблемам при печати или экспорте в PDF.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Сохраните свой настроенный шаблон с пустой моделью как"User_Default" для быстрого старта новых проектов без потери личных настроек стилей.</p></div>
+
+<p>После выбора шаблона система предложит указать модель для создания чертежа. Это может быть отдельная деталь или целая сборка. <strong>Ассоциативная связь</strong> между моделью и чертежом устанавливается автоматически. Это означает, что любые изменения геометрии в 3D пространстве мгновенно отразятся на двумерном изображении. Однако стоит помнить, что удаление видов на чертеже никак не повлияет на исходную модель.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не меняйте имя файла модели после создания чертежа, не обновив пути в диспетчере ссылок, иначе связь между ними будет потеряна и виды станут пустыми.</p>
+</blockquote>
+
+<h2 id="создание-и-настройка-базовых-видов">Создание и настройка базовых видов</h2>
+
+<p>Основой любого чертежа являются виды. В <em>NX</em> управление видами происходит через панель <code>Видовые операции</code>, которая обычно расположена справа. Первым создается базовый вид, от которого строятся все остальные проекции. Вы можете выбрать стандартную ориентацию (спереди, сверху, слева) или настроить вид вручную, используя инструменты вращения и панорамирования.</p>
+
+<p>При создании вида важно правильно настроить масштаб отображения. Хотя масштаб можно изменить в любой момент, лучше сразу выбрать подходящий вариант, чтобы оценить компоновку на листе. Доступные масштабы выбираются из выпадающего списка или задаются пользовательским значением. Для сложных узлов часто требуется использование разных масштабов для разных видов.</p>
+
+<div class="poll-widget" id="poll-f3ce7741"><div class="poll-widget-question">📊 Какой масштаб вы используете чаще всего?</div><div class="poll-widget-option" data-poll="f3ce7741" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">1:1</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f3ce7741" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">1:2</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f3ce7741" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">2:1</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f3ce7741" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Важным параметром является стиль вида. Он определяет, какие линии будут видимыми, скрытыми, осевыми и т.д. Переключение между стилями осуществляется в диалоговом окне создания вида. Например, для вида сверху часто требуется показать скрытые линии, а для вида спереди — убрать их для чистоты изображения. Гибкость настроек <strong>стилей отображения</strong> позволяет адаптировать чертеж под любые нужды.</p>
+
+<p>После размещения базового вида можно быстро создать проекционные виды. Для этого достаточно выделить родительский вид и нажать соответствующую кнопку на панели инструментов. Система автоматически предложит разместить вид справа, слева, сверху или снизу, соблюдая правила проекционной связи. Это значительно ускоряет процесс создания стандартной тройки видов.</p>
+
+<h2 id="работа-с-разрезами-и-выносными-элементами">Работа с разрезами и выносными элементами</h2>
+
+<p>Для отображения внутренней структуры детали или сборки недостаточно только внешних проекций. Здесь на помощь приходят разрезы. В <em>NX</em> существует несколько типов разрезов: простой, смещенный, по контуру, разрыв. Выбор типа зависит от геометрии объекта и требований к читаемости чертежа. Создание разреза начинается с указания линии секущей плоскости на родительском виде.</p>
+
+<p>Особое внимание следует уделить линиям штриховки. Программа автоматически определяет замкнутые области и заполняет их штриховкой согласно материалу. Однако при работе со сборками часто возникает необходимость изменить угол или шаг штриховки для смежных деталей, чтобы они визуально не сливались. Редактирование параметров штриховки доступно через двойной клик по объекту.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка перед созданием разреза</h4><label class="check-item"><input type="checkbox"><span>Выбрать родительский вид</span></label><label class="check-item"><input type="checkbox"><span>Определить линию секущей плоскости</span></label><label class="check-item"><input type="checkbox"><span>Задать направление взгляда</span></label><label class="check-item"><input type="checkbox"><span>Настроить стиль штриховки</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>Выносные элементы (деталировки) позволяют увеличить масштаб отдельных, мелких участков конструкции. Это незаменимый инструмент для отображения резьб, мелких отверстий или сложных профилей. При создании выносного элемента вы очерчиваете область на родительском виде, а система генерирует новый вид с заданным увеличением. Важно корректно подписывать такие виды, указывая буквенное обозначение.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип элемента</th>
+<th>Назначение</th>
+<th>Особенности настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Простой разрез</td>
+<td>Показать внутренность вдоль одной линии</td>
+<td>Требует задания двух точек</td>
+</tr>
+<tr>
+<td>Смещенный разрез</td>
+<td>Разрез по ломаной линии</td>
+<td>Нужно указать несколько сегментов</td>
+</tr>
+<tr>
+<td>Выносной элемент</td>
+<td>Увеличение фрагмента</td>
+<td>Важно выбрать правильный масштаб</td>
+</tr>
+<tr>
+<td>Разрез по контуру</td>
+<td>Сечение сложной формы</td>
+<td>Используется сплайн или кривая</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>⚠️ Внимание: При создании смещенного разреза следите, чтобы линия разреза не пересекала ребра деталей под острыми углами, иначе штриховка может построиться некорректно.</p>
+</blockquote>
+
+<h2 id="нанесение-размеров-и-допусков">Нанесение размеров и допусков</h2>
+
+<p>Нанесение размеров — самый трудоемкий этап создания чертежа. <em>Siemens NX</em> предлагает интеллектуальноеование, которое автоматически определяет тип размера (диаметр, радиус, расстояние). Инструмент <strong>Интеллектуальный размер</strong> позволяет быстро размещать основные габариты. При наведении курсора на геометрию система подсвечивает возможные варианты размеров.</p>
+
+<p>Важно соблюдать правила оформления: размеры не должны пересекаться, цепочки размеров должны быть замкнуты там, где это необходимо, а справочные размеры помечены соответствующим образом. Для массового нанесения размеров можно использовать функцию <code>Размеры по виду</code>, которая автоматически создаст размеры, аналогичные тем, что были в 3D модели, если они были созданы в модуле PMI.</p>
+
+<p>Допуски и шероховатость поверхности добавляются через отдельные инструменты на вкладке <code>Главная</code>. Вы можете выбрать допуск из стандартного ряда или ввести его вручную. Символы шероховатости привязываются к граням или линиям вида. При изменении модели текстовые значения размеров обновятся автоматически, но символы шероховатости могут потребовать ручной корректировки положения.</p>
+
+<details class="faq-item"><summary>Секрет быстрой правки размеров</summary><div class="faq-answer"><p>Используйте текстовый редактор размеров для пакетного изменения шрифта сразу для всех выделенных размеров, а не правьте каждый по отдельности.</p></div></details>
+
+<p>Для оформления посадок и допусков формы и расположения поверхностей используется специализированный инструментарий. Он позволяет создавать сложные обозначения в соответствии с ГОСТ или ISO. Особое внимание стоит уделить базированию: без правильно указанных баз допуски формы не имеют смысла. В <em>NX</em> можно создавать ассоциативные базы, которые следуют за геометрией при изменениях.</p>
+
+<h2 id="таблицы-спецификации-и-оформление">Таблицы, спецификации и оформление</h2>
+
+<p>Чертеж сборки немыслим без спецификации. В <em>NX</em> таблицы создаются динамически на основе данных модели. Вы можете настроить шаблон таблицы так, чтобы она автоматически подтягивала наименования, количество, материал и массу деталей. Это исключает ошибки ручного ввода и гарантирует актуальность данных. Таблица может быть размещена на любом листе чертежа.</p>
+
+<p>Помимо спецификации, на чертеж часто необходимо добавить технические требования, таблицу шероховатостей или список покупных изделий. Текстовые блоки в <em>NX</em> поддерживают форматирование и могут быть привязаны к определенным точкам листа. Для нумерации позиций используется инструмент <strong>Позиция</strong>, который позволяет создавать выноски с номерами, соответствующими строкам спецификации.</p>
+
+<p>Оформление рамки и основной надписи обычно происходит автоматически при выборе шаблона. Однако при необходимости вы можете редактировать атрибуты основной надписи, заполняя поля"Обозначение","Литера","Масса". Эти данные могут передаваться в PLM-системы. Важно проверять заполняемость всех обязательных полей перед выпуском документа в производство.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Автоматическая генерация спецификации на основе структуры сборки — главное преимущество параметрического проектирования, устраняющее человеческий фактор при подсчете количества деталей.</p></div>
+
+<p>Завершающим этапом оформления является проверка на наличие пересечений линий, читаемость шрифтов и соответствие стандартам предприятия. Часто требуется скрыть некоторые линии или изменить их тип для улучшения восприятия чертежа. Инструменты редактирования видов позволяют делать это без влияния на 3D модель.</p>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Как обновить чертеж, если я изменил 3D модель?</summary>
+<p>В большинстве случаев <em>Siemens NX</em> обновляет виды автоматически в реальном времени. Если виды не обновились, найдите в навигаторе чертежа узел с названием чертежа, нажмите на него правой кнопкой мыши и выберите пункт <code>Обновить</code> или используйте горячую клавишу <code>F5</code>.</p>
+</details>
+
+<details>
+<summary>Можно ли сделать чертеж сразу для нескольких деталей на одном листе?</summary>
+<p>Да, это возможно. При создании новых видов вы можете выбирать разные модели из открытых сессий или из файловой системы. Просто добавьте базовый вид первой детали, а затем, не создавая новый лист, добавьте базовый вид второй детали, выбрав соответствующий файл.</p>
+</details>
+
+<details>
+<summary>Почему штриховка на разрезе выглядит некорректно или исчезла?</summary>
+<p>Чаще всего проблема кроется в настройках стиля вида. Проверьте, включена ли опция отображения штриховки в диалоге стиля вида. Также убедитесь, что секущая плоскость действительно пересекает тело детали, а не проходит по касательной или в пустоте.</p>
+</details>
+
+<details>
+<summary>Как экспортировать чертеж в формат DWG или DXF для AutoCAD?</summary>
+<p>Для этого используйте команду <code>Файл → Экспорт → AutoCAD DXF/DWG</code>. В настройках экспорта важно выбрать правильный масштаб (обычно 1:1) и опцию"Создать новые виды", чтобы получить чистые 2D линии без потери данных.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#подготовка-рабочего-окружения-и-выбор-шаблона">Подготовка рабочего окружения и выбор шаблона</a></li><li><a href="#создание-и-настройка-базовых-видов">Создание и настройка базовых видов</a></li><li><a href="#работа-с-разрезами-и-выносными-элементами">Работа с разрезами и выносными элементами</a></li><li><a href="#нанесение-размеров-и-допусков">Нанесение размеров и допусков</a></li><li><a href="#таблицы-спецификации-и-оформление">Таблицы, спецификации и оформление</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/m/mo/mozhno-li-vernut-avtokredit-obratno-v-bank.html" class="related-card">Можно ли вернуть автокредит в банк: законные способы</a></li><li><a href="/articles/k/ka/kak-shit-mononityu-vruchnuyu.html" class="related-card">Как шить мононитью вручную: секреты незаметных швов</a></li><li><a href="/articles/t/tv/tvoya-mashina-po-znaku-zodiaka.html" class="related-card">Твоя машина по знаку зодиака: какой авто выбрать</a></li><li><a href="/articles/e/es/esli-stiralnaya-mashinka-ne-slivaet-vodu-v-chem-problema.html" class="related-card">Стиральная машина не сливает воду: причины и ремонт</a></li><li><a href="/articles/k/ka/kak-snyat-mashinu-s-sebya-posle-prodazhi-v-gosuslugakh.html" class="related-card">Как снять машину с учета после продажи: пошаговая инструкция 2026</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/m/mo/mozhno-li-vernut-avtokredit-obratno-v-bank.html" class="related-bottom-card"><span class="related-bottom-title">Можно ли вернуть автокредит в банк: законные способы</span><span class="related-bottom-desc">Узнайте, можно ли вернуть автокредит обратно в банк. Законные способы расторжения договора, возврат </span></a><a href="/articles/k/ka/kak-shit-mononityu-vruchnuyu.html" class="related-bottom-card"><span class="related-bottom-title">Как шить мононитью вручную: секреты незаметных швов</span><span class="related-bottom-desc">Подробная инструкция, как шить мононитью вручную. Секреты выбора иглы, завязывания узлов и скрытия л</span></a><a href="/articles/t/tv/tvoya-mashina-po-znaku-zodiaka.html" class="related-bottom-card"><span class="related-bottom-title">Твоя машина по знаку зодиака: какой авто выбрать</span><span class="related-bottom-desc">Подбор идеального автомобиля по знаку зодиака. Астрологический анализ совместимости характера водите</span></a><a href="/articles/e/es/esli-stiralnaya-mashinka-ne-slivaet-vodu-v-chem-problema.html" class="related-bottom-card"><span class="related-bottom-title">Стиральная машина не сливает воду: причины и ремонт</span><span class="related-bottom-desc">Почему стиральная машинка не сливает воду? Полный гид по поиску неисправностей: от чистки фильтров д</span></a><a href="/articles/k/ka/kak-snyat-mashinu-s-sebya-posle-prodazhi-v-gosuslugakh.html" class="related-bottom-card"><span class="related-bottom-title">Как снять машину с учета после продажи: пошаговая инструкция 2026</span><span class="related-bottom-desc">Пошаговый алгоритм снятия авто с учета через Госуслуги после продажи. Узнайте, как избежать штрафов </span></a><a href="/articles/p/po/pochemu-prygaet-baraban-v-stiralnoj-mashine-pri-otzhime.html" class="related-bottom-card"><span class="related-bottom-title">Почему прыгает барабан в стиральной машине: причины и ремонт</span><span class="related-bottom-desc">Узнайте, почему прыгает барабан в стиральной машине при отжиме. Диагностика амортизаторов, подшипник</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>VirtualBox на Windows 7: установка и настройка — Авто Гид</title>
+    <meta name="description" content="Подробная инструкция по установке VirtualBox на Windows 7. Решения проблем с ошибками, настройка сети и создание первой виртуальной машины.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/u/us/ustanovka-virtualbox-na-windows-7.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="VirtualBox на Windows 7: установка и настройка">
+    <meta property="og:description" content="Подробная инструкция по установке VirtualBox на Windows 7. Решения проблем с ошибками, настройка сети и создание первой виртуальной машины.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">VirtualBox на Windows 7: установка и настройка</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Установка VirtualBox на Windows 7: полное руководство</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#требования-к-системе-и-подготовка-окружения">Требования к системе и подготовка окружения</a></li><li><a href="#загрузка-актуальной-версии-дистрибутива">Загрузка актуальной версии дистрибутива</a></li><li><a href="#процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</a></li><li><a href="#создание-и-настройка-первой-виртуальной-машины">Создание и настройка первой виртуальной машины</a></li><li><a href="#установка-гостевой-операционной-системы">Установка гостевой операционной системы</a></li><li><a href="#настройка-сети-и-общих-папок">Настройка сети и общих папок</a></li><li><a href="#решение-распространенных-проблем-и-ошибок">Решение распространенных проблем и ошибок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>Виртуализация остается одним из наиболее мощных инструментов в арсенале системного администратора и продвинутого пользователя. Несмотря на то, что Microsoft официально прекратила поддержку <em>Windows 7</em>, миллионы компьютеров по всему миру продолжают работать под управлением этой операционной системы. Для таких пользователей возможность запустить изолированную среду для тестирования программ или изучения Linux становится критически важной задачей, требующей грамотного подхода.</p>
+
+<p>Инструмент <strong>Oracle VM VirtualBox</strong> является бесплатным решением с открытым исходным кодом, которое идеально подходит для этих целей. Однако процесс его внедрения на устаревающие платформы может сопровождаться рядом нюансов, связанных с отсутствием новых драйверов и изменением архитектуры безопасности. В этой статье мы детально разберем каждый шаг, необходимый для успешной инсталляции и первичной конфигурации.</p>
+
+<p>Правильная настройка виртуальной машины позволяет запускать современные операционные системы внутри старой <em>Windows 7</em> без риска повредить основную файловую систему. Это открывает доступ к актуальному софту, веб-браузерам и инструментам разработки, которые уже не поддерживают старые платформы напрямую. Мы рассмотрим не только базовую установку, но и решение типичных ошибок, с которыми сталкиваются пользователи при работе с гипервизорами наlegacy-железе.</p>
+
+<h2 id="требования-к-системе-и-подготовка-окружения">Требования к системе и подготовка окружения</h2>
+<p>Прежде чем приступать к скачиванию установочных файлов, необходимо убедиться, что ваше оборудование соответствует минимальным требованиям. Хотя сам <strong>VirtualBox</strong> потребляет относительно мало ресурсов, запуск гостевой операционной системы потребует значительных мощностей от хоста. Ключевым моментом здесь является наличие поддержки аппаратной виртуализации в процессоре, технологии, известной как <em>Intel VT-x</em> или <em>AMD-V</em>.</p>
+
+<p>Часто бывает так, что процессор физически поддерживает виртуализацию, но функция отключена в BIOS/UEFI материнской платы. Без активации этого параметра <strong>гипервизор</strong> не сможет работать корректно, выдавая ошибки при запуске 64-битных гостевых систем. Вам потребуется перезагрузить компьютер, войти в настройки BIOS (обычно клавиша Del или F2) и найти раздел, связанный с процессором или безопасностью, чтобы переключить соответствующий флаг в положение <code>Enabled</code>.</p>
+
+<p>Также важно учитывать объем оперативной памяти. <em>Windows 7</em> сама по себе потребляет ресурсы, и если вы планируете запустить внутри нее еще одну ОС, желательно иметь не менее 4 ГБ ОЗУ, а лучше 8 ГБ. Выделение слишком малого объема памяти приведет к торможению гостевой системы, а выделение слишком большого — к нестабности работы хоста.</p>
+
+<div class="poll-widget" id="poll-d7b1d095"><div class="poll-widget-question">📊 Какой объем оперативной памяти установлен на вашем компьютере?</div><div class="poll-widget-option" data-poll="d7b1d095" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">2 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="d7b1d095" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">4 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="d7b1d095" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">8 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="d7b1d095" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">16 ГБ и более</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>На жестком диске необходимо зарезервировать свободное пространство. Виртуальные машины хранятся в виде больших файлов-контейнеров, размер которых может достигать десятков гигабайт. Рекомендуется иметь запас в 20-30 ГБ на диске, чтобы обеспечить комфортную работу и возможность создания <strong>снапшотов</strong> (точек восстановления).</p>
+
+<h2 id="загрузка-актуальной-версии-дистрибутива">Загрузка актуальной версии дистрибутива</h2>
+<p>Официальный сайт разработчика предоставляет несколько версий программного обеспечения. Для <em>Windows 7</em> важно выбрать совместимую версию, так как самые свежие релизы могут содержать код, не оптимизированный для старых ядер Windows. На момент написания статьи стабильной считается ветка 7.x, однако для старых систем иногда целесообразнее использовать проверенную версию 6.1, которая гарантирует лучшую совместимость с драйверами <strong>Windows 7</strong>.</p>
+
+<p>Перейдите на официальный ресурс Oracle и найдите раздел загрузок. Вам потребуется файл с расширением <code>.exe</code>, помеченный как "Windows hosts". Не перепутайте его с версиями для Linux или macOS. Также крайне рекомендуется сразу скачать пакет расширений <em>Oracle VM VirtualBox Extension Pack</em>. Этот компонент добавляет поддержку USB 2.0/3.0, шифрование дисков и улучшенные сетевые функции.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Скачивайте программное обеспечение только с официального сайта oracle.com. Использование сторонних сборок или модифицированных версий может привести к внедрению вредоносного кода или нестабильной работе виртуальной среды.</p>
+</blockquote>
+
+<p>Проверка целостности скачанного файла — хорошая практика. Хотя для домашнего использования это редко становится критичным, сравнение контрольной суммы SHA256 гарантирует, что файл не был поврежден при загрузке или изменен третьими лицами. После загрузки установщика можно переходить непосредственно к процессу инсталляции.</p>
+
+<h2 id="процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</h2>
+<p>Запустите скачанный исполняемый файл. Появится окно мастера установки, которое предложит выбрать компоненты. По умолчанию выбираются основные модули, включая графический интерфейс и командную строку. Отключать какие-либо стандартные компоненты не рекомендуется, если вы не являетесь опытным пользоватlnem, понимающим назначение каждого модуля.</p>
+
+<div class="checklist-block"><h4>☑️ Контрольный список перед установкой</h4><label class="check-item"><input type="checkbox"><span>Скачан установщик VirtualBox:Скачан Extension Pack:Освобождено место на диске:Закрыты другие программы:BIOS настроен правильно</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+
+<p>На этапе выбора пути установки оставьте значение по умолчанию (<code>C:\Program Files\Oracle\VirtualBox</code>), чтобы избежать проблем с путями к конфигурационным файлам в будущем. Далее мастер предложит создать ярлыки на рабочем столе и в меню "Пуск". Также будет запрошено разрешение на установку сетевых адаптеров. Это критически важный момент: <strong>виртуальный сетевой адаптер</strong> необходим для организации связи между хостом и гостевой системой.</p>
+
+<p>В процессе установки экран может моргнуть или на несколько секунд пропасть изображение. Это нормальное поведение, так как система перенастраивает сетевые драйверы. Если антивирус или брандмауэр <em>Windows 7</em> выдаст предупреждение о попытке установки сетевого драйвера, необходимо подтвердить действие. Без этого виртуальная машина не сможет выходить в интернет.</p>
+
+<p>После завершения копирования файлов система предложит запустить программу. Перед первым запуском целесообразно установить ранее загруженный <em>Extension Pack</em>. Для этого просто дважды кликните по файлу расширения, и VirtualBox автоматически предложит его интегрировать. Это обеспечит поддержку USB-устройств внутри виртуальной машины, что часто требуется для работы с флешками или ключами защиты.</p>
+
+<details class="faq-item"><summary>Что делать, если установка Extension Pack не удается?</summary><div class="faq-answer"><p>Если при установке пакета расширений возникает ошибка, убедитесь, что версия Extension Pack точно совпадает с версией основного программы. Также попробуйте запустить установщик от имени администратора, кликнув правой кнопкой мыши по файлу и выбрав соответствующий пункт меню. В редких случаях требуется временное отключение антивируса.</p></div></details>
+
+<h2 id="создание-и-настройка-первой-виртуальной-машины">Создание и настройка первой виртуальной машины</h2>
+<p>Запустите приложение через ярлык на рабочем столе. Перед вами откроется главный менеджер, где пока пусто. Нажмите кнопку <code>Создать</code> (или иконку синей звездочки), чтобы запустить мастер создания новой машины. Введите имя, например, "Ubuntu Test" или "Windows 10". Тип и версию операционной системы программа часто определяет автоматически по имени, но лучше перепроверить, чтобы <strong>гипервизор</strong> применил оптимальные настройки эмуляции.</p>
+
+<p>Следующий шаг — распределение ресурсов. Ползунок оперативной памяти регулирует объем RAM, который будет отнят у основной системы и отдан виртуальной. Не заходите в красную зону, помеченную предупреждением. Для комфортной работы современных ОС внутри <em>Windows 7</em> рекомендуется выделять минимум 2048 МБ, если позволяет физическая память.</p>
+
+<p>На этапе создания виртуального жесткого диска выберите тип файла <code>VDI (VirtualBox Disk Image)</code>. Это нативный формат, обеспечивающий лучшую производительность. Важный параметр — динамический или фиксированный размер. Динамический диск занимает место на физическом диске только по мере заполнения данными, что экономит пространство. Фиксированный сразу резервирует весь объем, что может быть быстрее, но менее удобно.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Минимальное значение</th>
+<th>Влияние на производительность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Оперативная память</td>
+<td>4096 МБ</td>
+<td>1024 МБ</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Видеопамять</td>
+<td>128 МБ</td>
+<td>16 МБ</td>
+<td>Среднее (графика)</td>
+</tr>
+<tr>
+<td>Ядра процессора</td>
+<td>2</td>
+<td>1</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Размер диска</td>
+<td>25 ГБ (динамический)</td>
+<td>10 ГБ</td>
+<td>Низкое</td>
+</tr>
+</tbody>
+</table>
+
+<p>После создания машины не спешите ее запускать. Выделите ее в списке и нажмите <code>Настроить</code>. В разделе "Система" можно отключить ненужные устройства (например, флоппи-дисковод), а в разделе "Дисплей" обязательно увеличьте объем видеопамяти до максимума (обычно 128 МБ) и включите 3D-ускорение. Это значительно улучшит отзывчивость интерфейса гостевой ОС.</p>
+
+<h2 id="установка-гостевой-операционной-системы">Установка гостевой операционной системы</h2>
+<p>Для начала работы виртуальной машине нужен установочный носитель. В настройках машины перейдите в раздел "Носители" и выберите пустой оптический привод. Справа нажмите на диск с изображением и выберите "Выбрать файл диска". Укажите путь к скачанному заранее ISO-образу нужной вам операционной системы.</p>
+
+<p>Теперь можно запустить машину кнопкой <code>Запустить</code>. Начнется процесс установки ОС так, как если бы вы делали это на реальном компьютере. Следуйте инструкциям установщика. После завершения установки и первой загрузки вы увидите, что разрешение экрана низкое, а буфер обмена не работает между системами. Это нормально, так как не установлены специальные драйверы.</p>
+
+<p>В меню окна запущенной виртуальной машины выберите <code>Устройства → Подключить образ диска Дополнений гостевой ОС</code>. Внутри гостевой системы откройте появившийся виртуальный CD-диск и запустите установку. Этот пакет драйверов, известный как <strong>Guest Additions</strong>, критически важен: он обеспечивает интеграцию мыши, общий буфер обмена, проброс папок и корректное изменение разрешения экрана.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Если после установки Guest Additions гостевая система перестала загружаться или работает нестабильно, попробуйте в настройках дисплея отключить 3D-ускорение. Некоторые старые видеокарты хоста плохо совместимы с эмуляцией 3D в новых версиях дополнений.</p>
+</blockquote>
+
+<p>После перезагрузки гостевой ОС изменения вступят в силу. Теперь вы можете перетаскивать файлы мышкой между окнами, копировать текст и использовать полное разрешение вашего монитора. Виртуальная машина готова к полноценной работе.</p>
+
+<h2 id="настройка-сети-и-общих-папок">Настройка сети и общих папок</h2>
+<p>По умолчанию VirtualBox использует режим NAT. В этом режиме виртуальная машина получает доступ в интернет через хост, но скрыта от внешней сети. Это безопасно, но если вам нужно, чтобы виртуалка была видна в локальной сети или имела свой IP-адрес, следует переключить режим на "Сетевой мост" (Bridged Adapter).</p>
+
+<p>Для обмена файлами без использования сети удобно настроить общие папки. В настройках машины перейдите в раздел "Общие папки", добавьте новую папку и укажите путь на реальном диске. Включите опции "Авто-подключение" и "Создать постоянную папку". Внутри гостевой системы (например, в Windows) эта папка появится как сетевой диск.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте режим "Сетевой мост", если вам нужно тестировать сетевые сервисы или если виртуальная машина должна быть доступна с других компьютеров в локальной сети. Для обычного серфинга и изоляции достаточно режима NAT.</p></div>
+
+<p>В <em>Windows 7</em> иногда возникают конфликты драйверов при переключении сетевых режимов. Если интернет пропал, попробуйте в диспетчере устройств гостевой системы удалить сетевой адаптер и обновить конфигурацию оборудования. Также убедитесь, что службы VirtualBox в основной системе запущены и работают корректно.</p>
+
+<h2 id="решение-распространенных-проблем-и-ошибок">Решение распространенных проблем и ошибок</h2>
+<p>Одной из частых ошибок на <em>Windows 7</em> является сообщение о том, что "AMD-V/VT-x не доступен". Если в BIOS все включено, проверьте, не запущен ли другой гипервизор, например, Hyper-V или старый VirtualPC. Они могут блокировать доступ к аппаратной виртуализации для других программ. Отключите компоненты Hyper-V в "Включении или отключении компонентов Windows".</p>
+
+<p>Другая проблема — медленная работа графического интерфейса. Убедитесь, что в настройках дисплея включен <strong>2D/3D ускоритель</strong> и установлено максимальное количество видеопамяти. Без установленных дополнений гостевой ОС (Guest Additions) графика всегда будет работать медленно, так как используется программная эмуляция.</p>
+
+<blockquote>
+<p>⚠️ Внимание: При удалении виртуальной машины через менеджер VirtualBox программа спросит, нужно ли удалять файлы диска. Будьте внимательны: если вы выберите "Удалить только регистрацию", файлы останутся на диске и будут занимать место. Выбирайте полное удаление, если машина больше не нужна.</p>
+</blockquote>
+
+<p>Если гостевая система не видит USB-флешку, проверьте, установлен ли Extension Pack. Затем в настройках машины в разделе USB добавьте фильтр для вашего устройства или просто включите контроллер USB 2.0/3.0. Иногда требуется вручную подключить устройство через меню "Устройства → USB" в работающей машине.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Главная причина большинства ошибок VirtualBox на Windows 7 — отсутствие установленных дополнений гостевой ОС (Guest Additions) и несовместимость старых драйверов видеокарты с новыми версиями гипервизора.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запустить Windows 10 или 11 внутри VirtualBox на Windows 7?</summary>
+<p>Да, это возможно. Однако производительность будет зависеть от ресурсов вашего компьютера. Для Windows 10/11 внутри виртуальной машины рекомендуется выделять не менее 4 ГБ оперативной памяти и 2 ядра процессора. Также обязательно должен быть включен режим EFI в настройках системы виртуальной машины для корректной установки Windows 11.</p>
+</details>
+
+<details>
+<summary>Почему VirtualBox не запускается на Windows 7 с ошибкой "api-ms-win-crt-runtime"?</summary>
+<p>Эта ошибка указывает на отсутствие необходимых библиотек Visual C++ Redistributable в основной системе. Windows 7 часто не имеет обновлений для поддержки новых стандартов C++. Вам необходимо скачать и установить пакет <em>Visual C++ Redistributable for Visual Studio 2015-2022</em> с официального сайта Microsoft.</p>
+</details>
+
+<details>
+<summary>Как увеличить размер виртуального диска, если место закончилось?</summary>
+<p>Увеличить размер можно через командную строку хоста, используя команду <code>VBoxManage modifyhd</code>. Однако проще и безопаснее добавить второй виртуальный диск в настройках машины или использовать утилиты управления дисками внутри гостевой ОС, если используется динамический диск, который можно расширить сторонним софтом.</p>
+</details>
+
+<details>
+<summary>Безопасно ли использовать VirtualBox для тестирования вирусов?</summary>
+<p>Виртуальная машина обеспечивает хорошую изоляцию, но не абсолютную. При использовании режима "Сетевой мост" или проброса папок вирус может теоретически перебраться на хост. Для тестирования malware рекомендуется использовать режим сети NAT, отключать общие папки и делать снапшоты перед запуском подозрительных файлов.</p>
+</details>
+
+<details>
+<summary>Какая версия VirtualBox лучше всего подходит для Windows 7?</summary>
+<p>Наиболее стабильной считается ветка 6.1.x, так как она дольше поддерживала старые ОС. Однако версия 7.x также работает на Windows 7 (требуется Service Pack 1 и обновления KB4474419/KB4490628). Если возникают проблемы с запуском версии 7, попробуйте откатиться на 6.1.30.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#требования-к-системе-и-подготовка-окружения">Требования к системе и подготовка окружения</a></li><li><a href="#загрузка-актуальной-версии-дистрибутива">Загрузка актуальной версии дистрибутива</a></li><li><a href="#процесс-установки-программного-обеспечения">Процесс установки программного обеспечения</a></li><li><a href="#создание-и-настройка-первой-виртуальной-машины">Создание и настройка первой виртуальной машины</a></li><li><a href="#установка-гостевой-операционной-системы">Установка гостевой операционной системы</a></li><li><a href="#настройка-сети-и-общих-папок">Настройка сети и общих папок</a></li><li><a href="#решение-распространенных-проблем-и-ошибок">Решение распространенных проблем и ошибок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/r/ra/ramnaya-konstruktsiya-avtomobilya-chto-eto.html" class="related-card">Рамная конструкция автомобиля: что это, плюсы и минусы</a></li><li><a href="/articles/m/ma/mashinka-samsung-ne-vklyuchaetsya.html" class="related-card">Стиральная машина Samsung не включается: причины и ремонт</a></li><li><a href="/articles/p/po/pochemu-ne-vklyuchaetsya-posudomojka-bosch.html" class="related-card">Почему не включается посудомойка Bosch: причины и ремонт</a></li><li><a href="/articles/o/ot/otvod-kondensata-v-drenazh-sushilnaya-mashina-chto-eto.html" class="related-card">Отвод конденсата в дренаж: как подключить сушильную машину</a></li><li><a href="/articles/n/ne/neispravnosti-kofemashiny-delonghi-caffe-corso.html" class="related-card">Неисправности кофемашины DeLonghi Caffè Corso: диагностика и ремонт</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/r/ra/ramnaya-konstruktsiya-avtomobilya-chto-eto.html" class="related-bottom-card"><span class="related-bottom-title">Рамная конструкция автомобиля: что это, плюсы и минусы</span><span class="related-bottom-desc">Что такое рамная конструкция автомобиля? Подробный разбор устройства, сравнение с несущим кузовом, п</span></a><a href="/articles/m/ma/mashinka-samsung-ne-vklyuchaetsya.html" class="related-bottom-card"><span class="related-bottom-title">Стиральная машина Samsung не включается: причины и ремонт</span><span class="related-bottom-desc">Машинка Самсунг не включается, не реагирует на кнопки и гудит? Разбираем 10 причин поломки, коды оши</span></a><a href="/articles/p/po/pochemu-ne-vklyuchaetsya-posudomojka-bosch.html" class="related-bottom-card"><span class="related-bottom-title">Почему не включается посудомойка Bosch: причины и ремонт</span><span class="related-bottom-desc">Посудомойка Bosch не включается? Разбираем причины: блокировка, скачки напряжения, неисправности пла</span></a><a href="/articles/o/ot/otvod-kondensata-v-drenazh-sushilnaya-mashina-chto-eto.html" class="related-bottom-card"><span class="related-bottom-title">Отвод конденсата в дренаж: как подключить сушильную машину</span><span class="related-bottom-desc">Полное руководство по подключению отвода конденсата в слив. Узнайте, как правильно организовать дрен</span></a><a href="/articles/n/ne/neispravnosti-kofemashiny-delonghi-caffe-corso.html" class="related-bottom-card"><span class="related-bottom-title">Неисправности кофемашины DeLonghi Caffè Corso: диагностика и ремонт</span><span class="related-bottom-desc">Полный разбор поломок DeLonghi Caffè Corso: коды ошибок, проблемы с заварочным блоком, помпой и нагр</span></a><a href="/articles/m/mo/mod-na-stroitelstvo-dayz.html" class="related-bottom-card"><span class="related-bottom-title">Мод на строительство в DayZ: ТОП модификаций и установка</span><span class="related-bottom-desc">Лучшие моды на строительство и базы в DayZ. Полная инструкция по установке через Steam Workshop, нас</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

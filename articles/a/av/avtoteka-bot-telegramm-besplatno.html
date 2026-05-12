@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Автотека Бот в Telegram: бесплатные функции и скрытые возможности — Авто Гид</title>
+    <meta name="description" content="Как пользоваться Автотекой в Telegram бесплатно: проверка авто, история штрафов, диагностика VIN. Полный гайд с инструкциями и лайфхаками для автомобилистов.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/a/av/avtoteka-bot-telegramm-besplatno.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Автотека Бот в Telegram: бесплатные функции и скрытые возможности">
+    <meta property="og:description" content="Как пользоваться Автотекой в Telegram бесплатно: проверка авто, история штрафов, диагностика VIN. Полный гайд с инструкциями и лайфхаками для автомобилистов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/registratsiya-i-dokumenty/">Регистрация и Документы</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Автотека Бот в Telegram: бесплатные функции и скрытые возможности</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Автотека в Telegram: как бесплатно проверить машину, штрафы и VIN через бота</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#что-такое-автотека-и-почему-её-бот-в-telegram-сталmust-have-для-автомобилистов">Что такое Автотека и почему её бот в Telegram сталmust-have для автомобилистов</a></li><li><a href="#как-подключить-и-настроить-бота-автотеки-в-telegram">Как подключить и настроить бота Автотеки в Telegram</a></li><li><a href="#какие-данные-можно-получить-бесплатно-через-бота">Какие данные можно получить бесплатно через бота</a></li><li><a href="#пошаговая-инструкция-как-проверить-машину-перед-покупкой">Пошаговая инструкция: как проверить машину перед покупкой</a></li><li><a href="#скрытые-функции-бота-что-умеет-автотека-но-не-афиширует">Скрытые функции бота: что умеет Автотека, но не афиширует</a></li><li><a href="#ограничения-и-подводные-камни-чего-не-умеет-бот">Ограничения и подводные камни: чего не умеет бот</a></li><li><a href="#альтернативы-автотеке-какие-боты-и-сервисы-стоит-попробовать">Альтернативы Автотеке: какие боты и сервисы стоит попробовать</a></li><li><a href="#faq-ответы-на-частые-вопросы-об-автотеке-в-telegram">FAQ: ответы на частые вопросы об Автотеке в Telegram</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><h2 id="что-такое-автотека-и-почему-её-бот-в-telegram-сталmust-have-для-автомобилистов">Что такое Автотека и почему её бот в Telegram сталmust-have для автомобилистов</h2>
+
+<p>Сервис <strong>Автотека</strong> давно известен как одна из самых надёжных платформ для проверки истории автомобилей в России. Но не все знают, что у неё есть официальный <em>бот в Telegram</em>, который позволяет получать часть функций <mark>совершенно бесплатно</mark> — без регистрации на сайте и без подписки. Это решение стало настоящим спасением для тех, кто хочет быстро проверить машину перед покупкой, узнать о штрафах или расшифровать <code>VIN</code>-код, не тратя деньги на платные отчёты.</p>
+
+<p>В отличие от мобильного приложения или веб-версии, бот в Telegram работает по упрощённой схеме: здесь нет лишних кнопок, рекламы или навязывания платных тарифов. Достаточно ввести государственный номер или <code>VIN</code>, и через несколько секунд вы получите базовую, но критически важную информацию. Например, можно узнать, числится ли автомобиль в угоне, есть ли ограничения на регистрационные действия или неоплаченные штрафы. А для владельцев машин бот становится удобным инструментом мониторинга — например, для отслеживания новых штрафов ГИБДД в реальном времени.</p>
+
+<p>Однако у бесплатной версии есть ограничения: некоторые данные (например, полная история владельцев или информация о ДТП) остаются платными. Но даже в таком урезанном формате бот <em>Автотеки</em> в Telegram способен сэкономить тысячи рублей — например, помогая избежать покупки проблемного авто или своевременно оплатить штраф со скидкой 50%. Далее разберём, как им пользоваться максимально эффективно.</p>
+
+<h2 id="как-подключить-и-настроить-бота-автотеки-в-telegram">Как подключить и настроить бота Автотеки в Telegram</h2>
+
+<p>Начать работу с ботом проще, чем кажется. Вам не потребуется скачивать дополнительные приложения или проходить сложную регистрацию. Достаточно выполнить несколько шагов:</p>
+
+<ul>
+  <li>🔍 Найдите бота по имени <code>@AvtocodBot</code> (официальный бот Автотеки) или перейдите по ссылке <a href="https://t.me/AvtocodBot">t.me/AvtocodBot</a>.</li>
+  <li>📱 Нажмите кнопку <strong>«Запустить»</strong> (Start) в чате с ботом.</li>
+  <li>🔑 Подтвердите свой номер телефона (это нужно для защиты от спама и мошенничества).</li>
+  <li>⚙️ Выберите раздел в главном меню: <code>«Проверка авто»</code>, <code>«Штрафы»</code> или <code>«VIN-расшифровка»</code>.</li>
+</ul>
+
+<p>После первого запуска бот предложит привязать ваш автомобиль по госномеру — это удобно, если вы планируете регулярно проверять штрафы или статус машины. Для проверки чужих авто (например, перед покупкой) привязка не обязательна.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если бот не отвечает или выдаёт ошибку, попробуйте перезапустить Telegram или очистить кэш приложения. Иногда проблемы связаны с перегрузкой серверов Автотеки в часы пик (с 10:00 до 18:00 по МСК).</p></div>
+
+<p>Важно: бот работает только с российскими номерами и <code>VIN</code>-кодами. Для иностранных автомобилей потребуется платная версия сервиса на сайте <em>Автотеки</em>. Также обратите внимание, что некоторые функции (например, проверка на угон) могут быть временно недоступны из-за обновлений баз данных ГИБДД.</p>
+
+<h2 id="какие-данные-можно-получить-бесплатно-через-бота">Какие данные можно получить бесплатно через бота</h2>
+
+<p>Бесплатная версия бота предоставляет ограниченный, но крайне полезный набор данных. Вот что вы можете узнать <strong>без оплаты</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Тип данных</th>
+      <th>Что показывает</th>
+      <th>Ограничения</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Штрафы ГИБДД</strong></td>
+      <td>Список неоплаченных штрафов с датами, статьями и суммами (со скидкой 50% в первые 20 дней).</td>
+      <td>Только для привязанного авто. История ограничена последними 6 месяцами.</td>
+    </tr>
+    <tr>
+      <td><strong>Проверка на угон</strong></td>
+      <td>Статус «В розыске» или «Чисто» по базе ГИБДД.</td>
+      <td>Нет информации о дате угона или регионе.</td>
+    </tr>
+    <tr>
+      <td><strong>Ограничения ГИБДД</strong></td>
+      <td>Наличие запретов на регистрационные действия (например, из-за неоплаченных кредитов).</td>
+      <td>Без детализации причины ограничения.</td>
+    </tr>
+    <tr>
+      <td><strong>Расшифровка VIN</strong></td>
+      <td>Базовая информация о марке, модели, годе выпуска и стране производителе.</td>
+      <td>Без данных о комплектации или истории ремонтов.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Для сравнения: платная версия на сайте <em>Автотеки</em> даёт доступ к полной истории владельцев, данным о ДТП, пробеге, таможенной истории (для импортных авто) и даже фотографиям из объявлений о продаже. Но для большинства задач — например, проверки машины перед покупкой на <em>Авито</em> или контроля своих штрафов — возможностей бота хватит с головой.</p>
+
+<div class="poll-widget" id="poll-32efa301"><div class="poll-widget-question">📊 Для чего вы чаще всего используете Автотеку?</div><div class="poll-widget-option" data-poll="32efa301" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Проверка авто перед покупкой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32efa301" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Контроль штрафов</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32efa301" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Расшифровка VIN</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="32efa301" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Обратите внимание: данные о штрафах обновляются с задержкой в 1–3 дня, так как бот получает информацию из государственных баз. Если вы только что получили штраф с камеры, он может отобразиться не сразу.</p>
+
+<h2 id="пошаговая-инструкция-как-проверить-машину-перед-покупкой">Пошаговая инструкция: как проверить машину перед покупкой</h2>
+
+<p>Покупка подержанного автомобиля — всегда риск. Даже если продавец выглядит честным, машину могли угнать, перебить номера или наложить на неё регистрационные ограничения. Бот <em>Автотеки</em> помогает минимизировать эти риски. Вот как им пользоваться:</p>
+
+<ol>
+  <li><strong>Шаг 1. Получите VIN или госномер</strong><br>
+<p>Попросите у продавца <code>VIN</code>-код (он указан в ПТС или на табличке под капотом) или просто сфотографируйте госномер. Для проверки достаточно любого из этих данных.</li></p>
+  <li><strong>Шаг 2. Введите данные в бота</strong><br>
+<p>В главном меню бота выберите <code>«Проверка авто»</code> → <code>«По VIN или номеру»</code> и введите полученные данные.</li></p>
+  <li><strong>Шаг 3. Анализируйте результаты</strong><br>
+<p>Обратите внимание на пункты:</p>
+  <ul>
+    <li>🚨 <strong>«В розыске»</strong> — если да, от покупки лучше отказаться.</li>
+    <li>🔒 <strong>«Ограничения ГИБДД»</strong> — могут означать проблемы с кредитом или судебными взысканиями.</li>
+    <li>📅 <strong>«Год выпуска»</strong> — должен совпадать с документами (иногда продавцы «омолаживают» авто).</li>
+  </ol></li>
+</ol>
+
+<div class="checklist-block"><h4>☑️ Что проверить перед покупкой авто</h4><label class="check-item"><input type="checkbox"><span>VIN-код на совпадение с ПТС</span></label><label class="check-item"><input type="checkbox"><span>Госномер на наличие в базе угона</span></label><label class="check-item"><input type="checkbox"><span>Ограничения ГИБДД</span></label><label class="check-item"><input type="checkbox"><span>Сверка года выпуска с документами</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>Если бот показывает, что машина чистая, это ещё не гарантия отсутствия проблем. Например, он не покажет, битый ли кузов или есть ли скрытые дефекты двигателя. Для полной диагностики рекомендуем дополнительно:</p>
+<ul>
+  <li>🔧 Заказать <strong>платный отчёт</strong> на сайте <em>Автотеки</em> (стоит от 349 рублей).</li>
+  <li>👨‍🔧 Провести <strong>осмотр у независимого эксперта</strong> (например, через сервис <em>«Автокод»</em>).</li>
+  <li>📄 Проверить <strong>оригинальность ПТС</strong> (на наличие подчисток или замены страниц).</li>
+</ul>
+
+<details class="faq-item"><summary>Как распознать поддельный VIN?</summary><div class="faq-answer"><p>Мошенники иногда подделывают VIN-номера, перебивая цифры на кузове. Чтобы проверить подлинность:
+<p>1. Сверьте VIN на табличке под капотом, в ПТС и на лобовом стекле (если есть).</p>
+<p>2. Обратите внимание на шрифт и глубину нанесения — оригинальный VIN выбит чётко, без следов спиливания.</p>
+<p>3. Проверьте VIN через бот и на сайте производителя (например, для <em>Toyota</em> — на <a href="https://www.toyota.ru">toyota.ru</a>).</p></div></details></p>
+
+<h2 id="скрытые-функции-бота-что-умеет-автотека-но-не-афиширует">Скрытые функции бота: что умеет Автотека, но не афиширует</h2>
+
+<p>Многие пользователи ограничиваются базовыми проверками, но у бота <em>Автотеки</em> есть несколько «фишек», о которых мало кто знает. Вот самые полезные:</p>
+
+<ul>
+  <li>🔔 <strong>Уведомления о новых штрафах</strong><br>
+<p>Если привязать свой автомобиль, бот будет присылать push-уведомления о новых штрафах в Telegram. Это удобнее, чем проверять почту или сайт ГИБДД.</li></p>
+  <li>📊 <strong>Статистика по марке авто</strong><br>
+<p>Введите модель (например, <em>Lada Vesta</em>), и бот покажет среднюю стоимость на вторичном рынке, популярные цвета и даже типичные проблемы.</li></p>
+  <li>🔄 <strong>История проверок</strong><br>
+<p>Все ваши запросы сохраняются в разделе <code>«История»</code> — удобно, если вы сравниваете несколько машин.</li></p>
+  <li>📌 <strong>Быстрый доступ к документам</strong><br>
+<p>Можно сохранить в боте сканы ПТС, СТС или полиса ОСАГО — они будут всегда под рукой.</li></p>
+</ul>
+
+<p>Ещё одна малоизвестная возможность — проверка <strong>таможенной истории</strong> для импортных авто. Если ввести <code>VIN</code> иномарки, бот покажет, когда она была растаможена и в каком регионе. Это помогает выявить «серые» машины, ввезённые в Россию нелегально.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Самая полезная скрытая функция — уведомления о штрафах. Их можно настроить не только для своего авто, но и для машин близких (например, родителей или супруга), если они дадут доступ к госномеру.</p></div>
+
+<p>К сожалению, некоторые функции периодически «исчезают» из бота после обновлений. Например, раньше можно было бесплатно проверять историю ДТП, но сейчас эта опция доступна только в платной версии. Чтобы не пропустить новые возможности, подпишитесь на официальный канал <em>Автотеки</em> в Telegram: <code>@avtocod_news</code>.</p>
+
+<h2 id="ограничения-и-подводные-камни-чего-не-умеет-бот">Ограничения и подводные камни: чего не умеет бот</h2>
+
+<p>Несмотря на очевидные плюсы, у бота <em>Автотеки</em> есть ряд ограничений, о которых стоит знать заранее:</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Бот не показывает <strong>полную историю владельцев</strong> — только количество предыдущих собственников без имён и дат продаж. Это критично, если вы хотите узнать, не был ли автомобиль в такси или прокатной компании.</blockquote>
+
+<ul>
+  <li>🚗 <strong>Нет данных о пробеге</strong> — бот не может проверить, скручен ли одометр.</li>
+  <li>💥 <strong>Отсутствует информация о ДТП</strong> — для этого нужна платная версия.</li>
+  <li>📉 <strong>Задержка обновления штрафов</strong> — иногда до 5 дней.</li>
+  <li>🌍 <strong>Не работает с иностранными номерами</strong> (например, белорусскими или казахстанскими).</li>
+</ul>
+
+<p>Ещё один нюанс: бот может выдавать <strong>ложноположительные результаты</strong> по угонам. Например, если машина числилась в розыске, но потом была найдена, статус в базе может не обновиться сразу. В таких случаях лучше уточнять информацию на официальном сайте ГИБДД (<a href="https://гибдд.рф">гибдд.рф</a>) или через сервис <em>«Автокод»</em>.</p>
+
+<p>Также стоит помнить, что бесплатные проверки ограничены по количеству. Если вы будете слишком часто запрашивать данные (например, более 10 проверок в день), бот может временно заблокировать доступ и предложить оплатить подписку.</p>
+
+<h2 id="альтернативы-автотеке-какие-боты-и-сервисы-стоит-попробовать">Альтернативы Автотеке: какие боты и сервисы стоит попробовать</h2>
+
+<p>Если вам не хватило функций <em>Автотеки</em>, есть несколько альтернативных ботов и сервисов, которые тоже работают через Telegram или имеют бесплатные опции:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Сервис</th>
+      <th>Бесплатные функции</th>
+      <th>Платные функции</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Автокод (@AvtokodBot)</strong></td>
+      <td>Проверка на угон, ограничения ГИБДД, расшифровка VIN.</td>
+      <td>Полная история авто (от 349 руб.), проверка пробега.</td>
+    </tr>
+    <tr>
+      <td><strong>ГИБДД Бот (@GibddBot)</strong></td>
+      <td>Проверка штрафов, розыск авто.</td>
+      <td>Нет платных опций, но данные обновляются реже.</td>
+    </tr>
+    <tr>
+      <td><strong>CarVertical</strong></td>
+      <td>Бесплатный пробный отчёт (ограниченный).</td>
+      <td>Полная история ДТП и пробега (от 500 руб.).</td>
+    </tr>
+    <tr>
+      <td><strong>Штрафы ГИБДД (@ShtrafyGIBDDBot)</strong></td>
+      <td>Только штрафы (без проверки авто).</td>
+      <td>Нет.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Если вам нужна <strong>максимально полная проверка</strong>, лучше комбинировать несколько сервисов. Например:</p>
+<ol>
+  <li>Проверьте угон и ограничения через <em>Автотеку</em>.</li>
+  <li>Закажите отчёт о ДТП в <em>CarVertical</em>.</li>
+  <li>Уточните пробег через <em>Автокод</em>.</li>
+</ol>
+
+<p>Для экономии можно воспользоваться промокодами. Например, <em>Автотека</em> часто даёт скидки на первые отчёты через партнёрские программы (например, при оплате через <em>СберБанк Онлайн</em>).</p>
+
+<h2 id="faq-ответы-на-частые-вопросы-об-автотеке-в-telegram">FAQ: ответы на частые вопросы об Автотеке в Telegram</h2>
+
+<details>
+  <summary>🔹 Можно ли проверить машину по госномеру без VIN?</summary>
+  <p>Да, бот позволяет вводить как <code>VIN</code>, так и госномер. Однако проверка по <code>VIN</code> точнее, так как номер можно перебить или подделать, а <code>VIN</code> уникален для каждого авто.</p>
+</details>
+
+<details>
+  <summary>🔹 Почему бот не находит мой штраф?</summary>
+  <p>Есть несколько причин:
+  <ul>
+    <li>Штраф ещё не внесён в базу (задержка до 5 дней).</li>
+    <li>Вы ввели неверный госномер (проверьте регион, например, <code>А123ВЕ77</code> — 77 для Москвы).</li>
+    <li>Штраф выписан на другого водителя (если машина в аренде или такси).</li>
+  </ul>
+<p>Попробуйте проверить штраф на официальном сайте ГИБДД.</p></p>
+</details>
+
+<details>
+  <summary>🔹 Бот показывает, что машина в угоне. Что делать?</summary>
+  <p>Не паникуйте — иногда это ошибка базы. Сначала:
+  <ol>
+    <li>Проверьте <code>VIN</code> ещё раз на опечатки.</li>
+    <li>Уточните информацию на сайте ГИБДД (<a href="https://гибдд.рф/check/auto">проверка угона</a>).</li>
+    <li>Если машина действительно в розыске, немедленно сообщите в полицию и прекратите сделку.</li>
+  </ol></p>
+</details>
+
+<details>
+  <summary>🔹 Как отключить уведомления о штрафах?</summary>
+  <p>Перейдите в меню бота → <code>«Настройки»</code> → <code>«Уведомления»</code> и отключите опцию. Также можно написать боту команду <code>/stop</code>.</p>
+</details>
+
+<details>
+  <summary>🔹 Можно ли пользоваться ботом без российского номера телефона?</summary>
+  <p>Нет, для регистрации требуется российский номер. Если у вас иностранный номер, используйте веб-версию <em>Автотеки</em> или VPN с российским IP.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#что-такое-автотека-и-почему-её-бот-в-telegram-сталmust-have-для-автомобилистов">Что такое Автотека и почему её бот в Telegram сталmust-have для автомобилистов</a></li><li><a href="#как-подключить-и-настроить-бота-автотеки-в-telegram">Как подключить и настроить бота Автотеки в Telegram</a></li><li><a href="#какие-данные-можно-получить-бесплатно-через-бота">Какие данные можно получить бесплатно через бота</a></li><li><a href="#пошаговая-инструкция-как-проверить-машину-перед-покупкой">Пошаговая инструкция: как проверить машину перед покупкой</a></li><li><a href="#скрытые-функции-бота-что-умеет-автотека-но-не-афиширует">Скрытые функции бота: что умеет Автотека, но не афиширует</a></li><li><a href="#ограничения-и-подводные-камни-чего-не-умеет-бот">Ограничения и подводные камни: чего не умеет бот</a></li><li><a href="#альтернативы-автотеке-какие-боты-и-сервисы-стоит-попробовать">Альтернативы Автотеке: какие боты и сервисы стоит попробовать</a></li><li><a href="#faq-ответы-на-частые-вопросы-об-автотеке-в-telegram">FAQ: ответы на частые вопросы об Автотеке в Telegram</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/u/uz/uznat-pts-po-vin.html" class="related-card">Как узнать ПТС по VIN коду: проверка авто онлайн и офлайн</a></li><li><a href="/articles/g/ge/generator-avtomobilnykh-nomerov-onlajn.html" class="related-card">Генератор автомобильных номеров онлайн: создание, проверка и смысл</a></li><li><a href="/articles/k/ka/kak-povysit-ekologicheskij-klass-avtomobilya-do-evro-5.html" class="related-card">Как повысить экологический класс автомобиля до Евро-5: реальные способы</a></li><li><a href="/articles/k/ka/kakie-dokumenty-nuzhny-dlya-vstupleniya-v-nasledstvo-posle-smerti-muzha-na-avtomobil.html" class="related-card">Наследство на авто: какие документы нужны после смерти мужа</a></li><li><a href="/articles/m/mo/mozhno-li-prodat-mashinu-esli-uteryan-sts.html" class="related-card">Продажа авто без СТС: законные способы и риски в 2026</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/u/uz/uznat-pts-po-vin.html" class="related-bottom-card"><span class="related-bottom-title">Как узнать ПТС по VIN коду: проверка авто онлайн и офлайн</span><span class="related-bottom-desc">Подробная инструкция: как найти данные ПТС по VIN-коду автомобиля. Проверка истории, залогов и огран</span></a><a href="/articles/g/ge/generator-avtomobilnykh-nomerov-onlajn.html" class="related-bottom-card"><span class="related-bottom-title">Генератор автомобильных номеров онлайн: создание, проверка и смысл</span><span class="related-bottom-desc">Онлайн генератор автомобильных номеров поможет создать уникальные сочетания букв и цифр для авто, пр</span></a><a href="/articles/k/ka/kak-povysit-ekologicheskij-klass-avtomobilya-do-evro-5.html" class="related-bottom-card"><span class="related-bottom-title">Как повысить экологический класс автомобиля до Евро-5: реальные способы</span><span class="related-bottom-desc">Узнайте, можно ли изменить экологический класс авто в документах и технически. Разбор замены катализ</span></a><a href="/articles/k/ka/kakie-dokumenty-nuzhny-dlya-vstupleniya-v-nasledstvo-posle-smerti-muzha-na-avtomobil.html" class="related-bottom-card"><span class="related-bottom-title">Наследство на авто: какие документы нужны после смерти мужа</span><span class="related-bottom-desc">Полный список документов для вступления в наследство на автомобиль после смерти мужа. Сроки, госпошл</span></a><a href="/articles/m/mo/mozhno-li-prodat-mashinu-esli-uteryan-sts.html" class="related-bottom-card"><span class="related-bottom-title">Продажа авто без СТС: законные способы и риски в 2026</span><span class="related-bottom-desc">Можно ли продать машину без свидетельства о регистрации (СТС)? Разбор законных схем, восстановления </span></a><a href="/articles/p/pr/privatizatsiya-garazha-v-garazhnom-kooperative-cherez-gosuslugi-poshagovaya-instruktsiya.html" class="related-bottom-card"><span class="related-bottom-title">Приватизация гаража в ГСК через Госуслуги: пошаговая инструкция</span><span class="related-bottom-desc">Как оформить гараж в собственность через Госуслуги в 2026 году. Полный список документов, пошаговая </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

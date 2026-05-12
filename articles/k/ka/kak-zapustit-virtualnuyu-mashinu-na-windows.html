@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как запустить виртуальную машину на Windows: полная инструкция — Авто Гид</title>
+    <meta name="description" content="Узнайте, как запустить виртуальную машину на Windows 10/11. Пошаговое руководство по настройке Hyper-V, VirtualBox и VMware для работы с тестовыми ОС.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-zapustit-virtualnuyu-mashinu-na-windows.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как запустить виртуальную машину на Windows: полная инструкция">
+    <meta property="og:description" content="Узнайте, как запустить виртуальную машину на Windows 10/11. Пошаговое руководство по настройке Hyper-V, VirtualBox и VMware для работы с тестовыми ОС.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как запустить виртуальную машину на Windows: полная инструкция</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как запустить виртуальную машину на Windows: пошаговый гид</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-подходящего-гипервизора-для-задач-пользователя">Выбор подходящего гипервизора для задач пользователя</a></li><li><a href="#проверка-аппаратных-требований-и-включение-виртуализации">Проверка аппаратных требований и включение виртуализации</a></li><li><a href="#настройка-встроенного-гипервизора-hyper-v">Настройка встроенного гипервизора Hyper-V</a></li><li><a href="#установка-и-конфигурация-oracle-vm-virtualbox">Установка и конфигурация Oracle VM VirtualBox</a></li><li><a href="#запуск-виртуальной-машины-и-установка-гостевой-ос">Запуск виртуальной машины и установка гостевой ОС</a></li><li><a href="#оптимизация-производительности-и-безопасность">Оптимизация производительности и безопасность</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Современный пользователь персонального компьютера часто сталкивается с необходимостью изолировать определенные процессы или запустить программное обеспечение, предназначенное для другой операционной системы. Виртуализация позволяет создать внутри вашей основной <strong>операционной системы</strong> полноценное компьютерное окружение, которое функционирует независимо от хоста. Это идеальный инструмент для тестирования подозрительных файлов, изучения новых дистрибутивов Linux или работы со старыми программами, которые несовместимы с актуальными версиями Windows.</p>
+
+<p>Процесс создания такой среды может показаться сложным новичку, однако современные инструменты значительно упростили эту задачу. Вам не нужно быть системным администратором с многолетним стажем, чтобы развернуть гостевую ОС. <em>Гипервизоры</em> взяли на себя всю сложную работу по распределению ресурсов, оставляя пользователю лишь базовые настройки. В этой статье мы разберем все этапы, от подготовки оборудования до первого запуска.</p>
+
+<p>Прежде чем переходить к практическим действиям, важно понимать, что виртуализация требует определенных аппаратных ресурсов. Если ваш компьютер работает на пределе своих возможностей, добавление еще одной системы может привести к существенному падению производительности. Однако при наличии достаточного запаса мощности вы получите гибкий инструмент для любых экспериментов без риска для основных данных.</p>
+
+<p>Существует несколько проверенных способов реализовать эту технологию на платформе Microsoft. Выбор конкретного метода зависит от ваших целей, версии операционной системы и требований к производительности. Ниже мы рассмотрим основные варианты, доступные каждому пользователю.</p>
+
+<h2 id="выбор-подходящего-гипервизора-для-задач-пользователя">Выбор подходящего гипервизора для задач пользователя</h2>
+
+<p>Первым шагом является выбор программного обеспечения, которое будет управлять виртуальными машинами. На рынке доминируют несколько ключевых игроков, каждый из которых имеет свои преимущества. <strong>Гипервизор</strong> выступает посредником между физическим железом и гостевой системой, обеспечивая их корректное взаимодействие.</p>
+
+<p>Для пользователей Windows 10 и 11 профессиональных версий отличным встроенным решением является <em>Hyper-V</em>. Этот продукт Microsoft глубоко интегрирован в систему и обеспечивает высокую производительность. Однако он не поддерживает запуск графических интерфейсов в гостевых ОС так же хорошо, как конкуренты, и часто требует отключения других платформ виртуализации.</p>
+
+<p>Альтернативой выступает <em>Oracle VM VirtualBox</em> — бесплатное решение с открытым исходным кодом. Оно кроссплатформенно, поддерживает огромное количество гостевых операционных систем и имеет простой интерфейс. Для домашнего использования и тестирования это часто лучший выбор благодаря балансу функциональности и простоты.</p>
+
+<p>Третьим популярным вариантом является <em>VMware Workstation Player</em>. Этот продукт известен своей стабильностью и отличной поддержкой 3D-графики. Бесплатная версия имеет ограничения в функционале, но для запуска одной машины ее вполне достаточно. Корпоративные пользователи часто выбирают именно этот инструмент за надежность.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не устанавливайте несколько гипервизоров одновременно (например, Hyper-V и VirtualBox), если они используют разные технологии виртуализации. Это может привести к конфликтам драйверов и невозможности запустить любую из виртуальных машин.</p>
+</blockquote>
+
+<div class="poll-widget" id="poll-1c2f5807"><div class="poll-widget-question">📊 Какой гипервизор вы планируете использовать?</div><div class="poll-widget-option" data-poll="1c2f5807" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Hyper-V (встроенный)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1c2f5807" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">VirtualBox (бесплатный)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1c2f5807" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">VMware Workstation</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1c2f5807" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой вариант</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="проверка-аппаратных-требований-и-включение-виртуализации">Проверка аппаратных требований и включение виртуализации</h2>
+
+<p>Прежде чем устанавливать программное обеспечение, необходимо убедиться, что ваше оборудование поддерживает технологию виртуализации. Современные процессоры Intel и AMD имеют специальные инструкции, которые должны быть активированы. Без этого шага ни одна программа не сможет запустить гостевую ОС.</p>
+
+<p>Проверить статус поддержки можно через Диспетчер задач. Перейдите на вкладку <code>Производительность</code> и выберите <code>ЦП</code>. В правой нижней части окна найдите строку "Виртуализация". Если там стоит значение "Включено", вам повезло. Если "Отключено", необходимо войти в BIOS/UEFI.</p>
+
+<p>Для активации функции при загрузке компьютера нажмите клавишу входа в настройки BIOS (обычно это <code>Del</code>, <code>F2</code> или <code>F10</code>). В меню ищите раздел, связанный с процессором (CPU Configuration, Advanced). Вам нужно найти параметр <strong>Intel VT-x</strong> или <strong>AMD-V</strong> и переключить его в положение <code>Enabled</code>.</p>
+
+<p>Также важно оценить объем оперативной памяти. Для комфортной работы гостевой системы ей нужно выделить минимум 2-4 ГБ ОЗУ, не считая ресурсов, необходимых самой Windows. Если у вас всего 8 ГБ памяти, работа может стать sluggish (медлительной).</p>
+
+<div class="checklist-block"><h4>☑️ Проверка готовности системы</h4><label class="check-item"><input type="checkbox"><span>Проверен статус виртуализации в Диспетчере задач</span></label><label class="check-item"><input type="checkbox"><span>Известна комбинация клавиш для входа в BIOS</span></label><label class="check-item"><input type="checkbox"><span>Есть свободное место на диске (минимум 20 ГБ)</span></label><label class="check-item"><input type="checkbox"><span>Достаточно оперативной памяти для гостевой ОС</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="настройка-встроенного-гипервизора-hyper-v">Настройка встроенного гипервизора Hyper-V</h2>
+
+<p>Владельцы версий Pro и Enterprise могут воспользоваться нативным инструментом Microsoft. Это решение не требует установки стороннего софта, но его нужно активировать через компоненты системы. Запустите окно "Выполнить" комбинацией <code>Win + R</code> и введите команду <code>optionalfeatures</code>.</p>
+
+<p>В открывшемся списке "Компоненты Windows" найдите пункт <strong>Hyper-V</strong>. Установите флажок рядом с ним и нажмите "ОК". Система запросит перезагрузку, после которой в меню "Пуск" появится диспетчер управления. Это мощный инструмент, но он имеет свои особенности работы с USB-устройствами.</p>
+
+<p>Для создания новой машины в диспетчере выберите "Создать" -> "Виртуальная машина". Мастер предложит выбрать поколение: для современных ОС (Windows 10, 11, свежие Linux) выбирайте <em>Поколение 2</em>, которое поддерживает UEFI и безопасную загрузку. Старые системы требуют первого поколения.</p>
+
+<p>На этапе подключения виртуального жесткого диска укажите путь и размер. Динамически расширяемый диск займет только реально используемое место, что экономит пространство. Фиксированный размер сразу зарезервирует весь объем на физическом диске, что может быть полезно для производительности.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Hyper-V по умолчанию не пробрасывает USB-флешки внутрь виртуальной машины напрямую. Для работы с внешними накопителями придется использовать сетевые шары или специальные настройки проброса устройств.</p>
+</blockquote>
+
+<details class="faq-item"><summary>Как создать точку восстановления перед изменениями?</summary><div class="faq-answer"><p>Перед внесением серьезных изменений в систему через Hyper-V создайте контрольную точку. В диспетчере Hyper-V выберите виртуальную машину, в правой панели нажмите "Контрольные точки" -> "Создать". Это позволит откатить состояние машины в случае ошибки, не затрагивая основную систему.</p></div></details>
+
+<h2 id="установка-и-конфигурация-oracle-vm-virtualbox">Установка и конфигурация Oracle VM VirtualBox</h2>
+
+<p>Если встроенные средства вам не подходят, <em>VirtualBox</em> станет отличной альтернативой. Скачайте установщик с официального сайта разработчика. Процесс установки стандартен, но обратите внимание на предупреждения о сетевых интерфейсах — разрешите их установку, иначе не будет работать интернет внутри виртуальной среды.</p>
+
+<p>После запуска программы нажмите кнопку "Создать". Введите имя машины — VirtualBox автоматически определит тип и версию ОС, но лучше перепроверить эти данные. В окне настройки памяти ползунок лучше держать в зеленой зоне, не выделяя более 50% от доступного объема RAM.</p>
+
+<p>Создание виртуального жесткого диска — критический этап. Выберите формат <strong>VDI</strong> (VirtualBox Disk Image). Тип хранилища "Динамический" предпочтителен для экономии места. Размер диска зависит от задач: для Windows 10/11 рекомендуется выделять не менее 60 ГБ.</p>
+
+<p>Перед первым запуском необходимо настроить сеть. По умолчанию используется NAT, что позволяет машине выходить в интернет через хост. Если нужно, чтобы машина была видна в локальной сети как отдельное устройство, переключите тип подключения на "Сетевой мост".</p>
+
+<p>| Параметр настройки | Рекомендуемое значение (Минимум) | Рекомендуемое значение (Комфорт) | Примечание |</p>
+<p>| :--- | :--- | :--- | |</p>
+<p>| Оперативная память (RAM) | 2048 МБ | 4096 МБ и выше | Зависит от гостевой ОС |</p>
+<p>| Видеопамять | 16 МБ | 128 МБ | Включить 3D-ускорение |</p>
+<p>| Процессор (Ядра) | 1 ядро | 2-4 ядра | Не более 50% от физических |</p>
+<p>| Жесткий диск | 25 ГБ | 60-100 ГБ | Динамический тип |</p>
+
+<h2 id="запуск-виртуальной-машины-и-установка-гостевой-ос">Запуск виртуальной машины и установка гостевой ОС</h2>
+
+<p>Когда конфигурация завершена, наступает момент истины — установка операционной системы. Для этого вам понадобится <strong>ISO-образ</strong> дистрибутива. Скачайте его с официального сайта (например, сайт Microsoft или Ubuntu). Не используйте образы из сомнительных источников во избежание вирусов.</p>
+
+<p>В интерфейсе гипервизора найдите настройки носителей (Storage). В виртуальный оптический привод нужно смонтировать скачанный ISO-файл. После сохранения настроек нажмите кнопку "Запустить". Машина начнет загрузку с образа, как если бы вы вставили установочный диск в реальный компьютер.</p>
+
+<p>Процесс установки ОС внутри окна ничем не отличается от обычной установки на физический ПК. Следуйте инструкциям установщика, выберите язык, разметку диска (используйте предложенный виртуальный диск) и создайте учетную запись. После завершения система перезагрузится уже в новом окружении.</p>
+
+<p>Последним штрихом является установка <em>Guest Additions</em> (в VirtualBox) или Integration Services (в Hyper-V). Это набор драйверов, который улучшает работу мыши, позволяет менять разрешение экрана динамически и настраивает общие папки. Без этого шага работа будет некомфортной.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте функцию "Общие папки" (Shared Folders) для быстрого обмена файлами между основной и виртуальной системой, вместо копирования через сеть или USB.</p></div>
+
+<h2 id="оптимизация-производительности-и-безопасность">Оптимизация производительности и безопасность</h2>
+
+<p>После успешного запуска стоит заняться тонкой настройкой. Виртуальные машины по умолчанию могут потреблять много ресурсов даже в простое. Отключите ненужные визуальные эффекты в гостевой ОС, если она работает медленно. Убедитесь, что антивирус хоста не сканирует файлы виртуального диска в реальном времени, так как это сильно снижает скорость.</p>
+
+<p>Безопасность — ключевой аспект виртуализации. Хотя гостевая система изолирована, при включенной функции общих папок или сетевого моста существует риск проникновения угроз. <mark>Изоляция сети</mark> — лучший способ обезопасить хост при тестировании вредоносного ПО.</p>
+
+<p>Регулярно создавайте <strong>снимки состояния</strong> (Snapshots) перед установкой нового софта или обновлением драйверов. Это позволит мгновенно откатить систему назад, если что-то пойдет не так. Хранение множества снимков может занять много места, поэтому удаляйте старые.</p>
+
+<p>Если виртуальная машина используется для работы с важными данными, настройте автоматическое резервное копирование. Помните, что файл виртуального диска — это обычная папка на вашем компьютере. Ее повреждение или удаление приведет к потере всех данных внутри гостевой ОС.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не принудительно не выключайте виртуальную машину через закрытие окна, если в ней идут процессы записи на диск. Используйте меню "Завершение работы" внутри гостевой ОС или команду "Выключить" в интерфейсе гипервизора.</p>
+</blockquote>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Регулярное создание контрольных точек (Snapshots) перед любыми изменениями в системе — единственный способ гарантированно быстро восстановить работоспособность виртуальной среды.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запустить виртуальную машину на Windows Home?</summary>
+<p>Официально компонент Hyper-V в версии Home отключен, но его можно активировать через скрипты. Однако проще и надежнее использовать сторонние решения like VirtualBox или VMware Player, которые полностью поддерживают домашние версии Windows без танцев с бубном.</p>
+</details>
+
+<details>
+<summary>Почему виртуальная машина работает медленно?</summary>
+<p>Чаще всего проблема в нехватке выделенных ресурсов (RAM, CPU) или отсутствии аппаратного ускорения в BIOS. Также убедитесь, что антивирус хоста не проверяет файлы виртуального диска (.vdi или .vhdx) в реальном времени, добавьте папку с машиной в исключения.</p>
+</details>
+
+<details>
+<summary>Как передать файл большого размера в виртуальную машину?</summary>
+<p>Самый быстрый способ — настроить "Общую папку" (Shared Folder) в настройках гипервизора. Файл скопируется на диск хоста и станет доступен внутри гостевой ОС как сетевой ресурс. Drag-and-drop также работает, но может быть нестабилен с большими файлами.</p>
+</details>
+
+<details>
+<summary>Занимает ли виртуальная машина место на диске, когда она выключена?</summary>
+<p>Да, она занимает место, равное размеру использованного пространства на виртуальном диске. Если вы создали диск на 100 ГБ, но установили только 20 ГБ данных, на физическом диске будет занято около 20 ГБ (при динамическом типе диска). Фиксированный диск займет все 100 ГБ сразу.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#выбор-подходящего-гипервизора-для-задач-пользователя">Выбор подходящего гипервизора для задач пользователя</a></li><li><a href="#проверка-аппаратных-требований-и-включение-виртуализации">Проверка аппаратных требований и включение виртуализации</a></li><li><a href="#настройка-встроенного-гипервизора-hyper-v">Настройка встроенного гипервизора Hyper-V</a></li><li><a href="#установка-и-конфигурация-oracle-vm-virtualbox">Установка и конфигурация Oracle VM VirtualBox</a></li><li><a href="#запуск-виртуальной-машины-и-установка-гостевой-ос">Запуск виртуальной машины и установка гостевой ОС</a></li><li><a href="#оптимизация-производительности-и-безопасность">Оптимизация производительности и безопасность</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/n/na/nalivnoj-polimernyj-pol-dlya-garazha.html" class="related-card">Наливной полимерный пол для гаража: выбор и монтаж</a></li><li><a href="/articles/g/ga/garazh-5-na-10-proekt-iz-blokov.html" class="related-card">Гараж 5 на 10 проект из блоков: чертежи и расчет</a></li><li><a href="/articles/g/ga/garazh-samoobsluzhivaniya-biznes-plan.html" class="related-card">Гараж самообслуживания: бизнес-план 2026 с расчетами и нюансами</a></li><li><a href="/articles/v/vo/vorota-kotorye-podnimayutsya-vverkh-nazvanie.html" class="related-card">Как называются ворота, которые поднимаются вверх: виды и монтаж</a></li><li><a href="/articles/k/ka/kak-bystro-raspustit-strochku-overloka.html" class="related-card">Как быстро распустить строчку оверлока: секреты и инструменты</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/n/na/nalivnoj-polimernyj-pol-dlya-garazha.html" class="related-bottom-card"><span class="related-bottom-title">Наливной полимерный пол для гаража: выбор и монтаж</span><span class="related-bottom-desc">Полное руководство по устройству наливного пола в гараже. Сравнение эпоксидных и полиуретановых смес</span></a><a href="/articles/g/ga/garazh-5-na-10-proekt-iz-blokov.html" class="related-bottom-card"><span class="related-bottom-title">Гараж 5 на 10 проект из блоков: чертежи и расчет</span><span class="related-bottom-desc">Проект гаража 5 на 10 метров из блоков: чертежи, расчет материалов, этапы строительства и советы по </span></a><a href="/articles/g/ga/garazh-samoobsluzhivaniya-biznes-plan.html" class="related-bottom-card"><span class="related-bottom-title">Гараж самообслуживания: бизнес-план 2026 с расчетами и нюансами</span><span class="related-bottom-desc">Пошаговый бизнес-план гаража самообслуживания: инвестиции, окупаемость, оборудование, юридические то</span></a><a href="/articles/v/vo/vorota-kotorye-podnimayutsya-vverkh-nazvanie.html" class="related-bottom-card"><span class="related-bottom-title">Как называются ворота, которые поднимаются вверх: виды и монтаж</span><span class="related-bottom-desc">Как правильно называются ворота, которые поднимаются вверх? Разбираем секционные и подъемные констру</span></a><a href="/articles/k/ka/kak-bystro-raspustit-strochku-overloka.html" class="related-bottom-card"><span class="related-bottom-title">Как быстро распустить строчку оверлока: секреты и инструменты</span><span class="related-bottom-desc">Узнайте, как аккуратно и быстро убрать оверлочный шов. Проверенные методы, выбор инструментов и сове</span></a><a href="/articles/s/sk/skhema-karkasa-garazha-iz-profilnoj-truby.html" class="related-bottom-card"><span class="related-bottom-title">Схема каркаса гаража из профильной трубы: пошаговый расчёт и монтаж</span><span class="related-bottom-desc">Готовые схемы каркаса гаража из профильной трубы с размерами, расчётом материалов и пошаговой инстру</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

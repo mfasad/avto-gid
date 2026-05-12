@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как построить звездочку цепной передачи в КОМПАС-3D: пошаговая инструкция — Авто Гид</title>
+    <meta name="description" content="Полное руководство по моделированию звездочки для цепной передачи в КОМПАС-3D. Расчет параметров, эскизы, профилирование зубьев и создание 3D-модели.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/p/po/postroenie-zvezdochki-tsepnoj-peredachi-v-kompas-3d.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как построить звездочку цепной передачи в КОМПАС-3D: пошаговая инструкция">
+    <meta property="og:description" content="Полное руководство по моделированию звездочки для цепной передачи в КОМПАС-3D. Расчет параметров, эскизы, профилирование зубьев и создание 3D-модели.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как построить звездочку цепной передачи в КОМПАС-3D: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Построение звездочки цепной передачи в КОМПАС-3D</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#расчет-геометрических-параметров-звездочки">Расчет геометрических параметров звездочки</a></li><li><a href="#использование-библиотеки-стандартных-изделий">Использование библиотеки стандартных изделий</a></li><li><a href="#построение-эскиза-профиля-зуба">Построение эскиза профиля зуба</a></li><li><a href="#создание-3d-модели-методом-вращения">Создание 3D-модели методом вращения</a></li><li><a href="#формирование-ступицы-и-крепежных-элементов">Формирование ступицы и крепежных элементов</a></li><li><a href="#окончательная-обработка-и-оформление-детали">Окончательная обработка и оформление детали</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Проектирование механических узлов требует высокой точности, особенно когда речь идет о стандартных элементах передачи движения, таких как <strong>звездочки</strong>. В отличие от зубчатых колес, профиль зубьев звездочки имеет сложную геометрию, зависящую от шага цепи и диаметра ролика. Использование системы <em>КОМПАС-3D</em> позволяет не только создать визуальную модель, но и проверить сопряжение деталей еще до этапа производства.</p>
+
+<p>Правильно спроектированная звездочка обеспечивает равномерный износ цепи и снижает уровень шума при работе механизма. Ошибки в построении профиля могут привести к соскакиванию цепи или ее преждевременному разрыву. Поэтому инженеру необходимо строго следовать стандартам (например, ГОСТ или ISO) при определении геометрических параметров.</p>
+
+<p>В данной статье мы разберем процесс создания полноценной 3D-модели звездочки с нуля. Мы рассмотрим методы расчета координат, использование встроенных библиотек и ручное построение эскизов для нестандартных задач. Полученные навыки позволят вам создавать детали любой сложности для ваших проектов.</p>
+
+<h2 id="расчет-геометрических-параметров-звездочки">Расчет геометрических параметров звездочки</h2>
+
+<p>Прежде чем приступать к работе в графическом редакторе, необходимо определить ключевые размеры будущего изделия. Основой для всех вычислений служат характеристики используемой цепи: <strong>шаг цепи</strong> (t), диаметр ролика (d1) и число зубьев (z). Именно от этих трех величин зависит форма впадины и высота зуба.</p>
+
+<p>Для расчета диаметра делительной окружности используется тригонометрическая формула, связывающая шаг и количество зубьев. Точность вычислений критически важна, так как даже минимальное отклонение может нарушить зацепление. Инженеры часто используют специализированные калькуляторы или таблицы для ускорения этого процесса.</p>
+
+<p>Ниже приведена таблица с основными расчетными формулами, которые потребуются на этапе подготовки:</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Обозначение</th>
+<th>Формула расчета</th>
+</tr>
+<tr>
+<td>Диаметр делительной окружности</td>
+<td>D</td>
+<td>t / sin(180° / z)</td>
+</tr>
+<tr>
+<td>Диаметр окружности выступов</td>
+<td>De</td>
+<td>t * (0.5 + ctg(180° / z))</td>
+</tr>
+<tr>
+<td>Диаметр окружности впадин</td>
+<td>Di</td>
+<td>D - d1</td>
+</tr>
+<tr>
+<td>Радиус впадины зуба</td>
+<td>r</td>
+<td>0.5025 * d1 + 0.05 мм</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>⚠️ Внимание: При расчете диаметра выступов необходимо учитывать допуски на изготовление. Слишком большой диаметр может привести к заклиниванию цепи в кожухе механизма.</p>
+</blockquote>
+
+<p>После получения всех числовых значений рекомендуется записать их в отдельный файл или блокнот. Это исключит путаницу в процессе моделирования, когда потребуется вводить размеры в поля параметров <em>КОМПАС-3D</em>. Помните, что стандартные ряды шагов цепей строго регламентированы.</p>
+
+<div class="poll-widget" id="poll-e00a1291"><div class="poll-widget-question">📊 Какой стандарт цепной передачи вы используете чаще всего?</div><div class="poll-widget-option" data-poll="e00a1291" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">ГОСТ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e00a1291" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">ISO/ANSI</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e00a1291" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">DIN</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e00a1291" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Метрическая цепь</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e00a1291" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Другое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="использование-библиотеки-стандартных-изделий">Использование библиотеки стандартных изделий</h2>
+
+<p>Самый быстрый способ получить качественную модель — воспользоваться встроенными средствами автоматизации. В <em>КОМПАС-3D</em> существует модуль «Валы и механические передачи 3D», который содержит параметрические модели звездочек. Это позволяет сэкономить время и избежать арифметических ошибок.</p>
+
+<p>Для запуска библиотеки перейдите в меню <code>Приложения → Библиотеки → Валы и механические передачи 3D</code>. В открывшемся окне выберите тип передачи «Цепная» и далее «Звездочка». Система предложит ввести исходные данные: тип цепи, число зубьев и материал.</p>
+
+<p>Преимущество библиотечного метода заключается в том, что программа сама построит правильный профиль зуба согласно выбранному стандарту. Вам останется только задать размеры ступицы, отверстия и шпоночного паза. Модель сразу будет готова к использованию в сборке.</p>
+
+<ul>
+<li>🔧 Выберите тип цепи из выпадающего списка (например, ПР или PR).</li>
+<li>🔢 Введите точное число зубьев и шаг цепи.</li>
+<li>⚙️ Укажите диаметр отверстия и параметры шпоночного паза.</li>
+<li>💾 Нажмите кнопку «Создать», чтобы сгенерировать 3D-тело.</li>
+</ul>
+
+<p>Однако, бывают ситуации, когда требуется нестандартная звездочка, которой нет в библиотеке, или необходимо изменить профиль зуба для специфических условий работы. В таких случаях приходится прибегать к ручному построению, что требует более глубокого понимания геометрии.</p>
+
+<details class="faq-item"><summary>Почему библиотека может не подойти?</summary><div class="faq-answer"><p>Библиотечные модели создаются по усредненным стандартам. Если ваш проект требует уникального материала, специфической термообработки или измененного профиля для работы в агрессивной среде, ручное построение станет единственным верным решением.</p></div></details>
+
+<h2 id="построение-эскиза-профиля-зуба">Построение эскиза профиля зуба</h2>
+
+<p>Ручное моделирование начинается с создания 2D-эскиза. Откройте новую деталь и выберите плоскость <code>XY</code> для начала построения. Первым делом необходимо построить окружность делительного диаметра, рассчитанного ранее. Эта окружность служит базой для расположения центров дуг профиля.</p>
+
+<p>Профиль зуба звездочки состоит из нескольких сопрягающихся дуг. Радиусы этих дуг зависят от диаметра ролика цепи. Обычно используется трехцентровая или двухцентровая аппроксимация профиля. Построение начинается с впадины, радиус которой равен радиусу ролика с небольшим зазором.</p>
+
+<p>Используйте инструмент <code>Дуга</code> и привязки для точного позиционирования центров. Важно соблюдать симметрию, поэтому часто строят половину зуба или даже один квадрант, а затем используют операции зеркального отражения. Точки сопряжения дуг должны быть гладкими, без изломов.</p>
+
+<blockquote>
+<p>⚠️ Внимание: При построении дуг профиля убедитесь, что радиус впадины не меньше радиуса ролика цепи. В противном случае цепь будет опираться на острые кромки, что приведет к быстрому износу.</p>
+</blockquote>
+
+<p>Для повышения точности можно использовать уравнения в полях размеров. Например, радиус дуги можно задать как <code>d1 / 2 + 0.05</code>. Это позволит легко менять типоразмер цепи в будущем, просто изменив значение переменной d1, и весь эскиз перестроится автоматически.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте слой «Построения» для вспомогательных окружностей и линий. Это позволит скрыть их перед выдавливанием и не загромождать рабочий вид.</p></div>
+
+<h2 id="создание-3d-модели-методом-вращения">Создание 3D-модели методом вращения</h2>
+
+<p>После того как профиль одного зуба и межзубовая впадина построены, необходимо замкнуть контур. Для операции вращения контур должен быть сплошным. Используйте инструмент <code>Усечь кривую</code>, чтобы удалить лишние линии, и <code>Соединить точки</code> для обеспечения непрерывности.</p>
+
+<p>Далее применяется операция <code>Элемент вращения</code>. В качестве оси вращения выберите вертикальную ось координат или постройте вспомогательную ось. Угол вращения должен составлять 360 градусов. В параметрах операции выберите режим «Новое тело» или «Объединить», если уже есть геометрия.</p>
+
+<p>Если вы строили только сектор (один зуб), сначала примените операцию <code>Массив по концентрической сетке</code>. Укажите количество копий, равное числу зубьев. Только после создания полного венца можно приступать к формированию ступицы и отверстия.</p>
+
+<ul>
+<li>🌀 Выберите замкнутый контур эскиза.</li>
+<li>📐 Укажите ось вращения (обычно вертикальная).</li>
+<li>🔄 Задайте угол 360° или используйте массив для сектора.</li>
+<li>✅ Проверьте результат в режиме «Полупрозрачность».</li>
+</ul>
+
+<p>Полученное тело представляет собой идеальный диск с зубьями. Однако реальная деталь имеет толщину, ступицу и отверстия для крепления. Эти элементы добавляются на следующих этапах моделирования с помощью операций выдавливания и вырезания.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Операция вращения идеальна для тел вращения, но требует идеально замкнутого контура без самопересечений.</p></div>
+
+<h2 id="формирование-ступицы-и-крепежных-элементов">Формирование ступицы и крепежных элементов</h2>
+
+<p>Ступица звездочки служит для посадки на вал двигателя или ведомого механизма. Ее диаметр и длина зависят от передаваемого крутящего момента. В <em>КОМПАС-3D</em> ступицу удобно создавать отдельным эскизом на торцевой плоскости диска.</p>
+
+<p>Нарисуйте окружность диаметра ступицы и выдавите ее на необходимую длину. Если звездочка двусторонняя, используйте опцию «Два направления» или постройте симметрично. Центральное отверстие создается операцией <code>Вырезать вращением</code> или <code>Выдавить</code> с условием «Через все».</p>
+
+<p>Для передачи вращения обязательно нужен шпоночный паз или шлицевое соединение. Построение паза лучше выполнять на боковой поверхности ступицы. Используйте плоскость, касательную к цилиндру, или создайте вспомогательную плоскость на нужном расстоянии от центра.</p>
+
+<p>Размеры шпоночного паза выбираются по справочнику в зависимости от диаметра вала. В <em>КОМПАС-3D</em> можно воспользоваться библиотекой «Обозначения», где есть готовые профили шпонок по ГОСТ. Это гарантирует соответствие стандартам.</p>
+
+<div class="checklist-block"><h4>☑️ Контроль геометрии ступицы</h4><label class="check-item"><input type="checkbox"><span>Диаметр отверстия соответствует валу</span></label><label class="check-item"><input type="checkbox"><span>Шпоночный паз имеет правильные допуски</span></label><label class="check-item"><input type="checkbox"><span>Фаски сняты со всех острых кромок</span></label><label class="check-item"><input type="checkbox"><span>Масса детали оптимизирована</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="окончательная-обработка-и-оформление-детали">Окончательная обработка и оформление детали</h2>
+
+<p>Завершающий этап включает в себя добавление технологических элементов. Обязательно снимите фаски с торцов зубьев и отверстия. Это облегчит монтаж цепи и посадку на вал. Размер фаски обычно составляет 0.5–1.0 мм, если не указано иное в техническом задании.</p>
+
+<p>Также необходимо создать отверстия для облегчения конструкции, если звездочка имеет большой диаметр. Расположите их равномерно по окружности меньшего диаметра. Используйте операцию <code>Массив по концентрической сетке</code> для создания отверстий.</p>
+
+<p>После геометрического моделирования перейдите в режим оформления. Создайте технические требования, укажите шероховатость рабочих поверхностей (обычно Ra 1.6 или Ra 3.2 для боковых поверхностей зубьев). Добавьте обозначение материала, например, сталь 45 или 40Х.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не забудьте указать на чертеже твердость зубьев после термообработки (например, HRC 40-50). Это критически важно для долговечности передачи.</p>
+</blockquote>
+
+<p>Готовую модель сохраните в формате <code>.m3d</code>. Для передачи в производство или для работы в других CAD-системах рекомендуется экспортировать файл в формат <code>STEP</code> или <code>IGES</code>. Это обеспечит совместимость с программами ЧПУ.</p>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Как изменить число зубьев в уже готовой параметрической модели?</summary>
+<p>Если модель построена с использованием переменных, просто измените значение переменной «Число зубьев» в дереве параметров. Если модель статическая, потребуется перестроить эскиз и заново применить операцию массива.</p>
+</details>
+
+<details>
+<summary>Какой материал лучше выбрать для звездочки?</summary>
+<p>Для большинства промышленных применений используется сталь 45 с закалкой. Для агрессивных сред подходит нержавеющая сталь 12Х18Н10Т, а для легких нагрузок — текстолит или полиамид.</p>
+</details>
+
+<details>
+<summary>Можно ли в КОМПАС-3D проверить зацепление цепи и звездочки?</summary>
+<p>Да, соберите модель звездочки и модели цепи (из библиотеки или своей) в файл сборки. Используйте режим «Проверка столкновений» или просто визуально оцените зазор в режиме прозрачности.</p>
+</details>
+
+<details>
+<summary>Что делать, если профиль зуба не совпадает с цепью?</summary>
+<p>Проверьте расчетный радиус впадины. Возможно, вы использовали диаметр цепи вместо радиуса, или не учли зазор. Сверьте формулы с ГОСТ 591-69 или актуальным стандартом ISO.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#расчет-геометрических-параметров-звездочки">Расчет геометрических параметров звездочки</a></li><li><a href="#использование-библиотеки-стандартных-изделий">Использование библиотеки стандартных изделий</a></li><li><a href="#построение-эскиза-профиля-зуба">Построение эскиза профиля зуба</a></li><li><a href="#создание-3d-модели-методом-вращения">Создание 3D-модели методом вращения</a></li><li><a href="#формирование-ступицы-и-крепежных-элементов">Формирование ступицы и крепежных элементов</a></li><li><a href="#окончательная-обработка-и-оформление-детали">Окончательная обработка и оформление детали</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-pravilno-polzovatsya-dinamometricheskim-klyuchom-strelochnym.html" class="related-card">Как пользоваться стрелочным динамометрическим ключом: инструкция</a></li><li><a href="/articles/s/sk/skolko-stoyat-peskostrujnye-raboty.html" class="related-card">Сколько стоят пескоструйные работы: цены и расчет</a></li><li><a href="/articles/u/ug/ugolki-dlya-kozyrka-nad-garazhom.html" class="related-card">Уголки для козырька над гаражом: монтаж, размеры и виды</a></li><li><a href="/articles/o/op/opory-dlya-mashiny-pod-domkrat.html" class="related-card">Опоры для домкрата: выбор, виды и безопасность</a></li><li><a href="/articles/k/ka/kak-pokryt-kryshu-linokromom.html" class="related-card">Как покрыть крышу линокромом: пошаговая инструкция 2026</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-pravilno-polzovatsya-dinamometricheskim-klyuchom-strelochnym.html" class="related-bottom-card"><span class="related-bottom-title">Как пользоваться стрелочным динамометрическим ключом: инструкция</span><span class="related-bottom-desc">Правильное использование стрелочного динамометрического ключа. Настройка, калибровка, техника затяжк</span></a><a href="/articles/s/sk/skolko-stoyat-peskostrujnye-raboty.html" class="related-bottom-card"><span class="related-bottom-title">Сколько стоят пескоструйные работы: цены и расчет</span><span class="related-bottom-desc">Узнайте, сколько стоят пескоструйные работы в 2026 году. Факторы ценообразования, сравнение цен за м</span></a><a href="/articles/u/ug/ugolki-dlya-kozyrka-nad-garazhom.html" class="related-bottom-card"><span class="related-bottom-title">Уголки для козырька над гаражом: монтаж, размеры и виды</span><span class="related-bottom-desc">Как выбрать и установить уголки для козырька над гаражом. Обзор материалов, пошаговая инструкция, ра</span></a><a href="/articles/o/op/opory-dlya-mashiny-pod-domkrat.html" class="related-bottom-card"><span class="related-bottom-title">Опоры для домкрата: выбор, виды и безопасность</span><span class="related-bottom-desc">Полный гид по опорам под домкрат. Как выбрать подставки для авто, классы грузоподъемности и правила </span></a><a href="/articles/k/ka/kak-pokryt-kryshu-linokromom.html" class="related-bottom-card"><span class="related-bottom-title">Как покрыть крышу линокромом: пошаговая инструкция 2026</span><span class="related-bottom-desc">Подробное руководство по укладке линокрома на крышу гаража/дома: выбор материала, подготовка основан</span></a><a href="/articles/d/da/davlenie-bar-v-kpa.html" class="related-bottom-card"><span class="related-bottom-title">Перевод давления: Бар в кПа и обратно — Таблица и Формулы</span><span class="related-bottom-desc">Как перевести бар в кПа? Полная инструкция по конвертации единиц давления, таблица значений, формулы</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

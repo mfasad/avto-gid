@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Установка Windows 10 на VirtualBox: пошаговая инструкция — Авто Гид</title>
+    <meta name="description" content="Подробная инструкция по установке Windows 10 на виртуальную машину VirtualBox. Настройка BIOS, создание образа и оптимизация системы для стабильной работы.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/u/us/ustanovka-vindovs-10-na-virtualnuyu-mashinu-virtualbox.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Установка Windows 10 на VirtualBox: пошаговая инструкция">
+    <meta property="og:description" content="Подробная инструкция по установке Windows 10 на виртуальную машину VirtualBox. Настройка BIOS, создание образа и оптимизация системы для стабильной работы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Установка Windows 10 на VirtualBox: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Установка Windows 10 на виртуальную машину VirtualBox</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-необходимых-файлов-и-проверка-системных-требований">Подготовка необходимых файлов и проверка системных требований</a></li><li><a href="#создание-и-первичная-настройка-виртуальной-машины">Создание и первичная настройка виртуальной машины</a></li><li><a href="#конфигурирование-параметров-виртуального-оборудования">Конфигурирование параметров виртуального оборудования</a></li><li><a href="#процесс-установки-операционной-системы">Процесс установки операционной системы</a></li><li><a href="#установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</a></li><li><a href="#оптимизация-производительности-и-устранение-неполадок">Оптимизация производительности и устранение неполадок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Создание изолированной операционной среды на базе продуктов Microsoft часто становится необходимостью для тестирования программного обеспечения, изучения новых функций или безопасного запуска сомнительных приложений. Использование <em>VirtualBox</em> в качестве платформы виртуализации позволяет запустить полноценную <strong>Windows 10</strong> поверх вашей основной системы, будь то Linux, macOS или другая версия Windows. Это решение не требует разбивки жесткого диска на разделы или установки второй физической машины, что делает его идеальным выбором для разработчиков и энтузиастов.</p>
+
+<p>Процесс разворачивания гостевой ОС может показаться сложным только на первый взгляд, однако четкое следование алгоритму действий гарантирует успешный результат даже для новичков. Вам потребуется лишь достаточное количество свободного места на диске и установочный образ системы. Современные компьютеры легко справляются с виртуализацией, если правильно распределить ресурсы между хостом и виртуальной машиной.</p>
+
+<p>В этой статье мы детально разберем каждый этап: от скачивания необходимых файлов до финальной настройки драйверов и оптимизации производительности. Особое внимание будет уделено тонкостям конфигурации <strong>виртуального оборудования</strong>, которые часто игнорируются, но критически важны для стабильной работы интерфейса и сетевых подключений.</p>
+
+<h2 id="подготовка-необходимых-файлов-и-проверка-системных-требований">Подготовка необходимых файлов и проверка системных требований</h2>
+
+<p>Перед началом любых манипуляций необходимо убедиться, что ваш компьютер соответствует минимальным требованиям для комфортной работы виртуальной машины. Хотя <em>Oracle VM VirtualBox</em> сам по себе потребляет немного ресурсов, гостевая операционная система будет нуждаться в выделенной части оперативной памяти и процессорного времени. Для <strong>Windows 10</strong> рекомендуется зарезервировать минимум 4 ГБ ОЗУ и 2 ядра процессора, хотя официальные минимальные требования значительно ниже.</p>
+
+<p>Вам потребуется скачать два основных компонента. Первым является сам гипервизор <em>VirtualBox</em>, который можно бесплатно загрузить с официального сайта разработчика. Вторым компонентом станет установочный ISO-образ операционной системы. Microsoft предоставляет инструмент Media Creation Tool, позволяющий легально скачать актуальную версию дистрибутива.</p>
+
+<p>Также критически важно проверить, включена ли в BIOS/UEFI вашего компьютера поддержка технологий виртуализации. Для процессоров <em>Intel</em> эта функция называется <strong>VT-x</strong>, а для <em>AMD</strong> — <strong>AMD-V</em>. Без активации этой опции запуск 64-битных виртуальных машин будет невозможен, и вы столкнетесь с ошибкой при старте.</p>
+
+<ul>
+<li>📥 Скачайте последнюю версию <em>VirtualBox</em> с официального сайта Oracle.</li>
+<li>💿 Загрузите актуальный ISO-образ <strong>Windows 10</strong> через Media Creation Tool.</li>
+<li>⚙️ Проверьте в BIOS включение технологий <strong>VT-x</strong> или <strong>AMD-V</strong>.</li>
+<li>💾 Освободите на жестком диске не менее 30-40 ГБ свободного пространства.</li>
+</ul>
+
+<div class="poll-widget" id="poll-f1a6327e"><div class="poll-widget-question">📊 Какой процессор установлен в вашем компьютере?</div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Intel Core i3</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">i5</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">i7</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">i9</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">AMD Ryzen</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="f1a6327e" data-idx="5" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="создание-и-первичная-настройка-виртуальной-машины">Создание и первичная настройка виртуальной машины</h2>
+
+<p>Запустите установленный <em>VirtualBox</em> и нажмите кнопку «Создать» в главном меню. Откроется мастер создания новой виртуальной машины, где первым шагом будет выбор имени и типа операционной системы. В поле «Имя» введите любое удобное для вас название, например, <code>Win10_Test</code>. Программа автоматически определит тип как <strong>Microsoft Windows</strong> и версию <strong>Windows 10 (64-bit)</strong>.</p>
+
+<p>На следующем этапе мастер предложит выделить объем оперативной памяти. Здесь важно соблюдать баланс: выделение слишком малого объема приведет к тормозам гостевой системы, а выделение более 50-60% от общего объема ОЗУ хоста может замедлить работу вашего основного компьютера. Оптимальным значением для <strong>Windows 10</strong> является 4096 МБ (4 ГБ), если позволяет конфигурация вашего ПК.</p>
+
+<p>Далее необходимо создать виртуальный жесткий диск. Выберите опцию «Создать новый виртуальный жесткий диск» и нажмите «Создать». В качестве формата файла лучше оставить стандартный <strong>VDI (VirtualBox Disk Image)</strong>, так как он обеспечивает наилучшую совместимость и производительность внутри экосистемы <em>Oracle</em>.</p>
+
+<p>Особое внимание уделите типу хранения данных. Динамический виртуальный жесткий диск занимает место на физическом диске только по мере заполнения данными, что экономит пространство. Фиксированный размер сразу зарезервирует весь объем, что может быть полезно для производительности на SSD, но менее удобно для управления файлами.</p>
+
+<div class="checklist-block"><h4>☑️ Контрольный список создания ВМ</h4><label class="check-item"><input type="checkbox"><span>Выбрано имя и тип ОС:Windows 10 (64-bit)</span></label><label class="check-item"><input type="checkbox"><span>Выделено минимум 4096 МБ оперативной памяти</span></label><label class="check-item"><input type="checkbox"><span>Создан динамический диск объемом 50 ГБ</span></label><label class="check-item"><input type="checkbox"><span>Выбран формат VDI</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="конфигурирование-параметров-виртуального-оборудования">Конфигурирование параметров виртуального оборудования</h2>
+
+<p>После создания базовой структуры машины необходимо провести глубокую настройку ее компонентов через окно «Настройки». Первым делом перейдите в раздел «Система» и на вкладке «Процессор». Увеличьте количество процессоров до 2 или более, если у вашего хоста есть свободные ядра. Это существенно ускорит работу <strong>Windows 10</strong>, особенно при запуске тяжелых приложений.</p>
+
+<p>В разделе «Дисплей» необходимо увеличить объем видеопамяти. По умолчанию он часто составляет всего 16 МБ, что недостаточно для комфортной работы графического интерфейса <em>Aero</em> и современных разрешений. Установите ползунок на максимум (обычно 128 МБ) и обязательно поставьте галочку напротив «Включить 3D-ускорение». Это позволит виртуальной машине использовать ресурсы вашей видеокарты для рендеринга графики.</p>
+
+<p>Важным этапом является подключение установочного образа. Перейдите в раздел «Носители» и в списке устройств найдите пустой оптический привод с надписью «Пусто». Нажмите на маленький синий диск справа и выберите «Выбрать файл диска». Укажите путь к ранее скачанному <strong>ISO-образу</strong> Windows 10. Теперь при запуске машина будет boot-иться с этого образа.</p>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> Не забудьте в разделе «Сеть» проверить тип подключения. Режим «NAT» позволит виртуальной машине выходить в интернет через соединение хоста, что необходимо для активации и загрузки обновлений. Режим «Сетевой мост» сделает машину видимой в локальной сети как отдельное устройство.</p>
+</blockquote>
+
+<p>Для продвинутых пользователей рекомендуется включить Nested Paging в разделе «Система» -> «Ускорение», что может повысить эффективность работы с памятью на некоторых процессорах. Также стоит проверить, что в разделе «Материнская плата» установлен правильный порядок загрузки, где оптический привод стоит первым.</p>
+
+<h2 id="процесс-установки-операционной-системы">Процесс установки операционной системы</h2>
+
+<p>Запустите созданную виртуальную машину двойным кликом. Если все настройки выполнены верно, начнется загрузка установщика <strong>Windows 10</strong>. На первом экране выберите язык, формат времени и раскладку клавиатуры, затем нажмите «Далее» и «Установить». Если система запросит ключ активации, вы можете выбрать опцию «У меня нет ключа продукта», чтобы активировать систему позже или использовать цифровую лицензию, привязанную к учетной записи.</p>
+
+<p>На этапе выбора типа установки обязательно укажите «Выборочная: только установка Windows (для опытных пользователей)». Это откроет экран работы с дисковыми разделами. Вы увидите один неразмеченный диск (ваш виртуальный VDI файл). Просто выберите его и нажмите «Далее» — установщик сам создаст необходимые системные разделы.</p>
+
+<p>Начнется копирование файлов и установка компонентов. Виртуальная машина может несколько раз перезагрузиться в процессе. <mark>Критически важно не прерывать этот процесс и не выключать машину насильно</mark>, так как это может повредить файловую систему гостевой ОС. Весь процесс занимает от 15 до 40 минут в зависимости от скорости вашего физического диска (SSD значительно быстрее HDD).</p>
+
+<p>После завершения установки система предложит пройти первоначальную настройку: выбрать регион, раскладку, подключиться к Wi-Fi (если сеть проброшена) и войти в учетную запись Microsoft. Для тестовых целей часто удобнее создать локальную учетную запись, отключив интернет на этом этапе или выбрав соответствующую опцию в настройках сети.</p>
+
+<details class="faq-item"><summary>Что делать, если установка зависает на 99%?</summary><div class="faq-answer"><p>Если процесс установки Windows зависает на финальной стадии или на этапе копирования файлов, чаще всего проблема кроется в нехватке выделенных ресурсов или конфликте инструкций процессора. Попробуйте уменьшить количество ядер CPU до 1, отключить 3D-ускорение в настройках дисплея или пересоздать виртуальный диск с меньшим объемом. Также помогает обновление версии VirtualBox и Extension Pack до последних актуальных версий.</p></div></details>
+
+<h2 id="установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</h2>
+
+<p>После первого успешного входа в рабочий стол <strong>Windows 10</strong> вы заметите, что разрешение экрана фиксировано и не меняется при растягивании окна, а курсор мыши может работать рывками. Это происходит потому, что по умолчанию используются базовые драйверы VGA. Для исправления ситуации необходимо установить пакет <em>Guest Additions</em>.</p>
+
+<p>В меню окна виртуальной машины выберите «Устройства» -> «Подключить образ диска Дополнений гостевой ОС...». Внутри гостевой Windows откройте «Мой компьютер», найдите подключенный CD-диск с логотипом VirtualBox и запустите файл <code>VBoxWindowsAdditions.exe</code>. Следуйте инструкциям мастера установки, соглашаясь с установкой драйверов устройств и сетевых служб.</p>
+
+<p>После завершения установки потребуется перезагрузка виртуальной машины. После перезагрузки вы получите полноценное разрешение экрана, возможность копировать текст и файлы между хостом и гостем (буфер обмена), а также доступ к общим папкам. Это ключевой этап для превращения виртуальной машины в удобный рабочий инструмент.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Без Guest Additions</th>
+<th>С Guest Additions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Разрешение экрана</td>
+<td>Фиксированное, низкое</td>
+<td>Динамическое, любое</td>
+</tr>
+<tr>
+<td>Графическое ускорение</td>
+<td>Отсутствует (Software Rendering)</td>
+<td>Аппаратное (Direct3D/OpenGL)</td>
+</tr>
+<tr>
+<td>Буфер обмена</td>
+<td>Отключен</td>
+<td>Двусторонний</td>
+</tr>
+<tr>
+<td>Перетаскивание файлов</td>
+<td>Невозможно</td>
+<td>Drag'n'Drop включен</td>
+</tr>
+<tr>
+<td>Общие папки</td>
+<td>Не доступны</td>
+<td>Полный доступ</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="оптимизация-производительности-и-устранение-неполадок">Оптимизация производительности и устранение неполадок</h2>
+
+<p>Для достижения максимальной отзывчивости системы рекомендуется провести ряд дополнительных настроек. В первую очередь, в свойствах виртуальной машины в разделе «Дисплей» можно попробовать включить опцию «Включить 2D-ускорение видео», если наблюдаются проблемы с воспроизведением видео или работой интерфейса. Однако на некоторых конфигурациях это может вызывать нестабильность, поэтому тестируйте индивидуально.</p>
+
+<p>Если ваша основная система работает на SSD, убедитесь, что для виртуального диска включена поддержка TRIM. В современных версиях <em>VirtualBox</em> это часто работает автоматически для динамических дисков, но можно выполнить команду дефрагментации внутри гостевой Windows или использовать утилиту сжатия диска в меню «Файл» -> «Менеджер виртуальных медиа» на хосте.</p>
+
+<p>Частой проблемой является отсутствие звука или неработающий USB. Для решения проблем со звуком в настройках машины перейдите в раздел «Звук» и убедитесь, что стоит галочка «Включить звук», а в качестве контроллера выбран <strong>Intel HD Audio</strong>. Для работы USB-устройств (флешек, ключей защиты) необходимо установить <em>Oracle VM VirtualBox Extension Pack</em> на хост-машину и в настройках ВМ добавить фильтр для конкретного USB-контроллера (например, USB 3.0).</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для ускорения работы Windows 10 внутри виртуальной машины отключите визуальные эффекты: нажмите правой кнопкой на «Этот компьютер» → Свойства → Дополнительные параметры системы → Быстродействие → Выберите «Обеспечить наилучшее быстродействие».</p></div>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> При работе с сетевыми настройками в режиме «Сетевой мост» (Bridged Adapter) виртуальная машина получает IP-адрес от вашего роутера независимо от хоста. Это означает, что антивирус и брандмауэр гостевой системы должны быть настроены правильно, чтобы машина не была открыта для атак из локальной сети.</p>
+</blockquote>
+
+<p>Также стоит упомянуть о снапшотах (снимках состояния). Перед установкой сомнительного ПО или внесением критических изменений в реестр делайте снапшот через меню «Машина» -> «Сделать снимок состояния». Это позволит вам мгновенно откатить систему к предыдущему состоянию в случае сбоя, что является одним из главных преимуществ виртуализации.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Установка Guest Additions и правильная настройка видеопамяти — два самых важных шага для комфортного использования Windows 10 в VirtualBox. Без них система будет работать медленно и неудобно.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запустить Windows 10 на VirtualBox без лицензии?</summary>
+<p>Да, вы можете установить и использовать Windows 10 без ввода ключа активации. Система будет полностью функциональна, но на рабочем столе появится водяной знак, а некоторые функции персонализации (смена обоев, цветовые схемы) будут недоступны до момента активации.</p>
+</details>
+
+<details>
+<summary>Почему виртуальная машина работает очень медленно?</summary>
+<p>Чаще всего причина в нехватке выделенных ресурсов (ОЗУ или ядер CPU) или отсутствии установленных <em>Guest Additions</em>. Также убедитесь, что в BIOS включена виртуализация (VT-x/AMD-V) и что хост-машина не перегружена другими тяжелыми процессами.</p>
+</details>
+
+<details>
+<summary>Как передать файл с основного компьютера на виртуальный?</summary>
+<p>Самый простой способ — настроить «Общие папки» в настройках виртуальной машины (раздел «Общие папки»), указав путь к директории на хосте. Внутри гостевой Windows эта папка появится как сетевой диск. Также работает Drag'n'Drop после установки дополнений.</p>
+</details>
+
+<details>
+<summary>Поддерживает ли VirtualBox работу с USB 3.0?</summary>
+<p>Да, но только после установки <em>Oracle VM VirtualBox Extension Pack</em> на основную операционную систему. Без этого пакета расширения доступны только устройства USB 1.1 и 2.0, что сильно ограничивает скорость передачи данных с современных флешек.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#подготовка-необходимых-файлов-и-проверка-системных-требований">Подготовка необходимых файлов и проверка системных требований</a></li><li><a href="#создание-и-первичная-настройка-виртуальной-машины">Создание и первичная настройка виртуальной машины</a></li><li><a href="#конфигурирование-параметров-виртуального-оборудования">Конфигурирование параметров виртуального оборудования</a></li><li><a href="#процесс-установки-операционной-системы">Процесс установки операционной системы</a></li><li><a href="#установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</a></li><li><a href="#оптимизация-производительности-и-устранение-неполадок">Оптимизация производительности и устранение неполадок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/f/ff/ffmpeg-ne-yavlyaetsya-vnutrennej-ili-vneshnej-komandoj-ispolnyaemoj-programmoj-ili-paketnym-fajlom.html" class="related-card">FFmpeg не найден: как исправить ошибку в Windows и Linux</a></li><li><a href="/articles/k/ka/kak-pravilno-vdet-nitku-v-shvejnuyu-mashinku-starogo-obraztsa.html" class="related-card">Как вдевать нитку в швейную машинку старого образца: инструкция</a></li><li><a href="/articles/p/po/pol-uoker-forsazh-2.html" class="related-card">Пол Уокер и Форсаж 2: роль, съемки и наследие актера</a></li><li><a href="/articles/c/ch/chernaya-mashina-s-migalkami.html" class="related-card">Черная машина с мигалками: что означает и как реагировать</a></li><li><a href="/articles/e/ex/exceed-txl-kto-proizvoditel.html" class="related-card">Exceed TXL: производитель и характеристики модели</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/f/ff/ffmpeg-ne-yavlyaetsya-vnutrennej-ili-vneshnej-komandoj-ispolnyaemoj-programmoj-ili-paketnym-fajlom.html" class="related-bottom-card"><span class="related-bottom-title">FFmpeg не найден: как исправить ошибку в Windows и Linux</span><span class="related-bottom-desc">Почему система не видит FFmpeg и как добавить его в PATH. Пошаговые инструкции для Windows 10/11 и L</span></a><a href="/articles/k/ka/kak-pravilno-vdet-nitku-v-shvejnuyu-mashinku-starogo-obraztsa.html" class="related-bottom-card"><span class="related-bottom-title">Как вдевать нитку в швейную машинку старого образца: инструкция</span><span class="related-bottom-desc">Подробная инструкция по заправке нити в советские швейные машинки. Разбор узлов, натяжения и типичны</span></a><a href="/articles/p/po/pol-uoker-forsazh-2.html" class="related-bottom-card"><span class="related-bottom-title">Пол Уокер и Форсаж 2: роль, съемки и наследие актера</span><span class="related-bottom-desc">Детальный разбор фильма Форсаж 2: Пол Уокер в роли Брайана О&#x27;Коннера, сюжетные повороты, технические</span></a><a href="/articles/c/ch/chernaya-mashina-s-migalkami.html" class="related-bottom-card"><span class="related-bottom-title">Черная машина с мигалками: что означает и как реагировать</span><span class="related-bottom-desc">Почему черный автомобиль с мигалкой не останавливает поток? Виды спецсигналов, права на дороге и юри</span></a><a href="/articles/e/ex/exceed-txl-kto-proizvoditel.html" class="related-bottom-card"><span class="related-bottom-title">Exceed TXL: производитель и характеристики модели</span><span class="related-bottom-desc">Кто является производителем Exceed TXL? Узнайте историю бренда, технические особенности и отличия от</span></a><a href="/articles/k/ko/korting-kdf-2050-w-instruktsiya.html" class="related-bottom-card"><span class="related-bottom-title">Korting KDF 2050 W: инструкция, коды ошибок и ремонт</span><span class="related-bottom-desc">Полное руководство по эксплуатации посудомоечной машины Korting KDF 2050 W. Коды ошибок, расшифровка</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

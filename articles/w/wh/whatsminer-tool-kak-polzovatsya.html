@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Whatsminer Tool: как пользоваться для настройки ASIC — Авто Гид</title>
+    <meta name="description" content="Подробная инструкция, как пользоваться Whatsminer Tool для настройки ASIC. Сброс IP, прошивка, поиск майнеров и устранение ошибок в сети.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/w/wh/whatsminer-tool-kak-polzovatsya.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Whatsminer Tool: как пользоваться для настройки ASIC">
+    <meta property="og:description" content="Подробная инструкция, как пользоваться Whatsminer Tool для настройки ASIC. Сброс IP, прошивка, поиск майнеров и устранение ошибок в сети.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Whatsminer Tool: как пользоваться для настройки ASIC</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как пользоваться Whatsminer Tool: полное руководство по настройке</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#основные-функции-и-возможности-программы">Основные функции и возможности программы</a></li><li><a href="#подготовка-к-работе-установка-и-требования">Подготовка к работе: установка и требования</a></li><li><a href="#поиск-майнеров-и-настройка-ip-адресов">Поиск майнеров и настройка IP-адресов</a></li><li><a href="#обновление-прошивки-и-управление-конфигурацией">Обновление прошивки и управление конфигурацией</a></li><li><a href="#диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+
+<p>Современный майнинг криптовалют требует не только мощного оборудования, но и грамотного администрирования, особенно когда речь идет о промышленных масштабах. <strong>Whatsminer Tool</strong> является специализированным программным обеспечением, разработанным для упрощения управления фермами на базе ASIC-майнеров от компании MicroBT. Это приложение позволяет находить устройства в локальной сети, изменять их IP-адреса, обновлять прошивку и контролировать температуру без необходимости индивидуального входа в веб-интерфейс каждого аппарата.</p>
+
+<p>Использование данного софта становится критически важным, когда количество подключенных устройств исчисляется десятками или сотнями единиц техники. Ручная настройка каждого <em>ASIC-майнера</em> через браузер отнимает колоссальное количество времени и увеличивает риск человеческой ошибки. <mark>Утилита работает исключительно в локальной сети и требует, чтобы компьютер и майнеры находились в одном IP-сегменте для корректного обнаружения.</mark> Понимание принципов работы этого инструмента позволяет операторам майнинг-отелей минимизировать время простоя оборудования.</p>
+
+<p>В этой статье мы детально разберем функционал программы, процесс установки и типичные сценарии использования, с которыми сталкиваются администраторы дата-центров. Вы узнаете, как быстро сбросить забытый пароль или IP-адрес, а также как провести массовое обновление firmware. Грамотное применение <strong>Whatsminer Tool</strong> превращает хаотичный процесс управления "железом" в отлаженную систему мониторинга.</p>
+
+<h2 id="основные-функции-и-возможности-программы">Основные функции и возможности программы</h2>
+
+<p>Программное обеспечение представляет собой швейцарский нож для системного администратора, работающего с оборудованием MicroBT. Основной задачей утилиты является сканирование сети и идентификация всех подключенных устройств, которые находятся в рабочем состоянии. После обнаружения оператор получает доступ к ключевым параметрам хешрейта, температуре чипов и статусу вентиляторов в режиме реального времени.</p>
+
+<p>Одной из самых востребованных функций является возможность массового изменения сетевых настроек. Вам не нужно вводить данные вручную для каждого устройства; достаточно выделить группу майнеров и применить единый шаблон конфигурации. Это особенно актуально при развертывании новых залов, где необходимо прописать статические IP-адреса и шлюзы для стабильной работы пула.</p>
+
+<ul>
+<li>🔍 Сканирование сети для автоматического поиска всех доступных ASIC-майнеров MicroBT.</li>
+<li>⚙️ Массовое изменение IP-адресов, масок подсети и шлюзов для настройки сети.</li>
+<li>🔄 Обновление прошивки (Firmware) сразу на нескольких устройствах одновременно.</li>
+<li>🔑 Сброс пароля администратора и восстановление доступа к веб-интерфейсу.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: Программа не предназначена для удаленного управления через интернет. Все операции выполняются только внутри локальной сети (LAN), где физически расположены майнеры. Попытка запуска сканирования из внешней сети без VPN-туннеля приведет к нулевым результатам.</p>
+</blockquote>
+
+<p>Кроме того, инструмент позволяет проводить диагностику аппаратной части. Если какой-то хешборд перестал отвечать или температура критически выросла, утилита подсветит это в общем списке. <strong>Мониторинг состояния</strong> помогает предотвратить аварийные отключения и снижает риск повреждения оборудования из-за перегрева.</p>
+
+<div class="poll-widget" id="poll-e6ef48ff"><div class="poll-widget-question">📊 Какое оборудование вы настраиваете чаще всего?</div><div class="poll-widget-option" data-poll="e6ef48ff" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">M20/M21 серия</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e6ef48ff" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">M30/M31 серия</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e6ef48ff" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">M50/M53 серия</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="e6ef48ff" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другие модели ASIC</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="подготовка-к-работе-установка-и-требования">Подготовка к работе: установка и требования</h2>
+
+<p>Перед началом использования необходимо убедиться, что ваш компьютер соответствует минимальным системным требованиям. Хотя программа не требует мощного процессора или видеокарты, она критична к сетевым настройкам операциной системы. <em>Whatsminer Tool</em> официально поддерживается на операционных системах семейства Windows, начиная с версии 7, однако для стабильной работы с новыми моделями майнеров рекомендуется использовать Windows 10 или 11.</p>
+
+<p>Скачивать программное обеспечение следует только с официального сайта производителя или из проверенных источников, таких как GitHub-репозитории MicroBT. Использование сторонних сборок может нести риски внедрения вредоносного кода, который способен перехватывать данные о вашем майнинге. После загрузки архива его необходимо распаковать в отдельную папку, желательно с путем, не содержащим кириллических символов.</p>
+
+<p>Ключевым моментом подготовки является правильная настройка сетевого адаптера. Компьютер, на котором запущен <strong>Whatsminer Tool</strong>, должен находиться в той же подсети, что и майнеры по умолчанию. Если вы не меняли заводские настройки, обычно это диапазон 192.168.1.x.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка перед запуском</h4><label class="check-item"><input type="checkbox"><span>Скачан актуальный архив с официальной страницы</span></label><label class="check-item"><input type="checkbox"><span>Компьютер подключен кабелем к тому же свитчу, что и майнеры</span></label><label class="check-item"><input type="checkbox"><span>Сетевая карта настроена на статический IP в нужной подсети</span></label><label class="check-item"><input type="checkbox"><span>Антивирус не блокирует outgoing-соединения программы</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>В некоторых случаях антивирусное ПО или брандмауэр Windows могут блокировать работу утилиты, считая ее сетевую активность подозрительной. Необходимо добавить исключение для исполняемого файла или временно отключить защиту на время проведения технических работ. Это обеспечит беспрепятственный обмен пакетами данных между ПК и ASIC-устройствами.</p>
+
+<h2 id="поиск-майнеров-и-настройка-ip-адресов">Поиск майнеров и настройка IP-адресов</h2>
+
+<p>После успешного запуска программы и подключения к сети первым шагом является обнаружение устройств. Нажав кнопку "Search" или аналогичную в интерфейсе, вы инициируете широковещательный запрос в локальной сети. Майнеры, получившие запрос, отправляют ответный пакет с информацией о своей модели, текущем IP-адресе и статусе.</p>
+
+<p>Если список пуст, несмотря на физическое подключение, следует проверить настройки VLAN и подсетей. Часто бывает так, что администраторы сегментируют сеть для безопасности, и компьютер оказывается в изолированном сегменте. В этом случае <strong>поиск майнеров</strong> не даст результатов до устранения сетевых ограничений.</p>
+
+<p>Когда устройства найдены, открывается возможность для редактирования их параметров. Выделяя один или несколько аппаратов, можно изменить их сетевые идентификаторы. Это стандартная процедура при масштабировании дата-центра, когда требуется привести разрозненные IP-адреса к единой логической структуре.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IP Address</td>
+<td>Уникальный адрес устройства в сети</td>
+<td>Статический IP из пула дата-центра</td>
+</tr>
+<tr>
+<td>Subnet Mask</td>
+<td>Маска подсети для определения диапазона</td>
+<td>255.255.255.0 (стандартная)</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>Адрес шлюза для выхода в интернет</td>
+<td>IP адрес роутера или файрвола</td>
+</tr>
+<tr>
+<td>DNS</td>
+<td>Сервер доменных имен</td>
+<td>8.8.8.8 или локальный DNS</td>
+</tr>
+</tbody>
+</table>
+
+<p>При изменении IP-адреса майнер может потребовать перезагрузки для применения настроек. Утилита обычно предлагает сделать это автоматически. Важно убедиться, что новый адрес не конфликтует с другими устройствами в сети, иначе возникнет ситуация IP-конфликта, и оба устройства потеряют связь.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте функцию экспорта списка IP-адресов в Excel или CSV после настройки. Это позволит быстро сверить физическое расположение майнеров с их логическими адресами в будущем.</p></div>
+
+<h2 id="обновление-прошивки-и-управление-конфигурацией">Обновление прошивки и управление конфигурацией</h2>
+
+<p>Регулярное обновление программного обеспечения майнеров — залог их стабильной работы и безопасности. Новые версии прошивок часто содержат оптимизацию алгоритмов хеширования, исправления багов системы охлаждения и патчи уязвимостей. <strong>Whatsminer Tool</strong> позволяет загружать файл прошивки один раз и распространять его на всю выбранную группу устройств.</p>
+
+<p>Процесс обновления начинается с загрузки файла firmware (обычно имеет расширение .img или .zip) в интерфейс программы. После выбора целевых майнеров запускается процесс передачи данных. В это время категорически не рекомендуется прерывать питание или сетевое соединение, так как это может привести к "окирпичиванию" устройства.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не обновляйте прошивку, если напряжение в сети нестабильно или есть риск отключения электричества. Прерывание записи в память контроллера во время обновления может сделать майнер неработоспособным без использования программатора UART.</p>
+</blockquote>
+
+<p>После успешной установки новой версии майнеры автоматически перезагрузятся. В логах программы отобразится статус "Success" или "OK". Если на каком-то устройстве возникла ошибка, утилита сообщит об этом, и процедуру, возможно, придется повторить индивидуально для проблемного узла.</p>
+
+<details class="faq-item"><summary>Что делать, если майнер завис после обновления?</summary><div class="faq-answer"><p>Если после обновления майнер не выходит в сеть и не пингуется, попробуйте выполнить сброс к заводским настройкам (Reset). Для этого на плате управления обычно есть кнопка или пинхол, который нужно удерживать при включении питания в течение 10-15 секунд. Это вернет IP-адрес и настройки к дефолтным значениям.</p></div></details>
+
+<p>Кроме прошивки, через инструмент можно управлять конфигурационными файлами. Это позволяет быстро применять одинаковые настройки пулов (URL, логин воркера) на всех машинах. Функция импорта/экспорта конфигурации полезна при резервном копировании удачных настроек.</p>
+
+<h2 id="диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</h2>
+
+<p>В процессе эксплуатации майнеров операторы часто сталкиваются с различными ошибками: от отвалившихся хешбордов до проблем с вентиляцией. <em>Whatsminer Tool</em> предоставляет базовые инструменты диагностики, позволяющие быстро локализовать проблему. В столбце статуса отображаются коды ошибок, которые можно расшифровать в документации производителя.</p>
+
+<p>Одной из частых проблем является ситуация, когда программа видит майнер, но не может соединиться с ним для передачи команд. Это может указывать на перегрузку процессора самого майнера или проблемы с коммутационным оборудованием. В таких случаях помогает перезагрузка через веб-интерфейс или физический цикл питания.</p>
+
+<ul>
+<li>🌡️ Высокая температура: Проверьте работу вентиляторов и наличие пыли в радиаторах.</li>
+<li>📉 Низкий хешрейт: Возможно, требуется калибровка частот или замена блока питания.</li>
+<li>🔌 Ошибка сети: Проверьте целостность Ethernet-кабеля и порт на свитче.</li>
+<li>🔒 Ошибка доступа: Убедитесь, что введенный пароль администратора корректен.</li>
+</ul>
+
+<p>Если устройство отображается как "Offline" или "Unknown", попробуйте пингануть его IP-адрес через командную строку Windows. Отсутствие ответа по протоколу ICMP свидетельствует о физическом разрыве соединения или блокировке на уровне сетевого оборудования.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Диагностика должна проводиться комплексно: программные ошибки часто являются следствием физических проблем с оборудованием или сетевой инфраструктурой.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Почему Whatsminer Tool не видит мои майнеры в сети?</summary>
+<p>Скорее всего, ваш компьютер и майнеры находятся в разных подсетях. Проверьте IP-адреса: первые три цифры (например, 192.168.1) должны совпадать. Также убедитесь, что брандмауэр не блокирует приложение и кабели подключены исправно.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать эту программу для майнеров других брендов?</summary>
+<p>Нет, <strong>Whatsminer Tool</strong> разработана исключительно для оборудования MicroBT (серии M20, M30, M50 и другие). Для майнеров Bitmain (Antminer) существует свой отдельный инструмент IP Reporter или Miner Studio.</p>
+</details>
+
+<details>
+<summary>Безопасно ли менять IP-адреса массово?</summary>
+<p>Да, это безопасно, если вы уверены в правильности вводимых данных. Ошибка в шлюзе или маске подсети приведет к потере связи с устройствами, но не повредит их аппаратную часть. Всегда проверяйте настройки перед применением.</p>
+</details>
+
+<details>
+<summary>Нужен ли интернет для работы программы?</summary>
+<p>Для самого процесса поиска и настройки майнеров интернет не нужен, достаточно локальной сети. Однако для скачивания обновлений прошивки или если пул требует проверки времени через NTP, доступ к глобальной сети потребуется.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#основные-функции-и-возможности-программы">Основные функции и возможности программы</a></li><li><a href="#подготовка-к-работе-установка-и-требования">Подготовка к работе: установка и требования</a></li><li><a href="#поиск-майнеров-и-настройка-ip-адресов">Поиск майнеров и настройка IP-адресов</a></li><li><a href="#обновление-прошивки-и-управление-конфигурацией">Обновление прошивки и управление конфигурацией</a></li><li><a href="#диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/u/ur/uravnenie-bernulli-v-aerodinamike.html" class="related-card">Уравнение Бернулли в аэродинамике: основы и применение</a></li><li><a href="/articles/s/s-/s-kakogo-rosta-mozhno-ezdit-na-perednem.html" class="related-card">С какого роста можно ездить на переднем сиденье: нормы ПДД 2026</a></li><li><a href="/articles/l/li/liaz-677-avtobus-vnutri.html" class="related-card">ЛиАЗ-677 внутри: фото салона, планировка и устройство</a></li><li><a href="/articles/p/po/posudomoechnaya-mashina-electrolux-otzyvy.html" class="related-card">Посудомоечная машина Electrolux: отзывы, обзоры и сравнение моделей</a></li><li><a href="/articles/c/ch/chto-takoe-spidometr-i-takhometr.html" class="related-card">Спидометр и тахометр: что это такое и как читать</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/u/ur/uravnenie-bernulli-v-aerodinamike.html" class="related-bottom-card"><span class="related-bottom-title">Уравнение Бернулли в аэродинамике: основы и применение</span><span class="related-bottom-desc">Подробный разбор закона Бернулли, подъемной силы крыла и влияния скорости потока на давление в авиац</span></a><a href="/articles/s/s-/s-kakogo-rosta-mozhno-ezdit-na-perednem.html" class="related-bottom-card"><span class="related-bottom-title">С какого роста можно ездить на переднем сиденье: нормы ПДД 2026</span><span class="related-bottom-desc">Разбор правил перевозки детей в авто с 2026 года. С какого роста и возраста разрешено сажать ребенка</span></a><a href="/articles/l/li/liaz-677-avtobus-vnutri.html" class="related-bottom-card"><span class="related-bottom-title">ЛиАЗ-677 внутри: фото салона, планировка и устройство</span><span class="related-bottom-desc">Подробный обзор салона легендарного ЛиАЗ-677. Фотографии, планировка, особенности водительского мест</span></a><a href="/articles/p/po/posudomoechnaya-mashina-electrolux-otzyvy.html" class="related-bottom-card"><span class="related-bottom-title">Посудомоечная машина Electrolux: отзывы, обзоры и сравнение моделей</span><span class="related-bottom-desc">Честные отзывы о посудомоечных машинах Electrolux. Разбор популярных серий, анализ надежности, типич</span></a><a href="/articles/c/ch/chto-takoe-spidometr-i-takhometr.html" class="related-bottom-card"><span class="related-bottom-title">Спидометр и тахометр: что это такое и как читать</span><span class="related-bottom-desc">Полный разбор приборов на панели авто: спидометр и тахометр. В чем разница, как читать показания и п</span></a><a href="/articles/k/ka/kak-privezti-avto-po-lgotnomu-utilsboru.html" class="related-bottom-card"><span class="related-bottom-title">Льготный утильсбор 2026: как привезти авто без переплат</span><span class="related-bottom-desc">Полный гид по ввозу автомобилей с льготным утилизационным сбором. Условия, требования ЭПТС, сроки вл</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как выглядит Электронный ПТС: разбор полей и статусов — Авто Гид</title>
+    <meta name="description" content="Подробный гайд по электронному ПТС: где посмотреть, как расшифровать статусы, отличия от бумажного и порядок действий при продаже авто.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-eto-elektronnyj-pts.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как выглядит Электронный ПТС: разбор полей и статусов">
+    <meta property="og:description" content="Подробный гайд по электронному ПТС: где посмотреть, как расшифровать статусы, отличия от бумажного и порядок действий при продаже авто.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/registratsiya-i-dokumenty/">Регистрация и Документы</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как выглядит Электронный ПТС: разбор полей и статусов</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Электронный ПТС: как выглядит, где посмотреть и что означают статусы</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#визуализация-документа-как-увидеть-электронный-птс">Визуализация документа: как увидеть электронный ПТС</a></li><li><a href="#структура-и-основные-поля-электронного-паспорта">Структура и основные поля электронного паспорта</a></li><li><a href="#статусы-электронного-птс-и-их-расшифровка">Статусы электронного ПТС и их расшифровка</a></li><li><a href="#где-посмотреть-и-как-получить-выписку">Где посмотреть и как получить выписку</a></li><li><a href="#продажа-автомобиля-с-электронным-птс">Продажа автомобиля с электронным ПТС</a></li><li><a href="#преимущества-и-риски-цифрового-формата">Преимущества и риски цифрового формата</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Переход на цифровые паспорта транспортных средств — это не просто смена формата документа, а фундаментальное изменение всей системы учета автомобилей в стране. Вместо привычного бумажного бланка строгой отчетности теперь существует запись в специализированной базе данных, доступ к которой осуществляется через единую систему <em>ЭПТС</em>. Для обычного автовладельца это означает, что физически лист бумаги может отсутствовать, а вся информация о машине, ее владельцах и ограничениях хранится в электронном виде.</p>
+
+<p>Многих водителей пугает отсутствие "физики", ведь привычку держать документы в бардачке никто не отменял. Однако <strong>электронный ПТС</strong> обладает той же юридической силой, что и бумажный аналог, и содержит даже больше информации благодаря возможности мгновенного обновления данных. Главное отличие кроется в процедуре оформления: теперь не нужно ждать печати бланка, а все изменения вносятся оператором системы сразу после проверки документов.</p>
+
+<p>Разобраться в том, как выглядит этот цифровой документ и где его "пощупать", необходимо каждому собственнику, чтобы избежать проблем при продаже или проверке инспектором ГИБДД. В этой статье мы детально разберем структуру электронного паспорта, научимся читать его статусы и поймем, почему выписка из системы — это теперь ваш главный документ.</p>
+
+<h2 id="визуализация-документа-как-увидеть-электронный-птс">Визуализация документа: как увидеть электронный ПТС</h2>
+
+<p>Поскольку <strong>электронный паспорт транспортного средства</strong> не имеет физической формы в виде бланка, увидеть его можно только в виде выписки. Эта выписка формируется на обычном листе формата А4 и содержит всю ключевую информацию о транспортном средстве. Внешне она может напоминать привычный бумажный ПТС, но имеет существенные отличия в оформлении и защитных элементах.</p>
+
+<p>Выписка заверяется усиленной квалифицированной <strong>электронной подписью</strong> уполномоченного лица, что делает её равнозначной оригиналу. На документе обязательно присутствуют:
+<ul>
+<li>📄 Уникальный номер записи в реестре и VIN-код автомобиля.</li>
+<li>🔐 Электронная подпись оператора системы или таможни.</li>
+<li>📅 Дата формирования выписки и сведения о текущем собственнике.</li>
+</ul>
+</p>
+
+<p>Важно понимать, что сама по себе выписка не является документом, который нужно возить с собой постоянно для предъявления инспектору. Инспекторы ГИБДД видят статус автомобиля в своей базе данных в реальном времени. Однако при продаже машины или оформлении страховки <em>ОСАГО</em> вам могут потребовать свежую выписку, чтобы подтвердить свои права на транспортное средство.</p>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> Не пытайтесь самостоятельно редактировать PDF-файлы выписок или использовать скриншоты из личного кабинета как официальные документы. Для официальных процедур требуется только свежая выписка, сформированная в системе и заверенная актуальной электронной подписью.</p>
+</blockquote>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Запрашивайте свежую выписку из ЭПТС непосредственно перед сделкой купли-продажи или оформлением страховки, так как срок её актуальности для некоторых организаций может быть ограничен 30 днями.</p></div>
+
+<h2 id="структура-и-основные-поля-электронного-паспорта">Структура и основные поля электронного паспорта</h2>
+
+<p>Содержательная часть электронного ПТС практически полностью повторяет бумажный аналог, но структурирована более логично для машинной обработки. В верхней части документа всегда располагаются общие данные: дата выдачи, статус документа и номер записи. Именно по номеру записи можно отследить историю изменений в реестре.</p>
+
+<p>Основной блок информации содержит технические характеристики транспортного средства. Здесь указываются марка, модель, категория ТС, год выпуска, а также данные об двигателе и шасси. Особое внимание стоит уделить полю "Мощность двигателя", так как именно от него зависит расчет транспортного налога. Ошибка в этом поле может привести к переплате или штрафам.</p>
+
+<p>Ниже располагается раздел, описывающий собственников. В отличие от бумажного ПТС, где места для вписывания владельцев ограничены, в электронном формате <strong>история владельцев</strong> может быть бесконечной. Однако для защиты персональных данных в публичной выписке отображается только текущий собственник, а полные данные о предыдущих владельцах доступны только по запросу в уполномоченные органы или при наличии доступа к системе.</p>
+
+<p>Для наглядности рассмотрим, какие именно данные отражаются в основных разделах:</p>
+
+<table>
+<thead>
+<tr>
+<th>Раздел документа</th>
+<th>Содержимое</th>
+<th>Важность для владельца</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Идентификация ТС</td>
+<td>VIN, марка, модель, категория</td>
+<td>Высокая (основа для регистрации)</td>
+</tr>
+<tr>
+<td>Технические данные</td>
+<td>Двигатель, шасси, цвет, масса</td>
+<td>Средняя (важно при проверке на угон)</td>
+</tr>
+<tr>
+<td>Экологический класс</td>
+<td>Евро-4, Евро-5 и т.д.</td>
+<td>Высокая (влияет на въезд в центры городов)</td>
+</tr>
+<tr>
+<td>Собственники</td>
+<td>ФИО, адрес, дата владения</td>
+<td>Критическая (подтверждение права собственности)</td>
+</tr>
+</tbody>
+</table>
+
+<details class="faq-item"><summary>Что такое "Одобрение типа ТС" в ЭПТС?</summary><div class="faq-answer"><p>Это документ, подтверждающий, что данная модель автомобиля соответствует техническим требованиям безопасности и может эксплуатироваться на дорогах страны. В электронном ПТС указывается номер этого документа, что упрощает проверку легальности ввоза автомобиля.</p></div></details>
+
+<h2 id="статусы-электронного-птс-и-их-расшифровка">Статусы электронного ПТС и их расшифровка</h2>
+
+<p>Одним из самых важных элементов, который нужно уметь "читать", является статус электронного паспорта. Именно он определяет, какие юридические действия вы можете совершать с автомобилем прямо сейчас. Статусы меняются автоматически по мере прохождения автомобилем таможни, оформления в ГИБДД или наложения ограничений.</p>
+
+<p>Самый желаемый статус для владельца — "Действующий". Он означает, что с документами полный порядок, автомобиль растаможен (если был импортным), не находится в угоне и не имеет запретов на регистрационные действия. С таким статусом можно спокойно продавать машину, дарить её или менять страховку.</p>
+
+<p>Однако существуют и другие состояния, которые требуют внимания:
+<ul>
+<li>🚧 <strong>Незавершенный:</strong> документ находится в процессе оформления, данные не проверены оператором или не оплачен утильсбор. Продать авто нельзя.</li>
+<li>🔒 <strong>Заблокированный:</strong> наложены ограничения таможенными или судебными органами. Часто встречается при подозрении на неуплату пошлин.</li>
+<li>🗑️ <strong>Утилизированный:</strong> автомобиль официально сдан на утиль. Восстановить регистрацию невозможно.</li>
+</ul>
+</p>
+
+<div class="poll-widget" id="poll-5d11a8f0"><div class="poll-widget-question">📊 Какой статус ЭПТС вас пугает больше всего?</div><div class="poll-widget-option" data-poll="5d11a8f0" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Незавершенный</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="5d11a8f0" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Заблокированный</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="5d11a8f0" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Аннулированный</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="5d11a8f0" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не знаю, что это такое</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Особую осторожность стоит проявлять при статусе "Аннулированный". Это означает, что ПТС был выдан ошибочно или на основании поддельных документов, и уполномоченная организация (например, таможня или ГИБДД) отменила его силу. Покупка автомобиля с таким статусом ЭПТС — это гарантированная потеря денег и невозможность постановки на учет.</p>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> Статус "Действующий" не гарантирует отсутствие скрытых залогов в банках, если залогодержатель не внес информацию в реестр. Всегда проверяйте автомобиль через сервисы проверки на залог и розыск перед покупкой.</p>
+</blockquote>
+
+<h2 id="где-посмотреть-и-как-получить-выписку">Где посмотреть и как получить выписку</h2>
+
+<p>Получить выписку из электронного ПТС может только текущий собственник транспортного средства или лицо, имеющее нотариально заверенную доверенность с правом доступа к данным. Для рядового пользователя основным способом взаимодействия является портал <em>Госуслуги</em> или специализированные сайты операторов систем ЭПТС.</p>
+
+<p>Процесс получения выписки через портал государственных услуг максимально упрощен. Вам не нужно никуда ехать или отправлять бумажные запросы. Достаточно иметь подтвержденную учетную запись.
+<p>Войдите в личный кабинет, выберите услугу "Получение выписки из электронного ПТС" и подтвердите запрос. Документ придет в личный кабинет в виде PDF-файла с электронной подписью.</p></p>
+
+<p>Если вы покупаете автомобиль, а у продавца нет бумажной копии выписки, вы можете попросить его сформировать её при вас. Также существуют платные сервисы-агрегаторы, которые позволяют получить краткую справку по VIN-коду, но для официальных целей (страховая, ГИБДД) нужна именно авторизованная выписка собственника.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка ЭПТС перед покупкой</h4><label class="check-item"><input type="checkbox"><span>Проверить статус (Действующий)</span></label><label class="check-item"><input type="checkbox"><span>Сверить VIN в документе и на кузове</span></label><label class="check-item"><input type="checkbox"><span>Убедиться, что собственник продавец</span></label><label class="check-item"><input type="checkbox"><span>Проверить отсутствие отметок о залоге</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="продажа-автомобиля-с-электронным-птс">Продажа автомобиля с электронным ПТС</h2>
+
+<p>Процедура продажи автомобиля, на который оформлен электронный ПТС, имеет свои нюансы, хотя в целом она стала проще. Вам не нужно вписывать нового владельца в бумажный бланк, так как его просто нет. Вместо этого происходит электронная смена собственника в базе данных.</p>
+
+<p>При заключении договора купли-продажи (ДКП) в графе "ПТС" необходимо указать "Электронный", а также вписать номер записи в реестре. После подписания договора и передачи денег, новый владелец должен обратиться в ГИБДД для регистрации перехода права собственности. Именно в момент регистрации в ГИБДД вносится запись о новом владельце в электронный паспорт.</p>
+
+<p> Это значит, что штрафы с камер и транспортный налог будут приходить на ваше имя.
+<p>Поэтому настоятельно рекомендуется контролировать процесс перерегистрации. В некоторых случаях операторы систем ЭПТС позволяют инициировать смену владельца дистанционно, если обе стороны имеют подтвержденные аккаунты и электронные подписи, но классический путь через ГИБДД пока остается основным.</p></p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Без внесения записи о новом собственнике в ЭПТС через ГИБДД сделка купли-продажи не считается завершенной с точки зрения государственного учета, и юридически автомобиль остается вашим.</p></div>
+
+<h2 id="преимущества-и-риски-цифрового-формата">Преимущества и риски цифрового формата</h2>
+
+<p>Переход на "цифру" несет в себе как очевидные плюсы, так и определенные риски, о которых стоит знать. К преимуществам безусловно относится прозрачность истории автомобиля. В электронном виде сложнее подделать данные о пробеге или количестве владельцев, так как каждая запись логируется и защищена криптографией.</p>
+
+<p>Кроме того, исчезает риск потери или порчи физического бланка. Бумажный ПТС можно пролить кофе, порвать или потерять при переезде, что влекло за собой бюрократическую волокиту по восстановлению. <strong>Электронный ПТС</strong> хранится на защищенных серверах, и доступ к нему возможен 24/7 из любой точки мира, где есть интернет.</p>
+
+<p>Однако существуют и риски:
+<ul>
+<li>💻 <strong>Технические сбои:</strong> зависимость от работы серверов и интернета. Если система "упала", совершить регистрационные действия временно невозможно.</li>
+<li>👴 <strong>Цифровой разрыв:</strong> пожилым людям или гражданам, не дружащим с технологиями, сложнее управлять своим имуществом без помощи посредников.</li>
+<li>🔐 <strong>Кибермошенничество:</strong> риск взлома аккаунта на Госуслугах, через который злоумышленники могут получить доступ к управлению автомобилем.</li>
+</ul>
+</p>
+
+<p>Несмотря на риски, процесс цифровизации необратим. Бумажные ПТС перестали выдавать несколько лет назад, и постепенно весь автопарк страны перейдет на единый цифровой стандарт. Это повысит ликвидность рынка и снизит количество мошеннических схем с "двойниками" и перебитыми номерами.</p>
+
+<details>
+<summary>Можно ли получить бумажный ПТС вместо электронного?</summary>
+<p>С 1 ноября 2020 года выдача бумажных ПТС прекращена. Получить бумажный бланк можно только в исключительных случаях, например, если автомобиль въехал в страну из государства, не входящего в ЕАЭС, и на него оформлен бумажный ПТС старого образца, который нужно заменить. В этом случае при замене выдадут все равно электронный документ.</p>
+</details>
+
+<details>
+<summary>Что делать, если в ЭПТС ошибка в VIN-коде?</summary>
+<p>Если вы обнаружили ошибку в VIN-коде или других ключевых данных, необходимо обратиться к оператору, выдавшему ПТС (таможня, завод-изготовитель или испытательная лаборатория). Они проведут проверку и внесут изменения. Самостоятельно или через ГИБДД исправить ошибку в уже выданном ЭПТС нельзя.</p>
+</details>
+
+<details>
+<summary>Нужно ли менять СТС при переходе на ЭПТС?</summary>
+<p>Свидетельство о регистрации транспортного средства (СТС) остается бумажным и выдается на руки владельцу. Менять его специально из-за перехода на электронный ПТС не нужно. СТС меняется только при смене собственника, утере или изменении данных владельца (например, смена прописки).</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#визуализация-документа-как-увидеть-электронный-птс">Визуализация документа: как увидеть электронный ПТС</a></li><li><a href="#структура-и-основные-поля-электронного-паспорта">Структура и основные поля электронного паспорта</a></li><li><a href="#статусы-электронного-птс-и-их-расшифровка">Статусы электронного ПТС и их расшифровка</a></li><li><a href="#где-посмотреть-и-как-получить-выписку">Где посмотреть и как получить выписку</a></li><li><a href="#продажа-автомобиля-с-электронным-птс">Продажа автомобиля с электронным ПТС</a></li><li><a href="#преимущества-и-риски-цифрового-формата">Преимущества и риски цифрового формата</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/s/sk/skolko-mozhno-ezdit-na-novom-avto-bez-nomerov.html" class="related-card">Сколько можно ездить без номеров на новом авто по закону</a></li><li><a href="/articles/k/ka/kak-vyjti-iz-chlenov-garazhnogo-kooperativa.html" class="related-card">Как выйти из гаражного кооператива в 2026 году: пошаговая инструкция</a></li><li><a href="/articles/o/om/omr-78-nomera-chto-oznachayut.html" class="related-card">ОМР 78: расшифровка номера, значение и юридическая сила</a></li><li><a href="/articles/k/ka/kak-zapisatsya-v-gibdd-dlya-postanovki-na-uchet-avtomobilya-bez-gosuslug.html" class="related-card">Как записаться в ГИБДД без Госуслуг: способы и нюансы</a></li><li><a href="/articles/c/ch/chto-budet-esli-prodal-mashinu-a-novyj-vladelets-ne-postavil-mashinu-na-uchet.html" class="related-card">Продал машину, а покупатель не ставит на учет: что делать?</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/s/sk/skolko-mozhno-ezdit-na-novom-avto-bez-nomerov.html" class="related-bottom-card"><span class="related-bottom-title">Сколько можно ездить без номеров на новом авто по закону</span><span class="related-bottom-desc">Узнайте, сколько дней разрешено ездить без номеров на новом авто. Актуальные правила регистрации, шт</span></a><a href="/articles/k/ka/kak-vyjti-iz-chlenov-garazhnogo-kooperativa.html" class="related-bottom-card"><span class="related-bottom-title">Как выйти из гаражного кооператива в 2026 году: пошаговая инструкция</span><span class="related-bottom-desc">Полное руководство по выходу из ГСК: документы, сроки, споры с председателем и альтернативы продаже </span></a><a href="/articles/o/om/omr-78-nomera-chto-oznachayut.html" class="related-bottom-card"><span class="related-bottom-title">ОМР 78: расшифровка номера, значение и юридическая сила</span><span class="related-bottom-desc">Что означает ОМР 78 в документах ГИБДД и ПТС? Полный разбор кода региона 78, расшифровка аббревиатур</span></a><a href="/articles/k/ka/kak-zapisatsya-v-gibdd-dlya-postanovki-na-uchet-avtomobilya-bez-gosuslug.html" class="related-bottom-card"><span class="related-bottom-title">Как записаться в ГИБДД без Госуслуг: способы и нюансы</span><span class="related-bottom-desc">Подробная инструкция, как попасть в ГИБДД на регистрацию авто без сайта Госуслуг. Личная очередь, за</span></a><a href="/articles/c/ch/chto-budet-esli-prodal-mashinu-a-novyj-vladelets-ne-postavil-mashinu-na-uchet.html" class="related-bottom-card"><span class="related-bottom-title">Продал машину, а покупатель не ставит на учет: что делать?</span><span class="related-bottom-desc">Продали авто, но новый владелец не регистрирует его? Узнайте, как снять с учета через Госуслуги, изб</span></a><a href="/articles/p/po/postanovlenie-ob-otmene-zapreta-na-registratsionnye-dejstviya-v-otnoshenii-transportnykh-sredstv.html" class="related-bottom-card"><span class="related-bottom-title">Снятие запрета на регистрационные действия: порядок и сроки</span><span class="related-bottom-desc">Как снять запрет на регистрацию авто в ГИБДД? Причины ограничений, пошаговая инструкция, список доку</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

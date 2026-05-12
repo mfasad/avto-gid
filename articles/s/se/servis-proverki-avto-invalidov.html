@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Сервис проверки авто инвалидов: базы данных и льготы — Авто Гид</title>
+    <meta name="description" content="Как работает сервис проверки авто инвалидов? Полный обзор баз ГИБДД, порядок оформления парковочных разрешений и риски использования чужих льгот.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/s/se/servis-proverki-avto-invalidov.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Сервис проверки авто инвалидов: базы данных и льготы">
+    <meta property="og:description" content="Как работает сервис проверки авто инвалидов? Полный обзор баз ГИБДД, порядок оформления парковочных разрешений и риски использования чужих льгот.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/zakony-i-shtrafy/">Законы и Штрафы</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Сервис проверки авто инвалидов: базы данных и льготы</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Сервис проверки авто инвалидов: как работают базы и льготы</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#федеральный-реестр-инвалидов-основа-системы-контроля">Федеральный реестр инвалидов: основа системы контроля</a></li><li><a href="#процедура-внесения-автомобиля-в-базу-данных">Процедура внесения автомобиля в базу данных</a></li><li><a href="#как-работает-проверка-парковочными-системами">Как работает проверка парковочными системами</a></li><li><a href="#роль-знака-инвалид-и-технический-осмотр">Роль знака «Инвалид» и технический осмотр</a></li><li><a href="#проверка-статуса-автомобиля-онлайн">Проверка статуса автомобиля онлайн</a></li><li><a href="#ответственность-и-штрафы-за-нарушения">Ответственность и штрафы за нарушения</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Вопросы парковки и перемещения на транспортном средстве для людей с ограниченными возможностями здоровья (ОВЗ) всегда окружены множеством бюрократических нюансов. Государство разработало специальные механизмы поддержки, которые включают в себя <strong>бесплатную парковку</strong> в платных зонах и приоритетное размещение на стоянках. Однако для реализации этих прав необходимо, чтобы автомобиль был официально внесен в специальный реестр.</p>
+
+<p>Многие водители до сих пор не знают, что с 2021 года бумажные парковочные удостоверения перестали быть основным документом для автоматической фиксации нарушений. Теперь ключевую роль играет <em>Федеральный реестр инвалидов</em> (ФРИ). Именно данные из этой базы используются камерами фотофиксации для идентификации льготного транспорта. Если вашего автомобиля нет в списке, штраф придет автоматически, даже если знак «Инвалид» был установлен на крыше.</p>
+
+<p>Понимание того, как работает <strong>сервис проверки авто инвалидов</strong>, критически важно не только для получателей льгот, но и для обычных автомобилистов, чтобы избежать конфликтов на парковках. В этой статье мы детально разберем структуру государственных баз данных, процедуру внесения изменений и последствия ошибок в документах.</p>
+
+<h2 id="федеральный-реестр-инвалидов-основа-системы-контроля">Федеральный реестр инвалидов: основа системы контроля</h2>
+
+<p>Центральным элементом всей системы льготного передвижения является Федеральный реестр инвалидов (ФРИ). Это единая информационная система, которая аккумулирует данные обо всех гражданах РФ, имеющих установленную medically и юридически подтвержденную инвалидность. Именно отсюда информация о возможности управления транспортным средством передается в другие ведомства.</p>
+
+<p>Для того чтобы автомобиль попал в поле зрения проверяющих органов и парковочных систем, данные о транспортном средстве должны быть корректно отражены в профиле гражданина в ФРИ. <strong>Автоматическая синхронизация</strong> происходит между Пенсионным фондом (СФР), реестром и базами данных ГИБДД. Это исключает необходимость возить с собой кипу бумаг, однако требует абсолютной точности при первичном заполнении.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Данные в реестре обновляются не мгновенно. Между подачей заявления в МФЦ или через Госуслуги и появлением информации в базе для камер фиксации может пройти от 3 до 10 рабочих дней. Планируйте поездки в платные зоны с учетом этого лага.</p>
+</blockquote>
+
+<p>Важно понимать, что в реестр вносится не сам автомобиль как физический объект, а <em>право инвалида</em> пользоваться конкретным транспортным средством. Это может быть личное авто, автомобиль члена семьи или даже машина, предоставленная социальной службой. Ключевым параметром здесь является государственный регистрационный номер (ГРН), который и считывают камеры.</p>
+
+<div class="poll-widget" id="poll-3a8a7d3f"><div class="poll-widget-question">📊 Сталкивались ли вы с проблемами парковки для инвалидов?</div><div class="poll-widget-option" data-poll="3a8a7d3f" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Да, штрафовали незаконно</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="3a8a7d3f" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Нет, все работало четко</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="3a8a7d3f" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Путался в документах</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="3a8a7d3f" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не пользуюсь льготами</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="процедура-внесения-автомобиля-в-базу-данных">Процедура внесения автомобиля в базу данных</h2>
+
+<p>Процесс регистрации транспортного средства для получения льгот начинается с подачи заявления. Это можно сделать через портал <strong>Госуслуги</strong>, в отделении Пенсионного фонда или через МФЦ. На этом этапе заявитель указывает данные своего паспорта, сведения об инвалидности и, самое главное, данные автомобиля (марка, модель и государственный номер).</p>
+
+<p>Существует важный нюанс: один инвалид может иметь в реестре только одно транспортное средство одновременно. Если у гражданина в собственности два автомобиля, ему необходимо выбрать, какой из них будет использоваться для льготной парковки в текущий момент. При необходимости можно оперативно заменить номер в реестре, например, если машина находится в ремонте.</p>
+
+<div class="checklist-block"><h4>☑️ Документы для регистрации в реестре</h4><label class="check-item"><input type="checkbox"><span>Паспорт гражданина РФ</span></label><label class="check-item"><input type="checkbox"><span>Справка об инвалидности (МСЭ)</span></label><label class="check-item"><input type="checkbox"><span>СТС или ПТС на автомобиль</span></label><label class="check-item"><input type="checkbox"><span>Заявление установленной формы</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>После подачи документов запускается процесс верификации. Сотрудники ведомства проверяют подлинность сведений об инвалидности и права собственности на автомобиль. Если все данные корректны, в реестр вносится запись, связывающая <strong>ГРН</strong> с конкретным льготником. С этого момента парковочные системы начинают распознавать автомобиль как льготный.</p>
+
+<p>Стоит отметить, что для детей-инвалидов процедуру оформляют родители или законные представители. В этом случае в базу вносится автомобиль, на котором фактически осуществляется перевозка ребенка. Это позволяет семье гибко использовать разные машины (например, мамин седан и папин внедорожник), своевременно внося изменения в реестр перед поездкой.</p>
+
+<details class="faq-item"><summary>Что делать, если сменились номера?</summary><div class="faq-answer"><p>Если вы получили новые номера (например, после продажи авто или смены госзнаков), необходимо немедленно подать новое заявление на внесение изменений. Старый номер будет удален из базы льготников, и парковка по нему станет платной или повлечет штраф.</p></div></details>
+
+<h2 id="как-работает-проверка-парковочными-системами">Как работает проверка парковочными системами</h2>
+
+<p>Современные системы оплаты парковки в крупных городах, таких как Москва, Санкт-Петербург и Казань, работают в автоматическом режиме. Камеры, установленные вдоль бордюров, считывают номера всех проезжающих и припаркованных автомобилей. Полученные данные мгновенно сверяются с базой данных <strong>ГКУ «Администратор московского парковочного пространства»</strong> (или аналогичной организацией в регионе), которая, в свою очередь, получает информацию из ФРИ.</p>
+
+<p>Алгоритм проверки выглядит следующим образом: камера фиксирует номер → система ищет номер в списке льготников → если совпадение найдено, время парковки не тарифицируется. Если же номера нет в базе, система начинает начислять оплату по стандартному тарифу. Отсутствие оплаты в течение установленного времени (обычно 15 минут после начала бесплатного периода) приводит к формированию штрафа.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип проверки</th>
+<th>Источник данных</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Автоматическая (камеры)</td>
+<td>Федеральный реестр инвалидов</td>
+<td>Бесплатная парковка / Штраф</td>
+</tr>
+<tr>
+<td>Ручная (инспектор)</td>
+<td>Визуальный осмотр + база</td>
+<td>Эвакуация / Штраф за знак</td>
+</tr>
+<tr>
+<td>Приложение «Парковки»</td>
+<td>Онлайн-база города</td>
+<td>Отображение статуса льготы</td>
+</tr>
+</tbody>
+</table>
+
+<p>Ошибки в работе систем случаются редко, но они возможны. Например, если камера нечетко считала одну цифру или букву номера, система может не найти совпадения в базе льготников. В таких случаях водителю приходит штраф, который, однако, можно обжаловать, предоставив доказательства нахождения автомобиля в зоне парковки и действующий статус инвалидности.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте мобильное приложение парковочного сервиса вашего города. В нем часто можно проверить, видит ли система ваш автомобиль как льготный, просто введя номер. Это поможет избежать сюрпризов.</p></div>
+
+<h2 id="роль-знака-инвалид-и-технический-осмотр">Роль знака «Инвалид» и технический осмотр</h2>
+
+<p>Несмотря на цифровизацию, физический знак «Инвалид» (табличка 8.6 по ГОСТ) не утратил своей актуальности. Его установка на автомобиле обязательна при перевозке человека с ограниченными возможностями. Знак должен быть установлен в соответствии с правилами: обычно на лобовом стекле слева или справа, или на крыше, чтобы быть хорошо заметным.</p>
+
+<p>Особое внимание проверке знака уделяется при прохождении <strong>технического осмотра</strong>. Согласно законодательству, если на автомобиле установлен знак «Инвалид», но в документах (или в реестре) нет подтверждения прав на его использование, транспортное средство не пройдет ТО. Это создает цепочку проблем: без действующей диагностической карты невозможно оформить полис ОСАГО, а без ОСАГО — выехать на дорогу.</p>
+
+<p>Инспекторы ГИБДД также проводят выборочные проверки. Они могут сверить номер автомобиля с данными в планшете или базе. Если выяснится, что знак установлен незаконно (например, водитель не является инвалидом и не перевозит его), последует конфискация таблички и штраф. Более того, использование чужого знака или поддельного удостоверения может повлечь за собой <strong>уголовную ответственность</strong>.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Снятие знака «Инвалид» обязательно, если вы не перевозите человека с ОВЗ. Парковка на местах для инвалидов или использование знака для бесплатной парковки в обычное время расценивается как административное правонарушение.</p>
+</blockquote>
+
+<h2 id="проверка-статуса-автомобиля-онлайн">Проверка статуса автомобиля онлайн</h2>
+
+<p>Для удобства граждан была внедрена возможность проверки статуса своего транспортного средства в реестре через интернет. Это позволяет убедиться, что данные корректны и синхронизированы. Проверку можно осуществить на портале <em>Госуслуги</em> или на сайтах региональных парковочных служб.</p>
+
+<p>Для получения информации обычно требуется авторизация через ЕСИА (учетная запись Госуслуг). Система отображает список автомобилей, закрепленных за пользователем, и их текущий статус (активен/неактивен). Если вы планируете поездку в другой город или просто хотите перестраховаться, такая проверка займет не более пары минут.</p>
+
+<p>В некоторых регионах доступна проверка по номеру СТС. Это полезно, если вы управляете автомобилем родственника-инвалида, но не имеете доступа к его аккаунту на Госуслугах (хотя в этом случае лучше иметь доверенность или доступ к аккаунту). </p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Своевременная проверка статуса автомобиля в реестре перед поездкой в центр города — лучший способ избежать неожиданных штрафов и стресса.</p></div>
+
+<h2 id="ответственность-и-штрафы-за-нарушения">Ответственность и штрафы за нарушения</h2>
+
+<p>Нарушение правил парковки и использования льготных мест для инвалидов карается достаточно строго. Согласно части 2 статьи 12.19 КоАП РФ, парковка на месте, зарезервированном для инвалидов, влечет наложение штрафа в размере 5000 рублей. Это одна из самых высоких сумм среди штрафов за нарушения правил остановки и стоянки.</p>
+
+<p>Кроме денежного взыскания, нарушителям грозит эвакуация автомобиля. Машину, припаркованную на месте для инвалидов без соответствующих оснований, могут увезти на штрафстоянку. Расходы на эвакуацию и хранение транспортного средства также ложатся на владельца, что в сумме может составить внушительную цифру, особенно если автомобиль заберут в праздничный день.</p>
+
+<ul>
+<li> 🚫 Штраф 5000 рублей за парковку на месте для инвалидов.</li>
+<li> 🚫 Штраф 5000 рублей за установку знака «Инвалид» без оснований.</li>
+<li> 🚫 Эвакуация транспортного средства на штрафстоянку.</li>
+<li> 🚫 Риск аннулирования регистрации транспортного средства при систематических нарушениях.</li>
+</ul>
+
+<p>Отдельно стоит упомянуть ответственность за использование поддельных документов. Предъявление фальшивой справки об инвалидности или использование «липового» знака может быть квалифицировано по статье 327 УК РФ (Подделка, изготовление или оборот поддельных документов). Поэтому использование только легальных способов получения льгот является единственно верным путем.</p>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли проверить чужой автомобиль по номеру, является ли он авто инвалида?</summary>
+<p>Нет, такие данные защищены законом о персональных данных. Проверить статус автомобиля может только его владелец через авторизованный вход на Госуслугах или через официальные приложения парковочных сервисов, привязанные к конкретному пользователю.</p>
+</details>
+
+<details>
+<summary>Что делать, если пришел штраф, хотя я в реестре?</summary>
+<p>Необходимо сохранить чек об оплате парковки (если она была) или сделать скриншот из приложения, подтверждающий статус льготы. Затем следует подать жалобу через сайт ГИБДД, портал Госуслуг или в МАДИ (для Москвы), прикрепив доказательства того, что на момент фиксации автомобиль числился в реестре инвалидов.</p>
+</details>
+
+<details>
+<summary>Сколько времени действительна льгота на парковку?</summary>
+<p>Льгота действует до тех пор, пока действительна справка об инвалидности и пока автомобиль внесен в реестр. Если срок инвалидности истек, данные в реестре обновляются автоматически на основании сведений из бюро МСЭ, и льгота прекращает действовать.</p>
+</details>
+
+<details>
+<summary>Можно ли парковаться на местах для инвалидов, если в машине никого нет?</summary>
+<p>Формально, знак «Инвалид» должен быть установлен только при перевозке инвалида. Однако, если автомобиль внесен в Федеральный реестр, камеры парковки пропустят его бесплатно. Но если на месте стоит пустая машина со знаком «Инвалид», инспектор ГИБДД имеет право выписать штраф за неправильную установку знака, если докажет, что перевозка не осуществляется.</p>
+</details>
+
+<details>
+<summary>Как быстро обновляется база после подачи заявления?</summary>
+<p>Официальный срок рассмотрения заявления и внесения изменений в реестр составляет до 10 рабочих дней. Однако на практике синхронизация с парковочными системами часто происходит быстрее — в течение 3-5 дней. Рекомендуется подавать заявление заранее, до планируемой поездки.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#федеральный-реестр-инвалидов-основа-системы-контроля">Федеральный реестр инвалидов: основа системы контроля</a></li><li><a href="#процедура-внесения-автомобиля-в-базу-данных">Процедура внесения автомобиля в базу данных</a></li><li><a href="#как-работает-проверка-парковочными-системами">Как работает проверка парковочными системами</a></li><li><a href="#роль-знака-инвалид-и-технический-осмотр">Роль знака «Инвалид» и технический осмотр</a></li><li><a href="#проверка-статуса-автомобиля-онлайн">Проверка статуса автомобиля онлайн</a></li><li><a href="#ответственность-и-штрафы-за-нарушения">Ответственность и штрафы за нарушения</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/u/ud/uderzhanie-polosy-kak-rabotaet.html" class="related-card">Удержание полосы движения: как работает по ПДД 2026</a></li><li><a href="/articles/n/nu/nuzhno-li-zapolnyat-deklaratsiyu-pri-prodazhe-avtomobilya-menee-3-let-vladeniya.html" class="related-card">Нужно ли подавать декларацию при продаже авто до 3 лет?</a></li><li><a href="/articles/n/na/nalogovyj-vychet-za-garazh-pri-prodazhe.html" class="related-card">Налоговый вычет за гараж при продаже: нюансы 2026-2026</a></li><li><a href="/articles/z/zn/znak-r-101520-chto-oznachaet.html" class="related-card">Знак Р 101520: расшифровка, правила установки и штрафы</a></li><li><a href="/articles/n/nu/nuzhno-li-platit-nalogi-za-garazh.html" class="related-card">Нужно ли платить налоги за гараж в 2026 году: разбираем законы и штрафы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/u/ud/uderzhanie-polosy-kak-rabotaet.html" class="related-bottom-card"><span class="related-bottom-title">Удержание полосы движения: как работает по ПДД 2026</span><span class="related-bottom-desc">Разбираем правила удержания полосы по ПДД: когда можно не уступать, как маневрировать в потоке и изб</span></a><a href="/articles/n/nu/nuzhno-li-zapolnyat-deklaratsiyu-pri-prodazhe-avtomobilya-menee-3-let-vladeniya.html" class="related-bottom-card"><span class="related-bottom-title">Нужно ли подавать декларацию при продаже авто до 3 лет?</span><span class="related-bottom-desc">Нужно ли заполнять 3-НДФЛ, если вы владели машиной менее 3 лет? Разбираем вычеты, сроки подачи, штра</span></a><a href="/articles/n/na/nalogovyj-vychet-za-garazh-pri-prodazhe.html" class="related-bottom-card"><span class="related-bottom-title">Налоговый вычет за гараж при продаже: нюансы 2026-2026</span><span class="related-bottom-desc">Нужно ли платить налог с продажи гаража? Как работает налоговый вычет, сроки владения и заполнение 3</span></a><a href="/articles/z/zn/znak-r-101520-chto-oznachaet.html" class="related-bottom-card"><span class="related-bottom-title">Знак Р 101520: расшифровка, правила установки и штрафы</span><span class="related-bottom-desc">Что означает знак Р 101520? Полный разбор таблички, правила парковки в жилых зонах, размеры шрифта и</span></a><a href="/articles/n/nu/nuzhno-li-platit-nalogi-za-garazh.html" class="related-bottom-card"><span class="related-bottom-title">Нужно ли платить налоги за гараж в 2026 году: разбираем законы и штрафы</span><span class="related-bottom-desc">Платить налог на гараж обязательно? Какие виды гаражей облагаются налогом, как рассчитывается сумма </span></a><a href="/articles/n/na/natsarapali-krest-na-mashine.html" class="related-bottom-card"><span class="related-bottom-title">Нацарапали крест на машине: что делать и куда обращаться</span><span class="related-bottom-desc">Вандализм на авто: куда звонить, если нацарапали крест на машине? Порядок действий, составление заяв</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

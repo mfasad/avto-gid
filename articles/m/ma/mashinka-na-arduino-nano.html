@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Машинка на Arduino Nano: схема, код и сборка своими руками — Авто Гид</title>
+    <meta name="description" content="Пошаговая инструкция по созданию управляемой машинки на Arduino Nano: подбор компонентов, схемы подключения, скетчи и настройка. Узнайте, как собрать робота с пультом или автопилотом!">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/m/ma/mashinka-na-arduino-nano.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Машинка на Arduino Nano: схема, код и сборка своими руками">
+    <meta property="og:description" content="Пошаговая инструкция по созданию управляемой машинки на Arduino Nano: подбор компонентов, схемы подключения, скетчи и настройка. Узнайте, как собрать робота с пультом или автопилотом!">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Машинка на Arduino Nano: схема, код и сборка своими руками</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как собрать машинку на Arduino Nano: полное руководство от схемы до прошивки</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#1-комплектующие-для-машинки-что-купить-и-на-что-обратить-внимание">1. Комплектующие для машинки: что купить и на что обратить внимание</a></li><li><a href="#2-схема-подключения-как-не-спалить-arduino-nano">2. Схема подключения: как не спалить Arduino Nano</a></li><li><a href="#3-прошивка-arduino-nano-готовые-скетчи-для-разных-задач">3. Прошивка Arduino Nano: готовые скетчи для разных задач</a></li><li><a href="#4-сборка-механической-части-ошибки-и-решения">4. Сборка механической части: ошибки и решения</a></li><li><a href="#5-автономный-режим-датчики-и-алгоритмы">5. Автономный режим: датчики и алгоритмы</a></li><li><a href="#6-питание-и-энергоэффективность-как-продлить-время-работы">6. Питание и энергоэффективность: как продлить время работы</a></li><li><a href="#7-улучшения-и-модификации-от-прототипа-до-продвинутого-робота">7. Улучшения и модификации: от прототипа до продвинутого робота</a></li><li><a href="#faq-ответы-на-частые-вопросы">FAQ: ответы на частые вопросы</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><p>Создание машинки на базе <em>Arduino Nano</em> — это увлекательный проект, который объединяет электронику, программирование и механику. Такой робот может стать отличным тренажёром для изучения основ робототехники или даже прототипом для более сложных автомобильных систем — например, тестирования алгоритмов автопилота в миниатюре. В отличие от готовых наборов, сборка с нуля позволяет глубже понять принципы работы каждого компонента: от управления моторами до обработки сигналов с датчиков.</p>
+
+<p>В этой статье мы разберём <strong>три ключевых варианта машинки</strong>: простейшую с управлением по проводам, беспроводную на основе <code>Bluetooth</code>-модуля <em>HC-05/HC-06</em>, и автономную с датчиками линии или ультразвуковым сонаром. Вы узнаете, как выбрать моторы и драйверы, избежать типичных ошибок при пайке, и какие библиотеки ускорят написание кода. Особое внимание уделено <mark>совместимости компонентов с 5-вольтовой логикой Arduino Nano</mark>, чтобы избежать повреждения платы из-за неверного подключения.</p>
+
+<h2 id="1-комплектующие-для-машинки-что-купить-и-на-что-обратить-внимание">1. Комплектующие для машинки: что купить и на что обратить внимание</h2>
+
+<p>Первый шаг — подбор компонентов. От их качества зависит не только работоспособность машинки, но и ваше терпение при отладке. Например, дешёвые китайские мотор-редукторы часто имеют люфт на валу, что приводит к неравномерному движению. А неоригинальные <em>L298N</em> могут перегреваться при длительной работе.</p>
+
+<p>Вот <strong>минимальный набор</strong> для старта:</p>
+<ul>
+  <li>🔹 Плата <em>Arduino Nano</em> (оригинал или клон с <code>CH340</code>/<code>FT232</code> конвертером)</li>
+  <li>🔹 Драйвер моторов <em>L298N</em> или <em>TB6612FNG</em> (последний компактнее и эффективнее)</li>
+  <li>🔹 2–4 мотора постоянного тока с редуктором (рекомендуем <code>6V 150 RPM</code> для баланса скорости и силы)</li>
+  <li>🔹 Колёса диаметром 65–80 мм (пластик или резиновые для лучшего сцепления)</li>
+  <li>🔹 Источник питания: батарейный отсек на 4–6 пальчиковых батареек (<code>AA</code>) или <em>Li-Po</em> аккумулятор <code>7.4V</code></li>
+  <li>🔹 Рама: можно вырезать из пластика или использовать готовый набор шасси для роботов</li>
+  <li>🔹 Провода "папа-мама" и "папа-папа" для соединений</li>
+</ul>
+
+<p>Для беспроводного управления добавьте:</p>
+<ul>
+  <li>📶 Модуль <em>HC-05</em> (для <code>Bluetooth</code>) или <em>NRF24L01</em> (для радиочастотной связи)</li>
+  <li>🎮 Пульт: можно использовать смартфон с приложением <em>Arduino RC Controller</em> или самодельный на второй <em>Arduino</em></li>
+</ul>
+
+<div class="poll-widget" id="poll-236e7b86"><div class="poll-widget-question">📊 Какой тип управления вы планируете использовать?</div><div class="poll-widget-option" data-poll="236e7b86" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">По проводам (простейший)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="236e7b86" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Bluetooth со смартфона</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="236e7b86" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Радиочастотный пульт (NRF24L01)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="236e7b86" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Автономный режим с датчиками</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>⚠️ <strong>Внимание:</strong> Если используете <em>Li-Po</em> аккумуляторы, обязательно добавьте в схему <code>BMS-плату</code> (систему управления батареей) для защиты от перезаряда и глубокого разряда. Эти аккумуляторы могут воспламениться при неправильной эксплуатации!</p>
+
+<h2 id="2-схема-подключения-как-не-спалить-arduino-nano">2. Схема подключения: как не спалить Arduino Nano</h2>
+
+<p>Самая частая ошибка новичков — подача напряжения выше <code>5V</code> на пины <em>Arduino Nano</em>. Например, если подключить моторы напрямую к питанию <code>7.4V</code> от <em>Li-Po</em>, а общий "минус" моторов соединить с <code>GND</code> платы, то через общую землю на логические элементы может попасть избыточное напряжение. Решение — <strong>разделять питание моторов и логики</strong>.</p>
+
+<p>Типовая схема подключения:</p>
+<ol>
+  <li>Питание моторов: от батарейного отсека или <em>Li-Po</em> через драйвер <em>L298N</em> (вход <code>Vin</code> на драйвере).</li>
+  <li>Питание <em>Arduino Nano</em>: через <code>USB</code> (для тестов) или стабилизатор <code>5V</code> (например, <em>AMS1117</em>).</li>
+  <li>Управляющие сигналы: пины <code>D5–D8</code> на <em>Arduino</em> подключаются к входам <code>IN1–IN4</code> драйвера.</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th>Компонент</th><th>Пин Arduino Nano</th><th>Пин драйвера L298N</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Управление мотором A (IN1)</td><td><code>D5</code></td><td><code>IN1</code></td></tr>
+    <tr><td>Управление мотором A (IN2)</td><td><code>D6</code></td><td><code>IN2</code></td></tr>
+    <tr><td>Управление мотором B (IN3)</td><td><code>D7</code></td><td><code>IN3</code></td></tr>
+    <tr><td>Управление мотором B (IN4)</td><td><code>D8</code></td><td><code>IN4</code></td></tr>
+    <tr><td>Питание логики драйвера</td><td><code>5V</code></td><td><code>+5V (от Arduino)</code></td></tr>
+  </tbody>
+</table>
+
+<p>Для <em>Bluetooth</em>-модуля <em>HC-05</em> используйте пины <code>TX (D1)</code> и <code>RX (D0)</code>, но не забудьте <strong>инвертировать логику</strong> (модуль работает на <code>3.3V</code>, а <em>Arduino Nano</em> выдаёт <code>5V</code>). Решение — делитель напряжения на резисторах <code>1kΩ</code> и <code>2kΩ</code>.</p>
+
+<details class="faq-item"><summary>Почему горят пины RX/TX при подключении HC-05?</summary><div class="faq-answer"><p>Модуль HC-05 рассчитан на логические уровни 3.3V, а Arduino Nano выдаёт 5V на TX. Без делителя напряжения на пин RX модуля поступает слишком высокий сигнал, что приводит к повреждению порта.</p></div></details>
+
+<h2 id="3-прошивка-arduino-nano-готовые-скетчи-для-разных-задач">3. Прошивка Arduino Nano: готовые скетчи для разных задач</h2>
+
+<p>Для начала загрузите базовую библиотеку управления моторами. Если используете <em>L298N</em>, достаточно стандартных функций <code>digitalWrite()</code>. Для более продвинутых драйверов (например, <em>TB6612FNG</em>) удобно использовать библиотеку <code>AFMotor</code>, но она требует адаптации под <em>Nano</em>.</p>
+
+<p>Пример кода для управления по проводам (через монитор порта):</p>
+<pre><code>// Пины управления моторами
+<p>#define IN1 5</p>
+<p>#define IN2 6</p>
+<p>#define IN3 7</p>
+<p>#define IN4 8</p>
+
+<p>void setup() {</p>
+<p>pinMode(IN1, OUTPUT);</p>
+<p>pinMode(IN2, OUTPUT);</p>
+<p>pinMode(IN3, OUTPUT);</p>
+<p>pinMode(IN4, OUTPUT);</p>
+<p>Serial.begin(9600);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>if (Serial.available() > 0) {</p>
+<p>char command = Serial.read();</p>
+<p>switch(command) {</p>
+<p>case 'F': forward(); break;  // Вперёд</p>
+<p>case 'B': backward(); break; // Назад</p>
+<p>case 'L': left(); break;    // Лево</p>
+<p>case 'R': right(); break;   // Право</p>
+<p>case 'S': stop(); break;    // Стоп</p>
+<p>}</p>
+<p>}</p>
+<p>}</p>
+
+<p>void forward() {</p>
+<p>digitalWrite(IN1, HIGH);</p>
+<p>digitalWrite(IN2, LOW);</p>
+<p>digitalWrite(IN3, HIGH);</p>
+<p>digitalWrite(IN4, LOW);</p>
+<p>}</p>
+<p>// Аналогично реализуются остальные функции (backward, left, right, stop)</p>
+</code></pre>
+
+<p>Для <code>Bluetooth</code>-управления замените <code>Serial</code> на <code>SoftwareSerial</code> (библиотека для работы с дополнительными UART-портами):</p>
+<pre><code>#include &lt;SoftwareSerial&gt;
+<p>SoftwareSerial BT(10, 11); // RX, TX (используем пины D10 и D11)</p>
+</code></pre>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если машинка движется рывками, проверьте уровень заряда батареи. Падение напряжения ниже 4.8V на Li-Po приводит к нестабильной работе драйвера.</p></div>
+
+<h2 id="4-сборка-механической-части-ошибки-и-решения">4. Сборка механической части: ошибки и решения</h2>
+
+<p>Даже с правильной электроникой машинка может ездить криво из-за <strong>механических проблем</strong>. Вот типичные причины:</p>
+<ul>
+  <li>🔧 <strong>Люфт колёс:</strong> если ось мотора не жёстко закреплена, колесо будет "гулять", что приводит к неравномерному движению. Решение — использовать металлические кронштейны вместо пластиковых.</li>
+  <li>🔧 <strong>Разный диаметр колёс:</strong> даже разница в 1–2 мм вызовет увод в сторону. Проверяйте колёса штангенциркулем.</li>
+  <li>🔧 <strong>Неравномерное распределение веса:</strong> если аккумулятор смещён к одному борту, машинка будет поворачивать в его сторону. Размещайте тяжёлые компоненты по центру.</li>
+</ul>
+
+<p>Для улучшения управляемости:</p>
+<ul>
+  <li>🛠️ Используйте <strong>передний мостик</strong> (ось с свободно вращающимся колесиком) вместо четырёх моторов — это упрощает повороты.</li>
+  <li>🛠️ Добавьте <strong>амортизаторы</strong> из поролона или пружинок, если машинка ездит по неровностям.</li>
+</ul>
+
+
+<p>Закреплены ли все винты на раме?|Колёса вращаются свободно, без заклинивания?|Провода не натянуты и не цепляются за движущиеся части?|Аккумулятор надёжно зафиксирован (не болтается при движении)?--></p>
+
+<h2 id="5-автономный-режим-датчики-и-алгоритмы">5. Автономный режим: датчики и алгоритмы</h2>
+
+<p>Чтобы машинка ездила без пульта, нужны датчики и логика обработки сигналов. Популярные варианты:</p>
+<ul>
+  <li>📏 <strong>Датчики линии:</strong> <em>TCRT5000</em> (инфракрасные) или <em>QTR-8A</em> (аналоговые). Подходят для следования по чёрной линии на белом фоне (или наоборот).</li>
+  <li>📡 <strong>Ультразвуковой сонар:</strong> <em>HC-SR04</em> для обнаружения препятствий. Точность ~3 см, но плохо работает с мягкими поверхностями (например, тканью).</li>
+  <li>🧭 <strong>Гироскоп/акселерометр:</strong> <em>MPU6050</em> для стабилизации движения или определения угла наклона.</li>
+</ul>
+
+<p>Пример кода для объезда препятствий с <em>HC-SR04</em>:</p>
+<pre><code>#include &lt;NewPing.h&gt;
+<p>#define TRIGGER_PIN 9</p>
+<p>#define ECHO_PIN 10</p>
+<p>#define MAX_DISTANCE 200</p>
+
+<p>NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);</p>
+
+<p>void setup() {</p>
+<p>// ... инициализация моторов ...</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>int distance = sonar.ping_cm();</p>
+<p>if (distance &lt; 15 &amp;&amp; distance &gt; 0) {</p>
+<p>backward(); // Объезд препятствия</p>
+<p>delay(500);</p>
+<p>right();</p>
+<p>delay(300);</p>
+<p>} else {</p>
+<p>forward();</p>
+<p>}</p>
+<p>}</p>
+</code></pre>
+
+<p>Для датчиков линии используйте <strong>ПИД-регулятор</strong> (библиотека <code>PID_v1.h</code>), чтобы машинка плавно следовала по траектории. Без него робот будет "ёрзать" из стороны в сторону.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Автономные алгоритмы требуют калибровки под конкретные условия. Например, порог срабатывания датчика линии зависит от освещения и цвета поверхности. Всегда тестируйте робота в реальных условиях!</p></div>
+
+<h2 id="6-питание-и-энергоэффективность-как-продлить-время-работы">6. Питание и энергоэффективность: как продлить время работы</h2>
+
+<p>Машинка на <em>Arduino Nano</em> может работать от разных источников, но каждый имеет плюсы и минусы:</p>
+<table>
+  <thead>
+    <tr><th>Тип питания</th><th>Напряжение</th><th>Плюсы</th><th>Минусы</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Пальчиковые батарейки (<code>AA</code>)</td><td>6V (4×1.5V)</td><td>Простота, безопасность</td><td>Быстро садятся, тяжелые</td></tr>
+    <tr><td><em>Li-Po</em> 7.4V</td><td>7.4V</td><td>Лёгкий вес, высокая ёмкость</td><td>Требует BMS, риск возгорания</td></tr>
+    <tr><td>Power Bank 5V</td><td>5V</td><td>Универсальность, USB-зарядка</td><td>Низкий ток, не подходит для мощных моторов</td></tr>
+    <tr><td><em>Li-Ion</em> 18650</td><td>3.7V</td><td>Долгий срок службы</td><td>Нужны 2 штуки + повышающий преобразователь</td></tr>
+  </tbody>
+</table>
+
+<p>Чтобы снизить энергопотребление:</p>
+<ul>
+  <li>⚡ Отключайте питание датчиков, когда они не используются (например, <code>digitalWrite(SENSOR_PIN, LOW)</code>).</li>
+  <li>⚡ Используйте <strong>режим сна</strong> (<code>LowPower.h</code>) для <em>Arduino</em>, если машинка долго стоит без движения.</li>
+  <li>⚡ Замените <em>L298N</em> на <em>TB6612FNG</em> — он потребляет меньше тока в режиме ожидания.</li>
+</ul>
+
+<p>⚠️ <strong>Внимание:</strong> Если используете <em>Li-Po</em> аккумуляторы, никогда не разряжайте их ниже <code>3.0V</code> на элемент! Это приводит к необратимой деградации. Используйте модуль защиты с функцией отключения при низком заряде.</p>
+
+<h2 id="7-улучшения-и-модификации-от-прототипа-до-продвинутого-робота">7. Улучшения и модификации: от прототипа до продвинутого робота</h2>
+
+<p>Когда базовая машинка готова, её можно доработать:</p>
+<ul>
+  <li>🤖 <strong>Камера:</strong> подключите модуль <em>OV7670</em> (VGA) для компьютерного зрения. Потребуется дополнительный микроконтроллер (например, <em>ESP32</em>) для обработки изображения.</li>
+  <li>📶 <strong>Wi-Fi управление:</strong> замените <em>Bluetooth</em> на <em>ESP8266</em> для управления через веб-интерфейс.</li>
+  <li>🔋 <strong>Солнечная панель:</strong> добавьте маленькую панель <code>6V</code> для подзарядки аккумулятора (потребуется контроллер <em>TP4056</em>).</li>
+  <li>🎵 <strong>Звуковые эффекты:</strong> подключите динамик и воспроизводите сигналы через <code>tone()</code> (например, при обнаружении препятствия).</li>
+</ul>
+
+<p>Для сложных проектов (например, <strong>SLAM-навигация</strong> по комнате) переходите на более мощные платы вроде <em>Raspberry Pi Pico</em> или <em>ESP32</em>, но <em>Arduino Nano</em> остаётся отличным вариантом для обучения и прототипирования.</p>
+
+<details class="faq-item"><summary>Как подключить два Arduino Nano для распределённой системы?</summary><div class="faq-answer"><p>
+<p>Можно связать две платы по UART (пины TX/RX) или I2C (пины A4/A5). Например, одна Nano управляет моторами, а вторая обрабатывает данные с датчиков. Для синхронизации используйте общий сигнал (например, прерывание на пин D2).</p></div></details></p>
+
+<h2 id="faq-ответы-на-частые-вопросы">FAQ: ответы на частые вопросы</h2>
+
+<details>
+  <summary>Можно ли использовать Arduino Uno вместо Nano?</summary>
+  <p><em>Arduino Uno</em> подойдёт, но она крупнее и тяжелее, что может повлиять на баланс машинки. Главное отличие — <em>Uno</em> имеет отдельный пин <code>Vin</code> для внешнего питания, а <em>Nano</em> можно питать напрямую через <code>5V</code> (если напряжение стабилизировано). Схемы подключения моторов и датчиков идентичны.</p>
+</details>
+
+<details>
+  <summary>Почему машинка движется только в одну сторону?</summary>
+  <p>Вероятные причины:</p>
+  <ol>
+    <li>Неправильное подключение моторов к драйверу (поменяйте местами провода одного мотора).</li>
+    <li>Сгорел один из транзисторов на <em>L298N</em> (проверьте мультиметром).</li>
+    <li>В коде неверно указаны пины управления (например, <code>IN1</code> и <code>IN2</code> всегда в <code>HIGH</code>).</li>
+  </ol>
+  <p>Для диагностики отключите один мотор и проверьте его работу отдельно.</p>
+</details>
+
+<details>
+  <summary>Как увеличить скорость машинки?</summary>
+  <p>Скорость зависит от:</p>
+  <ul>
+    <li>🔋 Напряжения питания моторов (но не превышайте максимальное для вашей модели!).</li>
+    <li>🛠️ Передаточного числа редуктора (меньше витков = выше скорость, но ниже крутящий момент).</li>
+    <li>📉 Алгоритма ШИМ: используйте <code>analogWrite()</code> вместо <code>digitalWrite()</code> для плавного регулирования.</li>
+  </ul>
+  <p>Пример кода для ШИМ-управления:</p>
+  <pre><code>analogWrite(IN1, 200); // Скорость 200 из 255 (~78%)
+<p>analogWrite(IN2, 0);</code></pre></p>
+</details>
+
+<details>
+  <summary>Можно ли управлять машинкой через интернет?</summary>
+  <p>Да, но <em>Arduino Nano</em> не имеет встроенного <code>Wi-Fi</code>. Решения:</p>
+  <ul>
+    <li>Добавить модуль <em>ESP8266</em> (например, <em>NodeMCU</em>) и связать его с <em>Nano</em> по <code>UART</code>.</li>
+    <li>Использовать <em>Arduino Nano 33 IoT</em> — она имеет встроенный <code>Wi-Fi</code>.</li>
+  </ul>
+  <p>Для передачи команд через интернет потребуется настроить <code>MQTT</code>-брокер или веб-сервер.</p>
+</details>
+
+<details>
+  <summary>Где купить детали для машинки недорого?</summary>
+  <p>Рекомендуемые площадки:</p>
+  <ul>
+    <li>🌍 <strong>AliExpress</strong> — низкие цены, но долгое ожидание (3–4 недели).</li>
+    <li>🇷🇺 <strong>Чип и Дип</strong>, <strong>Амперка</strong> — быстрая доставка по России.</li>
+    <li>📦 <strong>Локальные радиорыночки</strong> — можно потрогать детали перед покупкой.</li>
+  </ul>
+  <p>Совет: покупайте моторы и драйверы в наборе (например, "Robot Car Chassis Kit") — это дешевле, чем по отдельности.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#1-комплектующие-для-машинки-что-купить-и-на-что-обратить-внимание">1. Комплектующие для машинки: что купить и на что обратить внимание</a></li><li><a href="#2-схема-подключения-как-не-спалить-arduino-nano">2. Схема подключения: как не спалить Arduino Nano</a></li><li><a href="#3-прошивка-arduino-nano-готовые-скетчи-для-разных-задач">3. Прошивка Arduino Nano: готовые скетчи для разных задач</a></li><li><a href="#4-сборка-механической-части-ошибки-и-решения">4. Сборка механической части: ошибки и решения</a></li><li><a href="#5-автономный-режим-датчики-и-алгоритмы">5. Автономный режим: датчики и алгоритмы</a></li><li><a href="#6-питание-и-энергоэффективность-как-продлить-время-работы">6. Питание и энергоэффективность: как продлить время работы</a></li><li><a href="#7-улучшения-и-модификации-от-прототипа-до-продвинутого-робота">7. Улучшения и модификации: от прототипа до продвинутого робота</a></li><li><a href="#faq-ответы-на-частые-вопросы">FAQ: ответы на частые вопросы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/c/ch/chto-ispolzuet-ded-moroz-v-kachestve-avtomobilya.html" class="related-card">Автомобиль Деда Мороза: марки, характеристики и тюнинг</a></li><li><a href="/articles/s/sa/samaya-bystraya-mashina-v-need-for-speed-underground-2.html" class="related-card">Самая быстрая машина в NFS Underground 2: секреты тюнинга и гонок</a></li><li><a href="/articles/c/cr/crowns-logo-perevod-na-russkij.html" class="related-card">Crowns Logo: перевод на русский, расшифровка и значение</a></li><li><a href="/articles/r/ra/radio-pioner-kakaya-volna.html" class="related-card">Радио «Пионер» — какая волна? Частоты и настройка в авто</a></li><li><a href="/articles/s/sh/shem-sumku-iz-shnura-na-mashinke-zigzagom.html" class="related-card">Как сшить сумку из шнура на швейной машинке зигзагом: пошаговый мастер-класс</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/c/ch/chto-ispolzuet-ded-moroz-v-kachestve-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Автомобиль Деда Мороза: марки, характеристики и тюнинг</span><span class="related-bottom-desc">Какой транспорт использует Дед Мороз? Обзор легендарных троек, снегоходов и современных внедорожнико</span></a><a href="/articles/s/sa/samaya-bystraya-mashina-v-need-for-speed-underground-2.html" class="related-bottom-card"><span class="related-bottom-title">Самая быстрая машина в NFS Underground 2: секреты тюнинга и гонок</span><span class="related-bottom-desc">Узнайте, какая машина в Need for Speed Underground 2 самая быстрая после полного тюнинга. Сравнение </span></a><a href="/articles/c/cr/crowns-logo-perevod-na-russkij.html" class="related-bottom-card"><span class="related-bottom-title">Crowns Logo: перевод на русский, расшифровка и значение</span><span class="related-bottom-desc">Полный перевод и значение логотипа Crowns Logo. Разбор символики короны в автомобильной индустрии, и</span></a><a href="/articles/r/ra/radio-pioner-kakaya-volna.html" class="related-bottom-card"><span class="related-bottom-title">Радио «Пионер» — какая волна? Частоты и настройка в авто</span><span class="related-bottom-desc">Какие диапазоны FM/AM поддерживает радио «Пионер» в машине? Как настроить волны на магнитоле и избеж</span></a><a href="/articles/s/sh/shem-sumku-iz-shnura-na-mashinke-zigzagom.html" class="related-bottom-card"><span class="related-bottom-title">Как сшить сумку из шнура на швейной машинке зигзагом: пошаговый мастер-класс</span><span class="related-bottom-desc">Узнайте, как самостоятельно сшить прочную сумку из шнура на швейной машинке с помощью зигзагообразно</span></a><a href="/articles/o/ot/otzyvy-o-legkovykh-pritsepakh-kakoj-luchshe.html" class="related-bottom-card"><span class="related-bottom-title">Отзывы о легковых прицепах 2026: какой лучше выбрать для авто</span><span class="related-bottom-desc">Реальные отзывы владельцев о прицепах MZSA, Kremen, Al-Ko и других. Сравнение по грузоподъёмности, ц</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

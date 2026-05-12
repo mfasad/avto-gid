@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Pi FM Радио: частота, настройка и антенна для RPi — Авто Гид</title>
+    <meta name="description" content="Как настроить Pi FM радио на нужную частоту. Инструкция по запуску передатчика, выбору канала, антенне и устранению помех.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/p/pi/pi-fm-radio-chastota.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Pi FM Радио: частота, настройка и антенна для RPi">
+    <meta property="og:description" content="Как настроить Pi FM радио на нужную частоту. Инструкция по запуску передатчика, выбору канала, антенне и устранению помех.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Pi FM Радио: частота, настройка и антенна для RPi</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Pi FM Радио: настройка частоты и запуск передатчика</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принцип-работы-fm-передатчика-на-raspberry-pi">Принцип работы FM-передатчика на Raspberry Pi</a></li><li><a href="#выбор-оптимальной-частоты-для-трансляции">Выбор оптимальной частоты для трансляции</a></li><li><a href="#программное-обеспечение-для-генерации-сигнала">Программное обеспечение для генерации сигнала</a></li><li><a href="#антенны-и-физика-подключения">Антенны и физика подключения</a></li><li><a href="#сравнение-программных-передатчиков">Сравнение программных передатчиков</a></li><li><a href="#устранение-помех-и-улучшение-качества">Устранение помех и улучшение качества</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Превращение миниатюрного одноплатного компьютера в полноценный радиопередатчик — это классический проект для энтузиастов электроники. Технология <strong>Pi FM</strong> позволяет транслировать аудиосигнал в диапазоне УКВ, используя лишь GPIO-выход и простой кусок провода в качестве антенны. Это открывает широкие возможности для создания локальных радиостанций в гараже, на даче или во время автомобильных поездок.</p>
+
+<p>Однако, чтобы сигнал был качественным и не создавал помехи соседям, необходимо правильно выбрать <em>рабочую частоту</em>. В отличие от коммерческого вещания, где частоты жестко лицензированы, в домашних экспериментах важно найти"чистый" канал. Неправильный выбор приведет к тому, что вашу музыку перекроют мощные городские станции или появятся неприятные шумы.</p>
+
+<p>В этой статье мы подробно разберем, как подобрать оптимальную частоту для <strong>Pi FM радио</strong>, какие программы использовать для генерации сигнала и как настроить оборудование. Вы узнаете о тонкостях распространения радиоволн в помещении и на улице, а также получите пошаговую инструкцию по запуску трансляции.</p>
+
+<h2 id="принцип-работы-fm-передатчика-на-raspberry-pi">Принцип работы FM-передатчика на Raspberry Pi</h2>
+
+<p>Фундаментальной основой работы передатчика является использование ШИМ-модуляции (широтно-импульсной модуляции) для генерации несущей частоты. Программное обеспечение, такое как <em>rpi-fm</em> или <em>PiFmRds</em>, управляет таймерами процессора Broadcom с высочайшей точностью. Это позволяет создавать радиосигнал в диапазоне 87–108 МГц без использования дополнительных радиомодулей.</p>
+
+<p>Ключевым моментом здесь является стабильность тактирования. <strong>Частота процессора</strong> Raspberry Pi должна быть зафиксирована, иначе сигнал будет"плавать", и приемник не сможет станцию. Обычно для этих целей частоту ядра поднимают до 250 МГц или 400 МГц, чтобы получить чистую синусоиду после фильтрации.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Использование FM-передатчиков без лицензии разрешено только на очень малой мощности (обычно до 10-50 мкВт) и в пределах частного помещения. Выход сигнала за пределы вашей собственности может нарушать законы о радиочастотном спектре.</p>
+</blockquote>
+
+<p>Для передачи звука используется выход GPIO4 (пин 13 на 26-пиновой гребенке). Именно через этот порт подается высокочастотный сигнал, который затем излучается через подключенную антенну. Важно понимать, что форма сигнала далека от идеальной синусоиды, поэтому наличие простейшего фильтра или хотя бы резистора на 50 Ом критически важно для качества звука.</p>
+
+<details class="faq-item"><summary>Технические детали модуляции</summary><div class="faq-answer"><p>Процесс модуляции происходит программно: аудиосэмпл накладывается на несущую частоту путем изменения длительности импульсов. Это создает боковые полосы, которые и улавливает ваш FM-приемник.</p></div></details>
+
+<h2 id="выбор-оптимальной-частоты-для-трансляции">Выбор оптимальной частоты для трансляции</h2>
+
+<p>Самый важный этап настройки <strong>Pi FM радио</strong> — это выбор канала. Диапазон FM переполнен, особенно в городских условиях. Чтобы найти свободную нишу, необходимо провести предварительный анализ эфира. Включите любой FM-приемник (в телефоне, магнитоле или отдельном устройстве) и пройдитесь по всему диапазону от 87.5 до 108.0 МГц.</p>
+
+<p>Ваша цель — найти участок спектра, где нет мощных станций. Идеальным вариантом считаются частоты с нечетным последним знаком (например, 102.1, 89.3, 95.7), так как шаг сетки частот в большинстве стран составляет 0.1 МГц (100 кГц). Однако в некоторых регионах шаг может быть 50 кГц, что позволяет использовать и промежуточные значения.</p>
+
+<ul>
+<li>📻 <strong>87.5 - 88.0 МГц</strong>: Часто используется для вещания в учебных заведениях или закрытых системах, но может быть занята в крупных городах.</li>
+<li>📻 <strong>98.0 - 100.0 МГц</strong>: Обычно самый"забитый" диапазон, где сосредоточены основные развлекательные и новостные радиостанции.</li>
+<li>📻 <strong>106.0 - 108.0 МГц</strong>: Часто отдается под государственные каналы или авиационную навигацию (в некоторых странах), но может быть свободнее для локального вещания.</li>
+</ul>
+
+<p>При выборе частоты учитывайте расстояние до ближайших мощных передатчиков. Если вы живете рядом с телецентром,"чистых" окон может не остаться вовсе. В таком случае имеет смысл сместиться на край диапазона, где чувствительность простых приемников часто ниже, и пробиться сквозь шум проще.</p>
+
+<div class="poll-widget" id="poll-47e667c2"><div class="poll-widget-question">📊 Какую частоту вы планируете использовать для тестов?</div><div class="poll-widget-option" data-poll="47e667c2" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">87.5 - 90.0 МГц</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="47e667c2" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">90.1 - 100.0 МГц</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="47e667c2" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">100.1 - 108.0 МГц</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="47e667c2" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не знаю, буду искать свободную</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="программное-обеспечение-для-генерации-сигнала">Программное обеспечение для генерации сигнала</h2>
+
+<p>Для превращения Raspberry Pi в радиостанцию существует несколько проверенных программных решений. Наиболее популярным и функциональным является проект <em>PiFmRds</em>. Он не только генерирует несущую частоту, но и умеет передавать RDS-информацию (название станции, имя трека), что делает картинку на дисплее автомобильной магнитолы профессиональной.</p>
+
+<p>Второй вариант — классический <em>rpi-fm</em>. Это более легковесная программа, которая требует меньше ресурсов, но не поддерживает RDS. Она идеально подходит для старых моделей Raspberry Pi (Zero, 1, 2), где каждый мегагерц тактовой частоты на счету. Установка обычно производится через компиляцию исходного кода из репозитория GitHub.</p>
+
+<p>Запуск трансляции осуществляется через терминал. Команда имеет простой синтаксис, где указывается частота и путь к аудиофайлу. Например, для передачи файла <code>music.wav</code> на частоте 102.5 МГц команда будет выглядеть следующим образом:</p>
+
+<pre><code>sudo./pi_fm_rds -freq 102.5 -audio music.wav</code></pre>
+
+<p>Важно отметить, что аудиофайл должен быть в формате WAV с частотой дискретизации 22050 Гц или 24000 Гц (моно). Если вы используете MP3, его необходимо предварительно сконвертировать утилитой <code>sox</code> или <code>ffmpeg</code>. Прямая передача сжатых форматов программой не поддерживается, так как процессору не хватит мощности на декодирование и модуляцию одновременно.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте поток звука вместо файла, если хотите транслировать живое аудио. Например, можно направить вывод микрофона или синтезатора речи в программу передатчика через pipe.</p></div>
+
+<h2 id="антенны-и-физика-подключения">Антенны и физика подключения</h2>
+
+<p>Качество передачи сигнала напрямую зависит от антенной системы. В качестве антенны для <strong>Pi FM</strong> обычно используется отрезок провода, подключенный к GPIO4. Длина провода должна быть рассчитана исходя из длины волны выбранной частоты. Для диапазона 100 МГц длина волны составляет около 3 метров, поэтому оптимальная длина антенны — четверть волны, то есть примерно 75 см.</p>
+
+<p>Однако, просто прикрутить провод к пину недостаточно. Для согласования импеданса и защиты выхода GPIO рекомендуется использовать резистор. Стандартная схема включает в себя резистор номиналом 50 Ом, включенный последовательно между пином GPIO4 и антенной. Второй конец антенны (земля) также желательно заземлить на соответствующий пин GND, хотя часто работает и без этого, используя корпус устройства как противовес.</p>
+
+<p>Не используйте слишком длинные антенны без фильтрации. Увеличение длины провода выше расчетной (например, полволны или полная волна) может привести к появлению гармоник и излучению на других частотах, что создаст помехи для других служб. Кроме того, длинная антенна может перегрузить выход GPIO, что теоретически способно повредить процессор.</p>
+
+<div class="checklist-block"><h4>☑️ Подготовка антенной системы</h4><label class="check-item"><input type="checkbox"><span>Отрезать провод длиной 75 см:Снять изоляцию с концов:Подключить резистор 50 Ом к GPIO4:Подключить провод антенны к резистору:Заземлить второй конец (опционально):</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+
+<h2 id="сравнение-программных-передатчиков">Сравнение программных передатчиков</h2>
+
+<p>Выбор между различными реализациями софта зависит от ваших целей и модели Raspberry Pi. Если вам нужна максимальная совместимость и простота, один вариант будет лучше. Если же критична поддержка RDS и качество звука — стоит выбрать другой. Ниже приведена сравнительная таблица основных характеристик популярных решений.</p>
+
+<table>
+<thead>
+<tr>
+<th>Программа</th>
+<th>Поддержка RDS</th>
+<th>Требования к CPU</th>
+<th>Формат аудио</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>PiFmRds</em></td>
+<td>Да</td>
+<td>Высокие (RPi 3/4)</td>
+<td>WAV (22k/24k)</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td><em>rpi-fm</em></td>
+<td>Нет</td>
+<td>Низкие (RPi Zero/1)</td>
+<td>WAV (22k)</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td><em>rpitx</em></td>
+<td>Да (сложно)</td>
+<td>Очень высокие</td>
+<td>Различные</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td><em>fm_transmitter</em></td>
+<td>Нет</td>
+<td>Средние</td>
+<td>WAV</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Стоит отметить, что программа <em>rpitx</em> является наиболее универсальной, позволяя генерировать сигналы любых типов модуляции, но ее настройка для FM-вещания может быть избыточно сложной для новичка. Для большинства задач по созданию <strong>радио на Raspberry Pi</strong> достаточно связки <em>PiFmRds</em> и качественного WAV-файла.</p>
+
+<h2 id="устранение-помех-и-улучшение-качества">Устранение помех и улучшение качества</h2>
+
+<p>Частая проблема самодельных передатчиков — низкое качество звука и фоновый шум. Это связано с тем, что Raspberry Pi не имеет выделенного ЦАП для радиосигнала, и все вычисления происходят на центральном процессоре, который подвержен прерываниям от операционной системы. Чтобы минимизировать эти эффекты, рекомендуется отключить ненужные сервисы, Wi-Fi и Bluetooth во время трансляции.</p>
+
+<p>Еще один источник проблем — питание. Если блок питания не выдает стабильные 5 Вольт или имеет высокие пульсации, это напрямую скажется на чистоте несущей частоты. Появятся свисты и треск, синхронизированные с нагрузкой на процессор. Использование качественного источника питания и, возможно, дополнительного конденсатора в цепи питания GPIO может значительно улучшить ситуацию.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Если вы слышите сильный гул 50/100 Гц, проверьте заземление аудиоисточника (если он внешний) и убедитесь, что кабель питания не проложен вплотную к антенне.</p>
+</blockquote>
+
+<p>Для фильтрации гармоник можно собрать простейший LC-фильтр низких частот. Он состоит из катушки индуктивности и конденсатора, подобранных под вашу <mark>рабочую частоту</mark>. Это отсечет высокочастотные гармоники, которые могут создавать помехи телевизионному приему или другим радиослужбам, делая ваш сигнал более"чистым" с точки зрения спектра.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Качество FM-сигнала на Raspberry Pi на 80% зависит от стабильности питания и правильности выбора свободной частоты, и только на 20% от программного обеспечения.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запустить Pi FM радио на Raspberry Pi Zero?</summary>
+<p>Да, Raspberry Pi Zero отлично подходит для этих целей благодаря своему процессору, который аналогичен модели Pi 1. Однако, из-за компактности платы, важно аккуратно подпаивать антенну, чтобы не замкнуть соседние контакты. Рекомендуется использовать программу <em>rpi-fm</em> для лучшей производительности на этой модели.</p>
+</details>
+
+<details>
+<summary>Какой максимальный радиус действия у такого передатчика?</summary>
+<p>Без усилителя и с простой антенной (провод 75 см) радиус уверенного приема составляет от 5 до 20 метров в помещении и до 50-100 метров на открытой местности. Дальность сильно зависит от чувствительности приемника и наличия препятствий (стен, металлического кузова автомобиля).</p>
+</details>
+
+<details>
+<summary>Нужна ли специальная лицензия для использования Pi FM?</summary>
+<p>В большинстве стран создание маломощных передатчиков (с радиусом действия несколько метров) для личного использования внутри помещения не требует лицензии. Однако законы различаются: в некоторых странах запрещена любая генерация радиосигналов без сертификации устройства. Всегда проверяйте местное законодательство.</p>
+</details>
+
+<details>
+<summary>Почему звук прерывистый или трещит?</summary>
+<p>Это чаще всего вызвано нехваткой вычислительной мощности (если запущены другие тяжелые процессы) или нестабильным питанием. Также причиной может быть плохой контакт антенны или использование аудиофайла с неподходящей частотой дискретизации (не 22050/24000 Гц).</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#принцип-работы-fm-передатчика-на-raspberry-pi">Принцип работы FM-передатчика на Raspberry Pi</a></li><li><a href="#выбор-оптимальной-частоты-для-трансляции">Выбор оптимальной частоты для трансляции</a></li><li><a href="#программное-обеспечение-для-генерации-сигнала">Программное обеспечение для генерации сигнала</a></li><li><a href="#антенны-и-физика-подключения">Антенны и физика подключения</a></li><li><a href="#сравнение-программных-передатчиков">Сравнение программных передатчиков</a></li><li><a href="#устранение-помех-и-улучшение-качества">Устранение помех и улучшение качества</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otklyuchit-rabotayushchuyu-posudomoechnuyu-mashinu.html" class="related-card">Как отключить работающую посудомоечную машину: безопасно</a></li><li><a href="/articles/k/ka/kak-pravilno-svetit-na-lt-v-wot.html" class="related-card">Как правильно светить на ЛТ в WOT: гайд для новичков и профи</a></li><li><a href="/articles/c/ch/chto-takoe-bbm-v-armii.html" class="related-card">ББМ в армии: расшифровка и нормы выдачи ГСМ в 2026 году</a></li><li><a href="/articles/s/sh/shvejnaya-mashinka-zinger-kupit-na-avito.html" class="related-card">Швейная машинка Зингер купить на Авито: гид по выбору и проверке</a></li><li><a href="/articles/f/fi/film-pro-mashinu-delorian.html" class="related-card">DeLorean DMC-12: история легендарного авто из «Назад в будущее»</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-otklyuchit-rabotayushchuyu-posudomoechnuyu-mashinu.html" class="related-bottom-card"><span class="related-bottom-title">Как отключить работающую посудомоечную машину: безопасно</span><span class="related-bottom-desc">Инструкция, как экстренно остановить посудомойку. Узнайте, можно ли прервать цикл, как открыть дверь</span></a><a href="/articles/k/ka/kak-pravilno-svetit-na-lt-v-wot.html" class="related-bottom-card"><span class="related-bottom-title">Как правильно светить на ЛТ в WOT: гайд для новичков и профи</span><span class="related-bottom-desc">Подробное руководство по настройке света на легких танках в World of Tanks: выбор техники, тактика, </span></a><a href="/articles/c/ch/chto-takoe-bbm-v-armii.html" class="related-bottom-card"><span class="related-bottom-title">ББМ в армии: расшифровка и нормы выдачи ГСМ в 2026 году</span><span class="related-bottom-desc">Что такое ББМ в армии? Полная расшифровка, актуальные нормы расхода ГСМ на 2026 год, таблица коэффиц</span></a><a href="/articles/s/sh/shvejnaya-mashinka-zinger-kupit-na-avito.html" class="related-bottom-card"><span class="related-bottom-title">Швейная машинка Зингер купить на Авито: гид по выбору и проверке</span><span class="related-bottom-desc">Как купить швейную машинку Зингер на Авито без рисков. Проверка моделей, цены, диагностика и отличия</span></a><a href="/articles/f/fi/film-pro-mashinu-delorian.html" class="related-bottom-card"><span class="related-bottom-title">DeLorean DMC-12: история легендарного авто из «Назад в будущее»</span><span class="related-bottom-desc">Полный разбор автомобиля DeLorean DMC-12. История создания, технические характеристики, роль в кино </span></a><a href="/articles/k/ka/kakoj-firmy-luchshe-posudomoechnye-mashiny.html" class="related-bottom-card"><span class="related-bottom-title">Какой фирмы лучше посудомоечные машины: рейтинг брендов</span><span class="related-bottom-desc">Экспертный обзор производителей посудомоечных машин. Сравнение Bosch, Electrolux, Hansa и других бре</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

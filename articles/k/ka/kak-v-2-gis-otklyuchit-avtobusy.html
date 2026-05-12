@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как отключить автобусы в 2ГИС: скрытые настройки карты — Авто Гид</title>
+    <meta name="description" content="Инструкция по отключению слоев транспорта в 2ГИС. Узнайте, как убрать автобусы, троллейбусы и трамваи для очистки карты.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-v-2-gis-otklyuchit-avtobusy.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как отключить автобусы в 2ГИС: скрытые настройки карты">
+    <meta property="og:description" content="Инструкция по отключению слоев транспорта в 2ГИС. Узнайте, как убрать автобусы, троллейбусы и трамваи для очистки карты.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как отключить автобусы в 2ГИС: скрытые настройки карты</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как отключить автобусы в 2ГИС: полное руководство</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#интерфейс-управления-слоями-карты">Интерфейс управления слоями карты</a></li><li><a href="#настройки-в-мобильном-приложении-android-и-ios">Настройки в мобильном приложении Android и iOS</a></li><li><a href="#управление-видимостью-в-десктопной-версии">Управление видимостью в десктопной версии</a></li><li><a href="#специфика-работы-онлайн-слоев">Специфика работы онлайн-слоев</a></li><li><a href="#альтернативные-способы-очистки-карты">Альтернативные способы очистки карты</a></li><li><a href="#влияние-настроек-на-навигацию-и-маршрутизацию">Влияние настроек на навигацию и маршрутизацию</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>Современные навигационные системы перенасыщены информацией, что иногда мешает восприятию основной картины. Водители, пешеходы и курьеры часто сталкиваются с ситуацией, когда интерфейс приложения перегружен лишними элементами, закрывающими важные детали местности. В частности, <strong>отображение общественного транспорта</strong> может создавать визуальный шум, затрудняя поиск нужного адреса или построение маршрута. Убрать эту информацию можно, но стандартные кнопки не всегда очевидны для рядового пользователя.</p>
+<p>Популярный картографический сервис <em>2GIS</em> по умолчанию стремится показать максимальное количество данных, включая движение всех видов наземного транспорта в реальном времени. Это полезно для пассажиров автобусов, но абсолютно бесполезно для автомобилиста, который ищет свободную парковку или объезд пробки. <strong>Динамические маркеры</strong> постоянно обновляются, отвлекая внимание и потребляя трафик, что критично при нестабильном мобильном интернете. В этой статье мы разберем, как очистить карту от лишних значков.</p>
+<p>Процесс настройки интерфейса не требует глубоких технических знаний, однако доступ к нужным функциям может быть скрыт в разных разделах меню в зависимости от версии приложения. Мы рассмотрим актуальные методы для мобильных платформ <em>Android</em> и <em>iOS</em>, а также для десктопной версии. Правильная конфигурация слоев позволит вам сосредоточиться на <strong>геометрии дорог</strong> и объектах инфраструктуры, не отвлекаясь на движение маршруток.</p>
+
+<h2 id="интерфейс-управления-слоями-карты">Интерфейс управления слоями карты</h2>
+<p>Основным инструментом для управления видимостью объектов является меню слоев. Именно здесь сосредоточены переключатели, отвечающие за то, что вы видите на экране. В последних версиях <em>2GIS</em> разработчики изменили логику группировки элементов, перенеся управление транспортом в отдельную категорию. Чтобы найти эти настройки, необходимо внимательно осмотреть правый край экрана или нижнюю панель инструментов, в зависимости от ориентации устройства.</p>
+<p>Важно понимать разницу между слоями статики и динамики. Статические элементы, такие как остановки или депо, убираются через общие настройки карты, тогда как движущиеся автобусы относятся к <strong>онлайн-слоям</strong>. Их отключение не только визуально очищает карту, но и снижает нагрузку на процессор смартфона, так как прекращается постоянный запрос координат транспорта с сервера.</p>
+<p>Если вы используете приложение в режиме навигации, некоторые слои могут блокироваться автоматически. Однако в режиме просмотра карты пользователь имеет полный контроль. <mark>Отключение слоев транспорта не влияет на построение маршрутов</mark>, так как алгоритмы прокладки пути учитывают все виды дорог независимо от видимости их на экране. Это важный технический нюанс, о котором забывают многие пользователи.</p>
+<ul>
+<li>🗺️ Слой «Транспорт» — отвечает за показ всех движущихся единиц.</li>
+<li>🚏 Слой «Остановки» — отображает статические точки посадки и высадки.</li>
+<li>🚦 Слой «Пробки» — часто связан с транспортом, но имеет отдельный переключатель.</li>
+<li>🌳 Слой «Спутник» — при включении может перекрывать векторные данные транспорта.</li>
+</ul>
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте двухпальцевый зум для быстрого переключения между детализацией улиц и общим видом, где транспорт виден менее отчетливо.</p></div>
+<p>Стоит отметить, что в некоторых регионах покрытие данными может отличаться. В крупных мегаполисах плотность маркеров настолько высока, что без их отключения карта превращается в кашу из цветных точек. В небольших городах этот эффект менее выражен, но принцип работы меню остается единым для всей системы <strong>цифрового картографирования</strong>.</p>
+
+<h2 id="настройки-в-мобильном-приложении-android-и-ios">Настройки в мобильном приложении Android и iOS</h2>
+<p>Мобильная версия <em>2ГИС</em> является наиболее популярной, и именно здесь пользователи чаще всего ищут способ убрать лишние элементы. Интерфейс мобильной программы оптимизирован для управления одной рукой, поэтому все важные переключатели вынесены на экран карты. Чтобы добраться до управления автобусами, нужно найти кнопку, отвечающую за <strong>дополнительные слои</strong>.</p>
+<p>Обычно она расположена в правом верхнем или нижнем углу, в зависимости от версии операционной системы и обновлений интерфейса. Нажав на иконку слоев, вы увидите список доступных опций. Здесь важно не перепутать отключение пробок и отключение транспорта. Пробки показывают скорость потока, а транспорт — конкретные <strong>маршрутные транспортные средства</strong>.</p>
+<div class="checklist-block"><h4>☑️ Настройка слоев в 2ГИС</h4><label class="check-item"><input type="checkbox"><span>Найти кнопку «Слои» на карте:Отключить галочку «Транспорт»:Проверить отображение карты:Сохранить настройки по умолчанию</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+<p>В некоторых случаях приложение может сбрасывать настройки при обновлении. Если вы заметили, что автобусы снова появились, проверьте настройки профиля. В разделе «Мои настройки» или «Оформление» может стоять галочка на автоматическое включение слоев при запуске. Это сделано для удобства новичков, но опытным пользователям это только мешает.</p>
+<blockquote>
+<p>⚠️ Внимание: При отключении слоев в мобильном приложении изменения могут применяться с задержкой в несколько секунд, пока не обновится кэш карты.</p>
+</blockquote>
+<p>Для пользователей <em>iOS</em> интерфейс практически идентичен <em>Android</em>, но могут быть различия в иконках из-за гайдлайнов Apple. Владельцы iPhone также могут использовать виджеты на рабочем столе, которые иногда дублируют настройки отображения. Убедитесь, что виджет не принудительно включает слой транспорта.</p>
+
+<h2 id="управление-видимостью-в-десктопной-версии">Управление видимостью в десктопной версии</h2>
+<p>Компьютерная версия <em>2GIS</em> предоставляет более детальный контроль над картой благодаря большому экрану и управлению мышью. Здесь управление слоями вынесено в отдельную панель, которая вызывается кнопкой с изображением стопки листов или аналогичным символом. В десктопном приложении можно более тонко настроить <strong>отображение объектов</strong>, так как производительность ПК позволяет рендерить больше данных без лагов.</p>
+<p>В меню «Вид» или «Слои» вы найдете чекбоксы для различных категорий объектов. Убрав галочку с пункта «Общественный транспорт», вы мгновенно очистите карту от всех движущихся автобусов, троллейбусов и трамваев. Это особенно удобно при планировании сложных логистических цепочек, где важна только <strong>топология дорог</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Расположение меню</th>
+<th>Название опции</th>
+<th>Горячие клавиши</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android</td>
+<td>Правый нижний угол</td>
+<td>Слои -> Транспорт</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>iOS</td>
+<td>Правый верхний угол</td>
+<td>Слои -> Транспорт</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>Панель инструментов</td>
+<td>Слои -> Транспорт</td>
+<td>Ctrl+L</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>Верхнее меню</td>
+<td>Вид -> Слои</td>
+<td>Cmd+L</td>
+</tr>
+</tbody>
+</table>
+<p>Десктопная версия также позволяет создавать собственные профили отображения. Вы можете сохранить конфигурацию «Чистая карта», где отключены не только автобусы, но и рекламные баннеры, фото объектов и другие отвлекающие факторы. Это идеальный вариант для <strong>офисной работы</strong> с картой.</p>
+<details class="faq-item"><summary>Секретные сочетания клавиш</summary><div class="faq-answer"><p>В десктопной версии можно использовать комбинации клавиш для быстрого переключения режимов, если они не заблокированы системными настройками ОС.</p></div></details>
+
+<h2 id="специфика-работы-онлайн-слоев">Специфика работы онлайн-слоев</h2>
+<p>Понимание принципа работы онлайн-слоев поможет вам лучше управлять приложением. Данные о местоположении автобусов передаются в реальном времени с GPS-трекеров, установленных на транспорте. Когда вы включаете этот слой, ваше устройство начинает постоянно обмениваться пакетами данных с сервером <em>2ГИС</em>. Это обеспечивает актуальность, но требует <strong>стабильного соединения</strong>.</p>
+<p>Отключая этот слой, вы переходите на работу с офлайн-картой в части транспорта. Карта перестает запрашивать координаты, что экономит заряд батареи и интернет-трафик. Для пользователей с тарифами, где важен каждый мегабайт, это существенный <strong>фактор экономии</strong>. В режиме офлайн-навигации транспорт все равно не отображается, так как для этого нужен интернет.</p>
+<p>Стоит учитывать, что в некоторых городах данные о транспорте могут быть неактуальными или поступать с задержкой. В таких случаях слой создает больше проблем, чем пользы, показывая автобусы там, где их уже нет, или не показывая их там, где они есть. Тогда полное отключение функции становится единственным разумным решением для сохранения <strong>нервной системы</strong> пользователя.</p>
+<ul>
+<li>📉 Снижает потребление трафика до 40% при активном использовании карты.</li>
+<li>🔋 Увеличивает время работы смартфона от аккумулятора.</li>
+<li>🚀 Ускоряет отрисовку карты на старых устройствах.</li>
+<li>🧹 Убирает визуальный шум для лучшего восприятия схемы улиц.</li>
+</ul>
+<div class="poll-widget" id="poll-d84597aa"><div class="poll-widget-question">📊 Что для вас важнее в навигаторе?</div><div class="poll-widget-option" data-poll="d84597aa" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Скорость работы:Точность пробок:Внешний вид карты:Наличие всех слоев</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="альтернативные-способы-очистки-карты">Альтернативные способы очистки карты</h2>
+<p>Если стандартное отключение слоя транспорта не дает желаемого эффекта или интерфейс кажется слишком сложным, можно воспользоваться альтернативными методами. Например, переключение на вид «Спутник» или «Гибрид» часто автоматически скрывает векторные маркеры транспорта, оставляя только фото подложку. Это радикальный, но эффективный способ увидеть <strong>реальную картину</strong> местности.</p>
+<p>Также в настройках приложения существует функция «Режим водителя» или «Упрощенный вид». Активация этого режима меняет набор отображаемых объектов, приоритезируя дорожную инфраструктуру и скрывая детали, не важные для вождения. В этом режиме автобусы обычно <strong>скрыты по умолчанию</strong>, так как они не влияют на правила дорожного движения для автомобилей.</p>
+<p>Некоторые пользователи предпочитают использовать сторонние лаунчеры или модификации, которые позволяют скрыть определенные элементы интерфейса на уровне системы. Однако это требует наличия прав <strong>Root</strong> или <em>Jailbreak</em>, что может быть небезопасно. Мы не рекомендуем использовать такие методы без должной квалификации, так как это может нарушить работу приложения.</p>
+<blockquote>
+<p>⚠️ Внимание: Использование модифицированных версий приложений может привести к блокировке аккаunt'а или некорректному отображению лицензионных карт.</p>
+</blockquote>
+<p>Еще один вариант — использование веб-версии <em>2GIS</em> в браузере с установленными блокировщиками рекламы и скриптов. Расширения вроде <em>uBlock Origin</em> могут скрывать определенные элементы страницы, включая маркеры транспорта, если правильно настроить фильтры. Это сложный путь для <strong>продвинутых пользователей</strong> ПК.</p>
+
+<h2 id="влияние-настроек-на-навигацию-и-маршрутизацию">Влияние настроек на навигацию и маршрутизацию</h2>
+<p>Многие водители ошибочно полагают, что скрытие автобусов на карте повлияет на построение маршрута. Это не так. Алгоритмы навигации работают на сервере и учитывают всю дорожную ситуацию, включая выделенные полосы для общественного транспорта, независимо от того, видите вы их на экране или нет. <strong>Логика прокладки</strong> пути остается неизменной.</p>
+<p>Однако, визуальное отсутствие транспорта может помочь лучше оценить ширину проезжей части и наличие помех, если карта используется для предварительного изучения местности. Вы видите чистую геометрию, что позволяет быстрее сориентироваться в <strong>сложных развязках</strong>. Это особенно актуально при подготовке к поездке в незнакомый район.</p>
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Отключение визуального слоя транспорта не отключает учет выделенных полос при построении автомобильного маршрута.</p></div>
+<p>Если вы используете навигатор для пешеходных прогулок, отключение автобусов также полезно. Вы не будете путать остановки транспорта с пунктами назначения. Чистая карта позволяет сосредоточиться на парках, зданиях и входах, игнорируя <strong>транспортный шум</strong>.</p>
+<p>В заключение стоит сказать, что настройка интерфейса под себя — это признак грамотного пользователя. Не бойтесь экспериментировать с слоями, чтобы найти идеальный баланс между информативностью и минимализмом. <em>2GIS</em> предоставляет все необходимые инструменты для этого, нужно лишь знать, где их искать.</p>
+
+<details>
+<summary>Влияет ли отключение автобусов на расчет времени прибытия?</summary>
+<p>Нет, расчет времени прибытия (ETA) производится сервером на основе актуальных данных о пробках и дорожной ситуации. Визуальное отображение транспорта на экране пользователя не участвует в математических вычислениях маршрута.</p>
+</details>
+<details>
+<summary>Можно ли отключить только автобусы, оставив трамваи?</summary>
+<p>В стандартных настройках <em>2GIS</em> слой «Транспорт» является общим для всех видов наземного общественного транспорта. Раздельное отключение (только автобусы, но оставить трамваи) в текущей версии интерфейса не предусмотрено.</p>
+</details>
+<details>
+<summary>Почему после перезагрузки приложения автобусы появляются снова?</summary>
+<p>Приложение может сбрасывать настройки слоев при обновлении или при сбое в сохранении локального конфигурационного файла. Попробуйте заново отключить слой и полностью закрыть приложение (выгрузить из памяти), чтобы настройки применились корректно.</p>
+</details>
+<details>
+<summary>Есть ли разница в настройках для разных городов?</summary>
+<p>Интерфейс настроек един для всех регионов, но наличие самого слоя «Транспорт» зависит от того, подключен ли конкретный город к системе мониторинга общественного транспорта <em>2ГИС</em>. В некоторых малых городах этот слой может отсутствовать физически.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#интерфейс-управления-слоями-карты">Интерфейс управления слоями карты</a></li><li><a href="#настройки-в-мобильном-приложении-android-и-ios">Настройки в мобильном приложении Android и iOS</a></li><li><a href="#управление-видимостью-в-десктопной-версии">Управление видимостью в десктопной версии</a></li><li><a href="#специфика-работы-онлайн-слоев">Специфика работы онлайн-слоев</a></li><li><a href="#альтернативные-способы-очистки-карты">Альтернативные способы очистки карты</a></li><li><a href="#влияние-настроек-на-навигацию-и-маршрутизацию">Влияние настроек на навигацию и маршрутизацию</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/u/us/ustanovka-virtualbox-na-windows-7.html" class="related-card">VirtualBox на Windows 7: установка и настройка</a></li><li><a href="/articles/t/te/televizor-u-mashiny-pravilnoe-nazvanie.html" class="related-card">Монитор или телевизор в машину: правильное название и выбор</a></li><li><a href="/articles/p/po/pochemu-evgenika-tak-nazyvaetsya.html" class="related-card">Почему евгеника так называется: этимология и история термина</a></li><li><a href="/articles/n/na/na-chem-peredvigaetsya-putin.html" class="related-card">На чем ездит Путин: кортеж, лимузины и спецтехника президента РФ</a></li><li><a href="/articles/k/ka/karernyj-samosval-po-sravneniyu-s-chelovekom.html" class="related-card">Карьерный самосвал vs человек: кто мощнее и выносливее?</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/u/us/ustanovka-virtualbox-na-windows-7.html" class="related-bottom-card"><span class="related-bottom-title">VirtualBox на Windows 7: установка и настройка</span><span class="related-bottom-desc">Подробная инструкция по установке VirtualBox на Windows 7. Решения проблем с ошибками, настройка сет</span></a><a href="/articles/t/te/televizor-u-mashiny-pravilnoe-nazvanie.html" class="related-bottom-card"><span class="related-bottom-title">Монитор или телевизор в машину: правильное название и выбор</span><span class="related-bottom-desc">Как правильно называется экран в машине? Разбор терминологии, типов мультимедийных систем и советы п</span></a><a href="/articles/p/po/pochemu-evgenika-tak-nazyvaetsya.html" class="related-bottom-card"><span class="related-bottom-title">Почему евгеника так называется: этимология и история термина</span><span class="related-bottom-desc">Узнайте, почему евгеника так называется. Разбор этимологии термина, связь с Грецией и Фрэнсисом Галь</span></a><a href="/articles/n/na/na-chem-peredvigaetsya-putin.html" class="related-bottom-card"><span class="related-bottom-title">На чем ездит Путин: кортеж, лимузины и спецтехника президента РФ</span><span class="related-bottom-desc">Подробный разбор транспорта Владимира Путина: от официального кортежа до личных автомобилей. Модели,</span></a><a href="/articles/k/ka/karernyj-samosval-po-sravneniyu-s-chelovekom.html" class="related-bottom-card"><span class="related-bottom-title">Карьерный самосвал vs человек: кто мощнее и выносливее?</span><span class="related-bottom-desc">Сравнение параметров карьерного самосвала и человека: грузоподъёмность, размеры, расход топлива, сто</span></a><a href="/articles/c/ch/chto-delat-esli-kolesiko-myshi-glyuchit.html" class="related-bottom-card"><span class="related-bottom-title">Глючит колесико мыши: почему и что делать?</span><span class="related-bottom-desc">Колесико мыши работает со сбоями, прокрутка дергается? Узнайте причины, методы чистки без разборки и</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

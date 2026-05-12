@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Генератор Вандерграафа: принцип работы и устройство — Авто Гид</title>
+    <meta name="description" content="Подробный разбор того, как работает генератор Вандерграафа. Изучаем принцип действия, устройство электростатического генератора и его применение.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/g/ge/generator-vandergrafa-printsip-raboty.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Генератор Вандерграафа: принцип работы и устройство">
+    <meta property="og:description" content="Подробный разбор того, как работает генератор Вандерграафа. Изучаем принцип действия, устройство электростатического генератора и его применение.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Генератор Вандерграафа: принцип работы и устройство</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Генератор Вандерграафа: принцип работы и устройство</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#история-создания-и-назначение-прибора">История создания и назначение прибора</a></li><li><a href="#физические-основы-работы-устройства">Физические основы работы устройства</a></li><li><a href="#конструкция-и-основные-элементы-генератора">Конструкция и основные элементы генератора</a></li><li><a href="#пошаговый-алгоритм-генерации-напряжения">Пошаговый алгоритм генерации напряжения</a></li><li><a href="#факторы-ограничивающие-максимальное-напряжение">Факторы, ограничивающие максимальное напряжение</a></li><li><a href="#применение-в-науке-и-технике">Применение в науке и технике</a></li><li><a href="#вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Представьте себе устройство, способное создавать напряжение в миллионы вольт, используя лишь трение и движение ленты. Именно так выглядит <strong>генератор Вандерграафа</strong>, который стал классическим экспонатом школьных музеев и важным инструментом в ядерной физике. Этот аппарат демонстрирует фундаментальные законы электростатики, превращая механическую энергию в колоссальный электрический потенциал.</p>
+
+<p>Принцип работы генератора Вандерграафа основан на разделении электрических зарядов и их накоплении на внешней поверхности проводящей сферы. Хотя механизм кажется простым, он позволяет достигать таких величин напряжения, которые невозможны при использовании обычных химических источников тока. Понимание этого процесса открывает двери в мир высоковольтной физики.</p>
+
+<p>В этой статье мы детально разберем, как устроена эта машина, какие физические законы лежат в её основе и почему заряды ведут себя именно так, а не иначе. Вы узнаете о роли <em>трибоэлектрического эффекта</em> и особенностях распределения заряда на проводниках.</p>
+
+<h2 id="история-создания-и-назначение-прибора">История создания и назначение прибора</h2>
+
+<p>История этого изобретения восходит к началу 1930-х годов, когда американский физик Роберт Вандерграаф искал способ создания мощных источников высокого напряжения для ускорения заряженных частиц. До этого момента ученые были ограничены возможностями трансформаторов, которые не могли обеспечить стабильное напряжение выше нескольких сотен киловольт без пробоя. <strong>Электростатический генератор</strong> стал решением этой проблемы.</p>
+
+<p>Первоначально устройство создавалось для нужд ядерной физики. Оно использовалось для разгона протонов и электронов до высоких скоростей, необходимых для проведения экспериментов по расщеплению атомного ядра. Современные установки могут достигать высоты в несколько этажей и создавать разность потенциалов в десятки мегавольт.</p>
+
+<blockquote>⚠️ Внимание: Несмотря на визуальную эффектность искровых разрядов, промышленные модели генераторов Вандерграафа представляют смертельную опасность из-за огромной запасенной энергии и возможности поражения током даже после выключения.</blockquote>
+
+<p>Со временем, когда появились более компактные ускорители частиц, основное применение сместилось в образовательную сферу. Сегодня уменьшенные копии прибора можно встретить в кабинетах физики по всему миру. Они наглядно демонстрируют свойства электрического поля и позволяют проводить эффектные опыты, такие как поднятие волос или создание искусственной молнии.</p>
+
+<div class="poll-widget" id="poll-86d9ae20"><div class="poll-widget-question">📊 Где вы чаще всего видели генератор Вандерграафа?</div><div class="poll-widget-option" data-poll="86d9ae20" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">В школьном музее</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="86d9ae20" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">В научном центре</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="86d9ae20" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">В кино или на YouTube</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="86d9ae20" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Никогда не видел</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="86d9ae20" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">В университетской лаборатории</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="физические-основы-работы-устройства">Физические основы работы устройства</h2>
+
+<p>Фундаментальной основой работы машины является способность проводников накапливать заряд на своей внешней поверхности. Если поместить заряд внутрь полой проводящей сферы, он мгновенно перетечет на внешнюю стенку, независимо от того, какой заряд уже имеется на сфере. Этот принцип позволяет непрерывно пополнять запас электронов на коллекторе.</p>
+
+<p>Второй ключевой процесс — это электризация трением, или <em>трибоэлектрический эффект</em>. При плотном контакте и последующем разделении двух разнородных материалов (например, резины и шелка или металла и ворса) происходит перенос электронов с одной поверхности на другую. Один материал становится заряжен положительно, другой — отрицательно.</p>
+
+<p>Третий важный аспект — это <strong>электрическая корона</strong>. На острых краях проводников напряженность электрического поля настолько велика, что происходит ионизация воздуха. Это приводит к стеканию заряда с острия на движущуюся ленту или наоборот, в зависимости от конфигурации установки.</p>
+
+<ul>
+<li>⚡ <strong>Закон Кулона</strong> описывает силу взаимодействия между зарядами, которая определяет, как быстро заряды будут отталкиваться друг от друга на сфере.</li>
+<li>🌪️ <strong>Ионизация воздуха</strong> играет ключевую роль в процессе передачи заряда с щетки на ленту и с ленты на сферу.</li>
+<li>🛡️ <strong>Электростатическая индукция</strong> позволяет перераспределять заряды на проводящих элементах без прямого контакта.</li>
+</ul>
+
+<p>Совокупность этих физических явлений позволяет превращать механическое движение вала в разделение зарядов. Важно понимать, что генератор не создает энергию из ничего, он лишь разделяет уже существующие положительные и отрицательные заряды, затрачивая на это механическую работу.</p>
+
+<h2 id="конструкция-и-основные-элементы-генератора">Конструкция и основные элементы генератора</h2>
+
+<p>Устройство генератора Вандерграафа конструктивно довольно простое, но требует точности в исполнении. Основными элементами являются две диэлектрические ленты (или одна широкая), перекинутые через два барабана — нижний и верхний. Нижний барабан обычно приводится в движение электромотором.</p>
+
+<p>В верхней и нижней частях устройства расположены металлические гребенки или щетки. Нижняя щетка соединена с источником питания или заземлена, а верхняя соединена с внутренней поверхностью полой металлической сферы (коллектора). Материал ленты выбирается таким образом, чтобы при трении о нижний барабан она приобретала определенный заряд.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для достижения максимального напряжения в современных установках всю конструкцию часто помещают в резервуар с газом под высоким давлением, например, с гексафторидом серы, чтобы предотвратить пробой воздуха.</p></div>
+
+<p>Критически важным элементом является изолирующая колонна, на которой закреплена сфера. Она должна обладать высочайшим сопротивлением, чтобы накопленный заряд не стекал на землю раньше времени. Часто для этого используют колонны, заполненные маслом, или набор диэлектрических дисков.</p>
+
+<p>Ниже приведена таблица, описывающая функции основных узлов типовой установки:</p>
+
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Материал</th>
+<th>Функция</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Диэлектрическая лента</td>
+<td>Резина, шелк, нейлон</td>
+<td>Транспортировка заряда между барабанами</td>
+</tr>
+<tr>
+<td>Нижний барабан</td>
+<td>Металл или диэлектрик</td>
+<td>Привод ленты в движение, создание трения</td>
+</tr>
+<tr>
+<td>Нижняя щетка</td>
+<td>Медь, сталь</td>
+<td>Подача или отвод заряда на ленту</td>
+</tr>
+<tr>
+<td>Металлическая сфера</td>
+<td>Алюминий, сталь</td>
+<td>Накопление высокого потенциала (коллектор)</td>
+</tr>
+<tr>
+<td>Изолирующая колонна</td>
+<p>Стекло, акрил, керамика</p>
+</td>
+<td>Удержание сферы и изоляция от земли</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="пошаговый-алгоритм-генерации-напряжения">Пошаговый алгоритм генерации напряжения</h2>
+
+<p>Процесс накопления заряда представляет собой циклический алгоритм, который повторяется тысячи раз в секунду. Сначала нижний барабан вращается, приводя в движение диэлектрическую ленту. В точке контакта с нижним барабаном или нижней щеткой лента приобретает электрический заряд благодаря трению или коронному разряду.</p>
+
+<p>Затем заряженная участок ленты перемещается вверх, внутрь полой металлической сферы. Здесь в действие вступает верхняя щетка, которая соединена со сферой. Благодаря электростатической индукции, заряд с ленты переходит на острие щетки, а затем растекается по внешней поверхности сферы.</p>
+
+<p>Разряженная (или заряженная противоположным зарядом) лента опускается вниз, чтобы повторить цикл. Этот процесс продолжается до тех пор, пока скорость поступления заряда не уравновесится скоростью его утечки через воздух или изоляцию.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка готовности установки</h4><label class="check-item"><input type="checkbox"><span>Проверка натяжения ленты</span></label><label class="check-item"><input type="checkbox"><span>Очистка барабанов от пыли</span></label><label class="check-item"><input type="checkbox"><span>Проверка заземления</span></label><label class="check-item"><input type="checkbox"><span>Визуальный осмотр изоляторов</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>Важно отметить, что заряд всегда стремится распределиться по внешней поверхности проводника. Поэтому, даже если мы передаем заряд внутрь сферы, он мгновенно оказывается снаружи, освобождая внутренность для приема новой порции электронов. Именно это позволяет накапливать потенциал до огромных значений.</p>
+
+<blockquote>⚠️ Внимание: При работе генератора в сухом воздухе может происходить утечка заряда через озон, который является проводником. Для стабильной работы необходима нормальная влажность или изолированная среда.</blockquote>
+
+<h2 id="факторы-ограничивающие-максимальное-напряжение">Факторы, ограничивающие максимальное напряжение</h2>
+
+<p>Казалось бы, ничто не мешает наращивать напряжение бесконечно, однако существуют физические пределы. Главным ограничителем является <strong>электрическая прочность воздуха</strong>. Когда напряженность электрического поля вокруг сферы достигает примерно 30 000 вольт на сантиметр, происходит пробой воздуха, и мы видим искру.</p>
+
+<p>Размер сферы также имеет значение. Чем больше радиус сферы, тем больше заряда можно накопить при том же потенциале, и тем ниже напряженность поля на её поверхности. Именно поэтому в больших установках используются гигантские алюминиевые торы или сферы.</p>
+
+<p>Качество изоляции — второй критический фактор. Любые загрязнения, пыль или влага на поверхности опорной колонны создают пути для стекания тока. В промышленных установках колонны часто выполняют в виде набора конусов («грибов»), чтобы увеличить путь тока утечки по поверхности.</p>
+
+<details class="faq-item"><summary>Почему сфера гладкая?</summary><div class="faq-answer"><p>Гладкая поверхность сферы необходима для предотвращения локального увеличения напряженности поля. Любая шероховатость или заусенец могут стать точкой начала коронного разряда, что приведет к потере заряда.</p></div></details>
+
+<p>Влажность воздуха играет двоякую роль. С одной стороны, влажный воздух лучше проводит ток, что ведет к утечкам. С другой стороны, слишком сухой воздух способствует образованию озона, который также проводит ток. Оптимальным считается умеренно сухой воздух, но для научных целей часто используют вакуум или газы-диэлектрики.</p>
+
+<h2 id="применение-в-науке-и-технике">Применение в науке и технике</h2>
+
+<p>Несмотря на появление более совершенных технологий, генераторы Вандерграафа не ушли в историю. В современной физике высоких энергий их модификации, известные как тандем-генераторы, используются для ускорения легких ионов. Они позволяют получать стабильные пучки частиц с точно контролируемой энергией.</p>
+
+<p>В промышленности подобные принципы используются в электростатических фильтрах для очистки газов от пыли и в установках для электростатической покраски автомобилей. Здесь важно не высокое напряжение само по себе, а создание сильного электрического поля.</p>
+
+<ul>
+<li>🔬 <strong>Ядерная физика</strong>: проведение экспериментов по изучению структуры атомного ядра.</li>
+<li>🏭 <strong>Промышленность</strong>: нанесение покрытий, очистка воздуха, разделение материалов.</li>
+<li>🎓 <strong>Образование</strong>: демонстрация законов электростатики и свойств электрического поля.</li>
+</ul>
+
+<p>Особый интерес представляет использование этих генераторов для калибровки измерительных приборов и проверки изоляции высоковольтного оборудования. Они позволяют создавать контролируемые условия для тестирования пробоя диэлектриков.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Главная ценность генератора Вандерграафа сегодня — это способность генерировать стабильное высокое напряжение постоянного тока, что недоступно для многих трансформаторных схем без сложного выпрямления.</p></div>
+
+<h2 id="вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</h2>
+
+<details>
+<summary>Почему волосы встают дыбом при касании сферы?</summary>
+<p>Когда человек встает на изолирующую платформу и касается заряженной сферы, его тело заряжается тем же потенциалом. Волосы, будучи легкими проводниками, приобретают одноименный заряд. Согласно закону Кулона, одноименные заряды отталкиваются, и волосы стремятся разойтись как можно дальше друг от друга, вставая дыбом.</p>
+</details>
+
+<details>
+<summary>Может ли генератор Вандерграафа убить человека?</summary>
+<p>Маленькие демонстрационные модели безопасны, так как сила тока в них ничтожна (микрoамперы). Однако большие промышленные установки накапливают огромную энергию. Разряд от такой машины может вызвать остановку сердца или сильные ожоги, поэтому работа с ними требует строгого соблюдения техники безопасности.</p>
+</details>
+
+<details>
+<summary>Почему искра имеет зигзагообразную форму?</summary>
+<p>Искра — это пробой воздуха. Воздух неоднороден: в нем есть участки с разной плотностью, температурой и наличием ионизированных частиц. Электрический разряд идет по пути наименьшего сопротивления, который постоянно меняется в зависимости от состояния воздуха в конкретный момент, образуя ломаную линию.</p>
+</details>
+
+<details>
+<summary>Зависит ли работа генератора от влажности?</summary>
+<p>Да, зависит критически. Высокая влажность делает воздух более проводящим, что приводит к быстрой утечке заряда со сферы. В сырую погоду генератор может вообще не заработать или давать очень слабую искру. Идеальные условия — сухой зимний воздух или кондиционированное помещение.</p>
+</details>
+
+<details>
+<summary>Какой максимальный потенциал можно получить?</summary>
+<p>В лабораторных условиях с использованием сфер большого диаметра и газов-изоляторов под давлением удавалось достигать напряжения в 25-30 миллионов вольт. Теоретический предел ограничен только размером конструкции и прочностью изоляторов.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#история-создания-и-назначение-прибора">История создания и назначение прибора</a></li><li><a href="#физические-основы-работы-устройства">Физические основы работы устройства</a></li><li><a href="#конструкция-и-основные-элементы-генератора">Конструкция и основные элементы генератора</a></li><li><a href="#пошаговый-алгоритм-генерации-напряжения">Пошаговый алгоритм генерации напряжения</a></li><li><a href="#факторы-ограничивающие-максимальное-напряжение">Факторы, ограничивающие максимальное напряжение</a></li><li><a href="#применение-в-науке-и-технике">Применение в науке и технике</a></li><li><a href="#вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-rabotaet-polyarizatsionnaya-plenka.html" class="related-card">Как работает поляризационная пленка: устройство и применение</a></li><li><a href="/articles/k/ka/kak-perevoditsya-dodzh-s-anglijskogo-na-russkij.html" class="related-card">Как переводится Dodge с английского: значение и история</a></li><li><a href="/articles/a/am/amerikanskoe-avto-8-bukv-skanvord.html" class="related-card">Американское авто 8 букв: ответы сканвордов и модели США</a></li><li><a href="/articles/k/ka/kak-snyat-rozysk-s-mashiny-v-gta-5-onlajn.html" class="related-card">Как снять розыск с машины в GTA 5 Online: полный гайд 2026</a></li><li><a href="/articles/a/ae/aervik-avtomaticheskij-osvezhitel-interval-raspyleniya-vozdukha-instruktsiya.html" class="related-card">Аэрвикс автоматический освежитель: настройка интервалов и инструкция</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-rabotaet-polyarizatsionnaya-plenka.html" class="related-bottom-card"><span class="related-bottom-title">Как работает поляризационная пленка: устройство и применение</span><span class="related-bottom-desc">Узнайте, как работает поляризационная пленка в ЖК-экранах. Разбор структуры, физики процесса и влиян</span></a><a href="/articles/k/ka/kak-perevoditsya-dodzh-s-anglijskogo-na-russkij.html" class="related-bottom-card"><span class="related-bottom-title">Как переводится Dodge с английского: значение и история</span><span class="related-bottom-desc">Узнайте, как переводится Dodge с английского на русский. Разбор этимологии, истории бренда, сленговы</span></a><a href="/articles/a/am/amerikanskoe-avto-8-bukv-skanvord.html" class="related-bottom-card"><span class="related-bottom-title">Американское авто 8 букв: ответы сканвордов и модели США</span><span class="related-bottom-desc">Ищете ответ на вопрос «американское авто 8 букв»? Полный разбор вариантов: Форд, Шевроле, Додж, Край</span></a><a href="/articles/k/ka/kak-snyat-rozysk-s-mashiny-v-gta-5-onlajn.html" class="related-bottom-card"><span class="related-bottom-title">Как снять розыск с машины в GTA 5 Online: полный гайд 2026</span><span class="related-bottom-desc">Пошаговая инструкция по снятию розыска в GTA Online: от простых способов до секретных лайфхаков. Узн</span></a><a href="/articles/a/ae/aervik-avtomaticheskij-osvezhitel-interval-raspyleniya-vozdukha-instruktsiya.html" class="related-bottom-card"><span class="related-bottom-title">Аэрвикс автоматический освежитель: настройка интервалов и инструкция</span><span class="related-bottom-desc">Полная инструкция по настройке интервала распыления Аэрвикс. Как выставить время работы, заменить ка</span></a><a href="/articles/k/ka/kak-proverit-realnost-probega-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Как проверить пробег автомобиля: методы выявления скрутки</span><span class="related-bottom-desc">Узнайте, как проверить реальный пробег авто. Анализ документов, диагностика электронного блока, осмо</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

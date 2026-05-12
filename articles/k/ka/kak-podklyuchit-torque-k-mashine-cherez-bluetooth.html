@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как подключить Torque к машине через Bluetooth: пошаговое руководство — Авто Гид</title>
+    <meta name="description" content="Подробная инструкция по подключению Torque Pro к автомобилю через Bluetooth-адаптер ELM327. Совместимость, настройки и решение ошибок.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-podklyuchit-torque-k-mashine-cherez-bluetooth.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как подключить Torque к машине через Bluetooth: пошаговое руководство">
+    <meta property="og:description" content="Подробная инструкция по подключению Torque Pro к автомобилю через Bluetooth-адаптер ELM327. Совместимость, настройки и решение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/elektrika-i-svet/">Электрика и Свет</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как подключить Torque к машине через Bluetooth: пошаговое руководство</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Подключение Torque к автомобилю через Bluetooth: полная инструкция с советами эксперта</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#что-такое-torque-и-зачем-он-нужен-автомобилисту">Что такое Torque и зачем он нужен автомобилисту</a></li><li><a href="#какое-оборудование-потребуется-для-подключения">Какое оборудование потребуется для подключения</a></li><li><a href="#пошаговая-инструкция-подключение-torque-к-автомобилю">Пошаговая инструкция: подключение Torque к автомобилю</a></li><li><a href="#распространённые-ошибки-и-их-решение">Распространённые ошибки и их решение</a></li><li><a href="#настройка-параметров-и-датчиков-в-torque">Настройка параметров и датчиков в Torque</a></li><li><a href="#безопасность-и-ограничения-при-использовании-torque">Безопасность и ограничения при использовании Torque</a></li><li><a href="#альтернативы-torque-что-выбрать-для-диагностики">Альтернативы Torque: что выбрать для диагностики</a></li><li><a href="#faq-частые-вопросы-о-подключении-torque">FAQ: Частые вопросы о подключении Torque</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><h2 id="что-такое-torque-и-зачем-он-нужен-автомобилисту">Что такое Torque и зачем он нужен автомобилисту</h2>
+
+<p>Приложение <em>Torque Pro</em> (или его бесплатная версия <em>Torque Lite</em>) — это мощный инструмент для диагностики автомобиля через смартфон. Оно преобразует ваш Android-устройство в полноценный сканер <strong>OBD-II</strong>, позволяя считывать ошибки двигателя, контролировать параметры работы систем, а также анализировать расход топлива и динамику движения. Главное преимущество — возможность подключения <strong>через Bluetooth</strong>, что делает процесс диагностики простым и доступным даже для новичков.</p>
+
+<p>Для работы <em>Torque</em> требуется адаптер <em>ELM327</em> — небольшое устройство, которое подключается к диагностическому разъёму <code>OBD-II</code> вашего автомобиля. Адаптер передаёт данные по Bluetooth на смартфон, где приложение их обрабатывает и визуализирует. Это решение актуально для владельцев машин <strong>выпущенных после 1996 года</strong> (для США) или <strong>после 2001 года</strong> (для Европы), так как именно с этих пор автопроизводители обязаны оснащать автомобили стандартом <code>OBD-II</code>.</p>
+
+<p>Среди ключевых возможностей <em>Torque Pro</em>:</p>
+<ul>
+  <li>🔧 Чтение и сброс ошибок <code>DTC</code> (включая расшифровку кода неисправности).</li>
+  <li>📊 Отображение параметров в реальном времени: обороты двигателя, температура охлаждающей жидкости, давление масла, положение дроссельной заслонки.</li>
+  <li>🚗 Запись логов поездок с привязкой к GPS (полезно для анализа стиля вождения).</li>
+  <li>⚡ Тесты производительности: разгон 0–100 км/ч, тормозной путь.</li>
+</ul>
+
+<p>Важно понимать, что <em>Torque</em> не заменяет профессиональное диагностическое оборудование, но позволяет оперативно выявлять проблемы и экономить на сервисном обслуживании. Например, если на приборной панели загорелся <code>Check Engine</code>, вы сможете самостоятельно узнать причину, не обращаясь в автосервис.</p>
+
+<div class="poll-widget" id="poll-adc36c43"><div class="poll-widget-question">📊 Какой адаптер OBD-II вы используете?</div><div class="poll-widget-option" data-poll="adc36c43" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">ELM327 Bluetooth</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="adc36c43" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">ELM327 Wi-Fi</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="adc36c43" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">VGate iCar 2</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="adc36c43" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="adc36c43" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Ещё не покупал</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="какое-оборудование-потребуется-для-подключения">Какое оборудование потребуется для подключения</h2>
+
+<p>Чтобы подключить <em>Torque</em> к автомобилю через Bluetooth, вам понадобится минимальный набор оборудования. Основной элемент — <strong>адаптер ELM327</strong>, но не все устройства одинаково качественные. Дешёвые китайские подделки часто работают нестабильно, теряют связь или не поддерживают протоколы вашего автомобиля. Рекомендуем выбирать адаптеры проверенных брендов:</p>
+<ul>
+  <li>🔹 <em>VGate iCar 2</em> — один из самых надёжных вариантов с поддержкой всех протоколов <code>OBD-II</code>.</li>
+  <li>🔹 <em>OBDLink MX+</em> — premium-устройство с расширенными функциями (подходит для профессионалов).</li>
+  <li>🔹 <em>ScanTool OBDLink LX</em> — бюджетный, но качественный адаптер для большинства легковых автомобилей.</li>
+</ul>
+
+<p>Также убедитесь, что ваш смартфон соответствует следующим требованиям:</p>
+<ul>
+  <li>📱 Операционная система <strong>Android 5.0 и выше</strong> (для iOS есть альтернативы, но <em>Torque</em> официально не поддерживается).</li>
+  <li>🔄 Включённый <strong>Bluetooth 4.0+</strong> (для стабильной связи).</li>
+  <li>📲 Свободное место на устройстве (приложение весит ~10 МБ, но логи и базы данных могут занимать до 100 МБ).</li>
+</ul>
+
+<p>Перед покупкой адаптера проверьте <strong>совместимость с вашим автомобилем</strong>. Некоторые машины (особенно <em>Volkswagen Group</em>, <em>BMW</em>, <em>Mercedes</em>) могут требовать специальные протоколы, которые поддерживаются не всеми адаптерами. Например, для <em>VW</em> часто нужна поддержка <code>KWP2000</code> или <code>UDS</code>.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если вы покупаете адаптер на AliExpress или аналогичных площадках, обращайте внимание на отзывы с фото/видео подтверждения работы. Часто продавцы указывают, что устройство "полностью совместимо со всеми автомобилями", но на практике это не так.</p></div>
+
+<h2 id="пошаговая-инструкция-подключение-torque-к-автомобилю">Пошаговая инструкция: подключение Torque к автомобилю</h2>
+
+<p>Процесс подключения состоит из нескольких этапов: физическое подсоединение адаптера, настройка Bluetooth на смартфоне и конфигурация приложения. Следуйте инструкции внимательно, чтобы избежать типичных ошибок.</p>
+
+<h3>1. Подключение адаптера ELM327 к OBD-II разъёму</h3>
+<p>Диагностический разъём <code>OBD-II</code> обычно расположен под рулём, рядом с педальным узлом или в бардачке. В большинстве автомобилей он имеет трапециевидную форму с 16 контактами. Вставьте адаптер до характерного щелчка — это означает, что разъём зафиксирован.</p>
+<p><strong>Важно:</strong> не подключайте адаптер к разъёму <code>OBD-I</code> (если он есть в старых машинах) — это может привести к короткому замыканию. Также убедитесь, что зажигание включено (не обязательно заводить двигатель, достаточно повернуть ключ в положение <code>ACC</code> или <code>ON</code>).</p>
+
+<h3>2. Сопряжение адаптера со смартфоном по Bluetooth</h3>
+<p>Активируйте Bluetooth на телефоне и выполните поиск устройств. Адаптер <em>ELM327</em> обычно отображается под именем <code>OBDII</code>, <code>VGate</code> или <code>OBDLink</code>. Пароль по умолчанию — <code>1234</code> или <code>0000</code> (уточните в инструкции к адаптеру). После сопряжения не отключайте Bluetooth — он должен оставаться активным во время диагностики.</p>
+
+<h3>3. Настройка приложения Torque</h3>
+<p>Запустите <em>Torque Pro</em> и перейдите в меню <code>Настройки → OBD2 Адаптер</code>. Выберите ваш адаптер из списка сопряжённых устройств. Затем вернитесь в главное меню и нажмите <code>Соединить</code>. Если подключение прошло успешно, вы увидите зелёный индикатор и надпись <code>Connected</code>.</p>
+
+<p>При первом подключении приложение может запросить информацию о вашем автомобиле (марка, модель, год выпуска, тип двигателя). Эти данные нужны для корректной интерпретации ошибок и показа релевантных параметров.</p>
+
+<div class="checklist-block"><h4>☑️ Подготовка к диагностике</h4><label class="check-item"><input type="checkbox"><span>Проверьте, что зажигание включено</span></label><label class="check-item"><input type="checkbox"><span>Убедитесь, что адаптер плотно вставлен в разъём</span></label><label class="check-item"><input type="checkbox"><span>Активируйте Bluetooth на смартфоне</span></label><label class="check-item"><input type="checkbox"><span>Запустите Torque и выберите адаптер в настройках</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="распространённые-ошибки-и-их-решение">Распространённые ошибки и их решение</h2>
+
+<p>Даже при правильном подключении могут возникать проблемы. Рассмотрим типичные ошибки и способы их устранения.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ошибка</th>
+      <th>Возможная причина</th>
+      <th>Решение</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Unable to connect to adapter</code></td>
+      <td>Адаптер не сопряжён со смартфоном или выключен</td>
+      <td>Проверьте Bluetooth-соединение, перезагрузите адаптер (выньте/вставьте обратно)</td>
+    </tr>
+    <tr>
+      <td><code>No data received from adapter</code></td>
+      <td>Несовместимость протоколов или неисправность адаптера</td>
+      <td>Обновите прошивку адаптера или попробуйте другой (например, <em>VGate</em> вместо дешёвого <em>ELM327</em>)</td>
+    </tr>
+    <tr>
+      <td><code>Vehicle not responding</code></td>
+      <td>Зажигание выключено или адаптер не поддерживает протокол автомобиля</td>
+      <td>Включите зажигание, проверьте совместимость адаптера с вашей маркой машины</td>
+    </tr>
+    <tr>
+      <td>Приложение зависает при чтении ошибок</td>
+      <td>Слабый сигнал Bluetooth или перегрузка данными</td>
+      <td>Перезапустите приложение, уменьшите количество отображаемых параметров в реальном времени</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><mark>Критическая информация: если адаптер ELM327 выдаёт ошибку "LINK ERROR 20" или "UNABLE TO CONNECT", это часто означает, что он использует устаревшую версию чипа (например, 1.5 вместо 2.1). Такие устройства несовместимы с большинством современных автомобилей.</mark></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Некоторые автомобили (например, <em>Toyota Prius</em>, <em>Honda Civic 2016+</em>) требуют специальных адаптеров с поддержкой <code>CAN FD</code>. Стандартный <em>ELM327</em> может не работать или показывать некорректные данные.</blockquote>
+
+<h2 id="настройка-параметров-и-датчиков-в-torque">Настройка параметров и датчиков в Torque</h2>
+
+<p>После успешного подключения можно настроить отображение параметров под свои нужды. <em>Torque Pro</em> позволяет добавлять виджеты на главный экран, создавать пользовательские датчики и настраивать оповещения.</p>
+
+<p>Чтобы добавить новый параметр:</p>
+<ol>
+  <li>Перейдите в раздел <code>Датчики (Sensors)</code>.</li>
+  <li>Нажмите <code>Добавить пользовательский датчик</code> (<code>Add Custom Sensor</code>).</li>
+  <li>Выберите категорию (например, <code>Давление</code>, <code>Температура</code>).</li>
+  <li>Введите формулу для расчёта (если требуется) или выберите стандартный параметр из списка.</li>
+  <li>Сохраните настройки и добавьте виджет на главный экран.</li>
+</ol>
+
+<p>Полезные пользовательские датчики для большинства автомобилей:</p>
+<ul>
+  <li>🔥 <strong>Температура трансмиссионного масла</strong> (актуально для АКПП).</li>
+  <li>⚡ <strong>Напряжение бортовой сети</strong> (помогает отследить проблемы с генератором или аккумулятором).</li>
+  <li>💨 <strong>Массовый расход воздуха (MAF)</strong> — полезно для диагностики топливной системы.</li>
+</ul>
+
+<p>Также в <em>Torque</em> можно настроить <strong>уведомления</strong>. Например, приложение будет предупреждать вас звуковым сигналом, если температура двигателя превысит <code>105°C</code> или напряжение бортовой сети упадёт ниже <code>12.5В</code>.</p>
+
+<details class="faq-item"><summary>Как экспортировать логи Torque для анализа?</summary><div class="faq-answer"><p>В меню <code>Логи (Logs)</code> выберите нужную запись → <code>Экспорт</code> → укажите формат (CSV или KML). Файл можно открыть в Excel или Google Sheets для детального анализа параметров.</p></div></details>
+
+<h2 id="безопасность-и-ограничения-при-использовании-torque">Безопасность и ограничения при использовании Torque</h2>
+
+<p>Хотя <em>Torque</em> предоставляет широкие возможности для диагностики, важно помнить о <strong>ограничениях и рисках</strong>:</p>
+<ul>
+  <li>🚨 <strong>Не сбрасывайте ошибки без понимания причины.</strong> Некоторые коды (например, <code>P0300</code> — пропуски зажигания) могут указывать на серьёзные неисправности, игнорирование которых приведёт к поломке двигателя.</li>
+  <li>🔌 <strong>Не оставляйте адаптер подключённым постоянно.</strong> Это может разрядить аккумулятор, особенно на старых автомобилях без "спящего" режима <code>OBD-II</code>.</li>
+  <li>📱 <strong>Не используйте смартфон во время движения.</strong> Диагностику лучше проводить на стоянке или с помощником.</li>
+</ul>
+
+<p>Также учитывайте, что <em>Torque</em> не считывает <strong>производительские коды ошибок</strong> (например, <code>Uxxxx</code> для <em>BMW</em> или <code>Bxxxx</code> для <em>Ford</em>). Для их расшифровки могут понадобиться специализированные программы вроде <em>FORScan</em> или <em>INPA</em>.</p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> На некоторых автомобилях (например, <em>Mazda CX-5</em>, <em>Subaru Outback</em>) длительное подключение адаптера <em>ELM327</em> может вызывать ошибку <code>U0100</code> (потеря связи с ECM). В этом случае отключите адаптер и сбросьте ошибку через меню приложения.</blockquote>
+
+<h2 id="альтернативы-torque-что-выбрать-для-диагностики">Альтернативы Torque: что выбрать для диагностики</h2>
+
+<p>Если <em>Torque Pro</em> не подходит по каким-то причинам, рассмотрите альтернативные приложения:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Приложение</th>
+      <th>Плюсы</th>
+      <th>Минусы</th>
+      <th>Стоимость</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>OBD Auto Doctor</em></td>
+      <td>Простой интерфейс, поддержка iOS</td>
+      <td>Меньше функций, чем в Torque</td>
+      <td>Бесплатно (премиум ~500 ₽)</td>
+    </tr>
+    <tr>
+      <td><em>Car Scanner ELM OBD2</em></td>
+      <td>Хорошая совместимость с адаптерами, русский язык</td>
+      <td>Реклама в бесплатной версии</td>
+      <td>Бесплатно (Pro ~300 ₽)</td>
+    </tr>
+    <tr>
+      <td><em>FORScan</em></td>
+      <td>Поддержка производительских протоколов (Ford, Mazda, Lincoln)</td>
+      <td>Сложный для новичков</td>
+      <td>Бесплатно (лицензия ~1500 ₽)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Для владельцев автомобилей <em>Volkswagen</em>, <em>Audi</em>, <em>Skoda</em> и <em>Seat</em> лучшим выбором станет <em>VCDS-Lite</em> или <em>OBDeleven</em> — эти приложения работают с протоколами <code>UDS</code> и позволяют кодировать блоки управления (например, активировать скрытые функции).</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Torque Pro остаётся лучшим выбором для большинства пользователей благодаря балансу функциональности, стабильности и цены. Однако для глубокой диагностики конкретных марок (например, BMW или Mercedes) могут понадобиться специализированные решения.</p></div>
+
+<h2 id="faq-частые-вопросы-о-подключении-torque">FAQ: Частые вопросы о подключении Torque</h2>
+
+<details>
+  <summary>Можно ли использовать Torque на iPhone?</summary>
+  <p>Официально <em>Torque Pro</em> доступен только для Android. Для iOS есть альтернативы: <em>OBD Auto Doctor</em>, <em>DashCommand</em> или <em>Engine Link</em>. Однако они могут иметь ограниченную функциональность по сравнению с <em>Torque</em>.</p>
+</details>
+
+<details>
+  <summary>Почему Torque не видит адаптер ELM327?</summary>
+  <p>Причины могут быть следующими:</p>
+  <ul>
+    <li>Адаптер не сопряжён со смартфоном (проверьте Bluetooth-соединение).</li>
+    <li>Зажигание выключено (включите положение <code>ACC</code> или <code>ON</code>).</li>
+    <li>Адаптер несовместим с протоколом вашего автомобиля (попробуйте <em>VGate iCar 2</em>).</li>
+    <li>В приложении не выбран правильный адаптер (проверьте настройки <code>OBD2 Adapter</code>).</li>
+  </ul>
+</details>
+
+<details>
+  <summary>Как сбросить ошибку Check Engine через Torque?</summary>
+  <p>Перейдите в раздел <code>Неисправности (Fault Codes)</code>, выберите активные ошибки и нажмите <code>Стереть коды</code> (<code>Clear Codes</code>). Учтите, что сброс ошибок без устранения причины приведёт к их повторному появлению. Например, если ошибка <code>P0171</code> (бедная смесь) связана с подсосом воздуха, её сброс без ремонта не решит проблему.</p>
+</details>
+
+<details>
+  <summary>Можно ли использовать Torque для диагностики коробки передач?</summary>
+  <p>Да, но с оговорками. <em>Torque</em> может считывать общие ошибки трансмиссии (например, <code>P0730</code> — неверное передаточное число), однако для глубокой диагностики АКПП (например, проверки соленоидов или давления масла) требуются специализированные сканеры вроде <em>Launch X431</em> или <em>Autel MaxiCOM</em>.</p>
+</details>
+
+<details>
+  <summary>Почему Torque показывает некорректные данные (например, температуру 150°C)?</summary>
+  <p>Это типичная проблема дешёвых адаптеров <em>ELM327</em>, которые некорректно обрабатывают данные по протоколу <code>CAN</code>. Решения:</p>
+  <ul>
+    <li>Обновите прошивку адаптера (если возможно).</li>
+    <li>Попробуйте другой адаптер (например, <em>OBDLink MX+</em>).</li>
+    <li>В настройках <em>Torque</em> выберите другой протокол связи (например, <code>ISO 9141-2</code> вместо <code>Auto</code>).</li>
+  </ul>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#что-такое-torque-и-зачем-он-нужен-автомобилисту">Что такое Torque и зачем он нужен автомобилисту</a></li><li><a href="#какое-оборудование-потребуется-для-подключения">Какое оборудование потребуется для подключения</a></li><li><a href="#пошаговая-инструкция-подключение-torque-к-автомобилю">Пошаговая инструкция: подключение Torque к автомобилю</a></li><li><a href="#распространённые-ошибки-и-их-решение">Распространённые ошибки и их решение</a></li><li><a href="#настройка-параметров-и-датчиков-в-torque">Настройка параметров и датчиков в Torque</a></li><li><a href="#безопасность-и-ограничения-при-использовании-torque">Безопасность и ограничения при использовании Torque</a></li><li><a href="#альтернативы-torque-что-выбрать-для-диагностики">Альтернативы Torque: что выбрать для диагностики</a></li><li><a href="#faq-частые-вопросы-о-подключении-torque">FAQ: Частые вопросы о подключении Torque</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/i/iz/izopropilovyj-spirt-dlya-chistki-kontaktov.html" class="related-card">Изопропиловый спирт для чистки контактов: как правильно использовать в авто</a></li><li><a href="/articles/k/ka/kak-rabotaet-klemmnik-dlya-provodov.html" class="related-card">Клеммники для проводов в авто: как работают и как выбрать</a></li><li><a href="/articles/o/ot/otlichie-far-ot-fonarej.html" class="related-card">Отличие фар от фонарей: устройство и функции</a></li><li><a href="/articles/k/ka/kakie-byvayut-klemmniki-dlya-soedineniya-provodov.html" class="related-card">Клеммники для проводов: виды, выбор и применение в авто</a></li><li><a href="/articles/s/sk/skolko-zaryazhaetsya-elektromobil-tesla.html" class="related-card">Сколько заряжается электромобиль Тесла: время и скорость</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/i/iz/izopropilovyj-spirt-dlya-chistki-kontaktov.html" class="related-bottom-card"><span class="related-bottom-title">Изопропиловый спирт для чистки контактов: как правильно использовать в авто</span><span class="related-bottom-desc">Пошаговая инструкция по применению изопропилового спирта для очистки электроконтактов в автомобиле: </span></a><a href="/articles/k/ka/kak-rabotaet-klemmnik-dlya-provodov.html" class="related-bottom-card"><span class="related-bottom-title">Клеммники для проводов в авто: как работают и как выбрать</span><span class="related-bottom-desc">Принцип работы клеммников для автомобильных проводов: типы, схемы подключения, ошибки монтажа и сове</span></a><a href="/articles/o/ot/otlichie-far-ot-fonarej.html" class="related-bottom-card"><span class="related-bottom-title">Отличие фар от фонарей: устройство и функции</span><span class="related-bottom-desc">Подробный разбор отличий фар и фонарей автомобиля. Конструкция, назначение, регулировка пучка света </span></a><a href="/articles/k/ka/kakie-byvayut-klemmniki-dlya-soedineniya-provodov.html" class="related-bottom-card"><span class="related-bottom-title">Клеммники для проводов: виды, выбор и применение в авто</span><span class="related-bottom-desc">Разбираем 7 типов клеммников для соединения проводов в машине: от винтовых до самозажимных. Сравнени</span></a><a href="/articles/s/sk/skolko-zaryazhaetsya-elektromobil-tesla.html" class="related-bottom-card"><span class="related-bottom-title">Сколько заряжается электромобиль Тесла: время и скорость</span><span class="related-bottom-desc">Узнайте, сколько времени занимает зарядка Tesla Model 3, Y, S и X. Таблицы скорости, влияние Superch</span></a><a href="/articles/a/av/avtoelektrika-dlya-chajnikov-kniga.html" class="related-bottom-card"><span class="related-bottom-title">Автоэлектрика для чайников: книга знаний и практический гид</span><span class="related-bottom-desc">Полный обзор литературы по автоэлектрике для начинающих. Лучшие книги, советы по выбору мультиметра,</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

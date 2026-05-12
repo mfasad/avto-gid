@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Машина Google Maps: как она устроена и работает — Авто Гид</title>
+    <meta name="description" content="Как работает автомобиль Google для съемки улиц? Узнайте про оборудование Street View, камеры, лазерные сканеры и процесс создания 3D-карт.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/m/ma/mashina-kotoraya-fotkaet-gugl-karty.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Машина Google Maps: как она устроена и работает">
+    <meta property="og:description" content="Как работает автомобиль Google для съемки улиц? Узнайте про оборудование Street View, камеры, лазерные сканеры и процесс создания 3D-карт.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Машина Google Maps: как она устроена и работает</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Машина, которая фоткает для Google Карт: устройство и технологии</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#конструкция-и-оборудование-автомобиля">Конструкция и оборудование автомобиля</a></li><li><a href="#типы-камер-и-систем-сканирования">Типы камер и систем сканирования</a></li><li><a href="#процесс-обработки-данных-и-приватность">Процесс обработки данных и приватность</a></li><li><a href="#не-только-автомобили-другие-способы-съемки">Не только автомобили: другие способы съемки</a></li><li><a href="#почему-появляются-ошибки-на-картах">Почему появляются ошибки на картах</a></li><li><a href="#будущее-картографии-и-автономный-транспорт">Будущее картографии и автономный транспорт</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Многие из нас ежедневно используют навигаторы, даже не задумываясь о том, как именно на экране смартфона появляются панорамы улиц, по которым мы планируем маршрут. За этим визуальным комфортом стоит колоссальная работа специального автопарка, оснащенного сложнейшим оборудованием для сбора геопространственных данных. Эти автомобили, часто называемые"машинами Google", проезжают миллионы километров по всему миру, запечатлевая дорожную инфраструктуру с невероятной детализацией.</p>
+
+<p>Внешне такие транспортные средства легко узнать по характерной конструкции на крыше, напоминающей футуристическую антенну или спутниковую тарелку. Однако за этим необычным дизайном скывается высокоточная инженерная система, способная создавать <strong>иммерсивные панорамы</strong> и трехмерные модели городов. Принципы работы этого оборудования часто вызывают вопросы у автолюбителей и техно-энтузиастов, желающих понять, как именно происходит магия оцифровки реального мира.</p>
+
+<p>Процесс создания карт — это не просто хаотичная фотосъемка, а строго регламентированный технологический процесс. В этой статье мы разберем устройство знаменитых автомобилей <em>Street View</em>, рассмотрим типы используемых камер и выясним, почему для съемки требуется специализированный транспорт. Вы узнаете, как данные превращаются в интерактивную карту, доступную каждому пользователю.</p>
+
+<h2 id="конструкция-и-оборудование-автомобиля">Конструкция и оборудование автомобиля</h2>
+
+<p>Основой любого автомобиля для съемки Google является не столько марка самого транспортного средства, сколько установленный на нем специализированный комплекс датчиков. На крыше чаще всего можно увидеть устройство, известное как"камера-ранец" или система из 15 объективов, расположенных по кругу. Эти объективы синхронно делают снимки с разрешением, позволяющим рассмотреть даже мелкие детали, такие как номера домов или дорожные знаки.</p>
+
+<p>Однако оптика — это лишь верхушка айсберга. Внутри багажника или салона располагается вычислительный блок, который обрабатывает поступающий видеопоток в реальном времени. Для точного позиционирования, когда GPS-сигнал может быть потерян (например, в туннелях или"каньонах" из), используется инерциальная навигационная система <em>(INS)</em>. Она отслеживает каждое движение колес и повороты кузова, обеспечивая привязку изображения к координатам с сантиметровой точностью.</p>
+
+<p>Отдельного внимания заслуживает система <strong>LiDAR</strong> (Light Detection and Ranging). Это лазерные сканеры, которые испускают миллионы импульсов в секунду, измеряя расстояние до объектов вокруг машины. Полученные данные позволяют создавать трехмерные облака точек, формируя 3D-модель местности. Именно благодаря LiDAR в картах появляются объемные здания и деревья, а не просто плоские фотографии.</p>
+
+<details class="faq-item"><summary>Сколько весит оборудование на крыше?</summary><div class="faq-answer"><p>Система камер и креплений на крыше автомобиля Google весит относительно немного — около 15-20 килограммов, что позволяет устанавливать её на различные типы транспорта, включая снегоходы, квадрациклы и даже верблюдов в труднодоступных местах.</p></div></details>
+
+<p>Таким образом,"машина Google" представляет собой мобильную лабораторию, где каждый элемент выполняет критически важную функцию. Нарушение калибровки даже одного из датчиков может привести к искажению карты, поэтому техническое обслуживание такого автопарка требует высокой квалификации инженеров.</p>
+
+<h2 id="типы-камер-и-систем-сканирования">Типы камер и систем сканирования</h2>
+
+<p>Технологии сбора данных постоянно эволюционируют, и Google использует несколько типов оборудования в зависимости от задач. Основным инструментом остаются сферические камеры высокого разрешения, которые обеспечивают тот самый эффект присутствия при просмотре панорам. Современные модели способны снимать в формате <strong>8K</strong> и выше, что позволяет пользователям при увеличении рассматривать витрины магазинов и архитектурные детали.</p>
+
+<p>Помимо оптических камер, критически важны лазерные дальномеры. Они работают по принципу радара, но используют световые импульсы. Это позволяет системе"видеть" структуру пространства даже при плохом освещении или в ночное время суток. Данные LiDAR также используются для автоматического распознавания объектов: алгоритмы искусственного интеллекта учатся отличать пешеходов от столбов, а автомобили от бордюров.</p>
+
+<p>В таблице ниже приведено сравнение основных технологий, используемых в автопарке:</p>
+
+<table>
+<thead>
+<tr>
+<th>Технология</th>
+<th>Основная функция</th>
+<th>Точность</th>
+<th>Работа в темноте</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Оптические камеры (15 шт)</td>
+<td>Создание панорамных изображений</td>
+<td>Высокая (визуальная)</td>
+<td>Зависит от освещения</td>
+</tr>
+<tr>
+<td>LiDAR (Лазерный сканер)</td>
+<td>3D-моделирование и глубина</td>
+<td>Сантиметровая</td>
+<td>Да, независимо</td>
+</tr>
+<tr>
+<td>GPS / ГЛОНАСС</td>
+<td>Географическая привязка</td>
+<td>Метровая (без коррекции)</td>
+<td>Да</td>
+</tr>
+<tr>
+<td>Инерциальная система (INS)</td>
+<td>Трекинг движения</td>
+<td>Высокая (краткосрочная)</td>
+<td>Да</td>
+</tr>
+</tbody>
+</table>
+
+<p>Совмещение данных с разных сенсоров называется <em>сенсорной фьюзией</em>. Это сложный алгоритмический процесс, который объединяет картинку, глубину и координаты в единый массив данных. Именно благодаря этому вы видите на карте не просто фото, а цифровой двойник улицы.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>При просмотре карт в режиме спутника обращайте внимание на тени от зданий — они часто помогают определить примерное время суток, когда проводилась съемка в вашем районе.</p></div>
+
+<h2 id="процесс-обработки-данных-и-приватность">Процесс обработки данных и приватность</h2>
+
+<p>После того как автомобиль завершает маршрут, собранные терабайты данных отправляются в дата-центр. Здесь начинается этап автоматизированной обработки, который занимает значительное время. Компьютерные алгоритмы сначала"сшивают" изображения с разных камер, устраняя швы и несоответствия экспозиции. Затем происходит геопривязка каждого пикселя к координатной сетке.</p>
+
+<p>Однако самым важным этапом является обеспечение <strong>конфиденциальности</strong>. Прежде чем панорамы попадут в публичный доступ, специальные алгоритмы размывают лица людей и номерные знаки автомобилей. Это делается автоматически с помощью технологий машинного обучения, которые обучены находить и скрывать персональные данные. В некоторых случаях, если система не уверена, изображение может быть отправлено на ручную модерацию.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Несмотря на автоматическое размытие, в редких случаях лица или номера могут быть видны. Если вы обнаружили такое изображение, в интерфейсе Google Maps есть функция"Сообщить о проблеме", позволяющая запросить дополнительное размытие конкретного объекта вручную.</p>
+</blockquote>
+
+<p>Процесс обновления карт не происходит в реальном времени. Между съемкой и появлением актуальной картинки на карте может пройти от нескольких месяцев до года. Это связано с огромными объемами информации, которые необходимо обработать, проверить и загрузить на серверы. Поэтому, увидев на карте строительные работы там, где уже стоит новый дом, не удивляйтесь — это просто"цифровое эхо" прошлого.</p>
+
+<div class="poll-widget" id="poll-c1bd9119"><div class="poll-widget-question">📊 Как часто вы пользуетесь режимом просмотра улиц?</div><div class="poll-widget-option" data-poll="c1bd9119" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Ежедневно для навигации</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="c1bd9119" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Раз в месяц для планирования</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="c1bd9119" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Только ради интереса гулять по другим городам</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="c1bd9119" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Практически не пользуюсь</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="не-только-автомобили-другие-способы-съемки">Не только автомобили: другие способы съемки</h2>
+
+<p>Хотя автомобиль является основным инструментом для съемки дорог, он не может добраться всюду. Для охватa пешеходных зон, парков, торговых центров и узких улочек исторических городов Google использует альтернативные виды транспорта. Это позволяет создать единую экосистему карт, где можно пройти маршрут от двери до двери, даже если часть пути лежит через парк или вокзал.</p>
+
+<p>Среди необычных носителей оборудования можно встретить:</p>
+<ul>
+<li>🎒 <strong>Треккер на спине (Treker):</strong> Рюкзак с камерой, который носят волонтеры и сотрудники для съемки троп, стадионов и музеев.</li>
+<li>🚲 <strong>Велосипеды и трициклы:</strong> Используются в парках и на набережных, где проезд автомобилей запрещен или ограничен.</li>
+<li>🛶 <strong>Водный транспорт:</strong> Специальные катамараны и каяки с установленными мачтами для съемки рек, озер и каналов (например, в Венеции или Амстердаме).</li>
+<li>❄️ <strong>Снегоходы:</strong> Применяются для съемки горнолыжных курортов и зимних маршрутов.</li>
+</ul>
+
+<p>Использование разнообразного транспорта демонстрирует гибкость подхода к картографии. <em>Google Trekker</em>, например, весит всего около 18 килограммов и позволяет одному человеку отснять интерьеры зданий или удаленные природные тропы. Данные с этих устройств обрабатываются по тем же стандартам качества и приватности, что и данные с автомобилей.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Разнообразие транспорта позволяет охватить 100% пешеходных маршрутов, делая навигацию truly door-to-door (от двери до двери).</p></div>
+
+<h2 id="почему-появляются-ошибки-на-картах">Почему появляются ошибки на картах</h2>
+
+<p>Несмотря на высокие технологии, пользователи иногда сталкиваются с ошибками: неверно указанная односторонняя движение, отсутствие новой развязки или"призрачные" объекты. Причины этого кроются в сложности реального мира и задержках обновления данных. Городская среда меняется быстрее, чем обновляется цифровой двойник.</p>
+
+<p>Основные факторы, влияющие на актуальность:</p>
+<ul>
+<li>🗓️ <strong>Цикличность съемки:</strong> В крупных городах съемка проходит раз в год, в удаленных регионах — раз в несколько лет.</li>
+<li>🌦️ <strong>Погодные условия:</strong> Дождь, снег или густой туман могут испортить качество снимков, forcing операторов переснимать участок или оставлять пробелы.</li>
+<li>🚧 <strong>Динамика строительства:</strong> Если дорогу перекрыли на следующий день после проезда машины Google, на карте это отразится только через год.</li>
+</ul>
+
+<p>Кроме того, существуют технические ограничения. Узкие улочки с высокими домами создают проблемы для GPS-сигнала, что может привести к"дрожанию" позиции на карте. Алгоритмы стараются компенсировать это, но идеальной точности добиться сложно. Именно поэтому Google активно внедряет программу <strong>Local Guides</strong>, позволяющую пользователям самим исправлять ошибки, добавлять фото и менять режимы работы заведений.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не полагайтесь слепо на время прибытия, показанное в навигаторе, если вы находитесь в зоне активных строительных работ. Данные о дорожной ситуации могут быть неактуальны в реальном времени.</p>
+</blockquote>
+
+<h2 id="будущее-картографии-и-автономный-транспорт">Будущее картографии и автономный транспорт</h2>
+
+<p>Технологии, отработанные на машинах для съемки карт, стали фундаментом для развития беспилотных автомобилей. Детальные 3D-карты с точностью до сантиметра необходимы автономным системам для безопасного передвижения. Машина, которая"фоткает" карты, фактически создает цифровую инфраструктуру для будущего транспорта.</p>
+
+<p>В перспективе ожидается переход от периодической съемки к постоянному обновлению данных. Представьте, что каждый автомобиль, проезжающий по дороге, анонимно передает данные об изменениях на маршруте. Это позволит создать"живую карту", реагирующую на изменения мгновенно. Технологии <em>V2X (Vehicle-to-Everything)</em> уже движутся в этом направлении.</p>
+
+<p>Развитие искусственного интеллекта позволит картам стать более интеллектуальными. Они смогут не просто показывать дорогу, но и предупреждать о сложности парковки, доступности для маломобильных граждан или наличии свободных мест. Машина Google стала первым шагом к созданию полного цифрового двойника нашей планеты.</p>
+
+<div class="checklist-block"><h4>☑️ Что нужно для идеальной карты будущего</h4><label class="check-item"><input type="checkbox"><span>Постоянное обновление данных в реальном времени</span></label><label class="check-item"><input type="checkbox"><span>Полная 3D-модель интерьера зданий</span></label><label class="check-item"><input type="checkbox"><span>Информация о доступности для колясок</span></label><label class="check-item"><input type="checkbox"><span>Точное прогнозирование пробок на основе ИИ</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли запретить Google снимать мой дом?</summary>
+<p>Запретить съемку счной территории нельзя, так как это считается общедоступным пространством. Однако вы можете запросить размытие фасада вашего дома, если это создает угрозу безопасности, через форму обратной связи Google Maps. Лица людей и номера авто размываются автоматически.</p>
+</details>
+
+<details>
+<summary>Какая скорость у машины Google во время съемки?</summary>
+<p>Для получения качественных данных без"смазывания" и с корректной работой лазерных сканеров, автомобиль движется с небольшой скоростью, обычно не превышающей <code>40-60 км/ч</code>. На сложных участках или в пешеходных зонах скорость может быть значительно ниже.</p>
+</details>
+
+<details>
+<summary>Используются ли обычные автомобили или специальные?</summary>
+<p>Часто используются обычные автомобили (например, Subaru, Audi, Fiat), на которые устанавливается съемное оборудование. Однако для некоторых задач и регионов Google закупает или создает специализированные электромобили с интегрированными системами, что делает их менее заметными и более экологичными.</p>
+</details>
+
+<details>
+<summary>Почему на картах иногда видно себя в прошлом?</summary>
+<p>Это происходит из-за того, что данные обновляются не мгновенно. Вы видите снимок, сделанный в момент проезда камеры. Если с тех пор вы сменили машину или постригли бороду, на панораме останется ваш прежний облик до следующего обновления карты в этом районе.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#конструкция-и-оборудование-автомобиля">Конструкция и оборудование автомобиля</a></li><li><a href="#типы-камер-и-систем-сканирования">Типы камер и систем сканирования</a></li><li><a href="#процесс-обработки-данных-и-приватность">Процесс обработки данных и приватность</a></li><li><a href="#не-только-автомобили-другие-способы-съемки">Не только автомобили: другие способы съемки</a></li><li><a href="#почему-появляются-ошибки-на-картах">Почему появляются ошибки на картах</a></li><li><a href="#будущее-картографии-и-автономный-транспорт">Будущее картографии и автономный транспорт</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/o/ot/otzyvy-sushilnaya-mashina-dlya-belya-kakaya-luchshe.html" class="related-card">Сушильная машина для белья: какая лучше? Обзоры и отзывы</a></li><li><a href="/articles/k/ka/kastomnaya-proshivka-redmi-note-7.html" class="related-card">Кастомная прошивка Redmi Note 7: установка и настройка</a></li><li><a href="/articles/i/ig/iggi-pop-in-the-death-car.html" class="related-card">Iggy Pop: История хита In The Death Car</a></li><li><a href="/articles/o/ot/otkaz-ot-osago-v-techenii-14-dnej.html" class="related-card">Отказ от ОСАГО в течение 14 дней: возврат и сроки</a></li><li><a href="/articles/i/ik/ikar-akkordy-svidetelstvo-o-smerti.html" class="related-card">Аккорды и Свидетельство о Смерти: Как играть на Икаре</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/o/ot/otzyvy-sushilnaya-mashina-dlya-belya-kakaya-luchshe.html" class="related-bottom-card"><span class="related-bottom-title">Сушильная машина для белья: какая лучше? Обзоры и отзывы</span><span class="related-bottom-desc">Помогаем выбрать лучшую сушильную машину для белья. Реальные отзывы, сравнение типов сушки, рейтинги</span></a><a href="/articles/k/ka/kastomnaya-proshivka-redmi-note-7.html" class="related-bottom-card"><span class="related-bottom-title">Кастомная прошивка Redmi Note 7: установка и настройка</span><span class="related-bottom-desc">Подробный гайд по установке кастомной прошивки на Redmi Note 7. Разблокировка, TWRP, ADB, устранение</span></a><a href="/articles/i/ig/iggi-pop-in-the-death-car.html" class="related-bottom-card"><span class="related-bottom-title">Iggy Pop: История хита In The Death Car</span><span class="related-bottom-desc">Анализ культовой песни In The Death Car. История группы Iggy Pop and The Stooges, выход в фильме и в</span></a><a href="/articles/o/ot/otkaz-ot-osago-v-techenii-14-dnej.html" class="related-bottom-card"><span class="related-bottom-title">Отказ от ОСАГО в течение 14 дней: возврат и сроки</span><span class="related-bottom-desc">Полный гид по возврату страховки при отказе от ОСАГО в период охлаждения. Законные основания, расчет</span></a><a href="/articles/i/ik/ikar-akkordy-svidetelstvo-o-smerti.html" class="related-bottom-card"><span class="related-bottom-title">Аккорды и Свидетельство о Смерти: Как играть на Икаре</span><span class="related-bottom-desc">Разбор аккордов к песне Свидетельство о Смерти для гитары. Табы, боем и перебор для Икары, настройка</span></a><a href="/articles/s/sd/sdelat-novyj-klyuch-dlya-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Сделать новый ключ для автомобиля: цена, сроки и методы</span><span class="related-bottom-desc">Как сделать новый ключ для автомобиля, если потеряли все? Узнайте о стоимости, времени изготовления </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

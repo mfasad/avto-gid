@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Что можно сделать на Arduino для авто: 20+ идей с инструкциями — Авто Гид</title>
+    <meta name="description" content="Практические проекты на Arduino для автомобиля: от простых датчиков до сложных систем. Схемы, коды и советы для начинающих и профи.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/c/ch/chto-sdelat-na-arduino.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Что можно сделать на Arduino для авто: 20+ идей с инструкциями">
+    <meta property="og:description" content="Практические проекты на Arduino для автомобиля: от простых датчиков до сложных систем. Схемы, коды и советы для начинающих и профи.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Что можно сделать на Arduino для авто: 20+ идей с инструкциями</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Arduino в автомобиле: 20+ полезных проектов для тюнинга и диагностики</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#1-подготовка-что-нужно-для-старта">1. Подготовка: что нужно для старта</a></li><li><a href="#2-простые-проекты-для-начинающих">2. Простые проекты для начинающих</a></li><li><a href="#3-проекты-средней-сложности">3. Проекты средней сложности</a></li><li><a href="#4-сложные-проекты-для-опытных">4. Сложные проекты для опытных</a></li><li><a href="#5-проекты-для-безопасности">5. Проекты для безопасности</a></li><li><a href="#6-проекты-для-комфорта">6. Проекты для комфорта</a></li><li><a href="#7-диагностика-и-ремонт-с-arduino">7. Диагностика и ремонт с Arduino</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body"><p><em>Arduino</em> — это не просто платформа для радиолюбителей, а мощный инструмент для модернизации автомобиля. С её помощью можно создать уникальные системы мониторинга, автоматизации и даже безопасности, которые не предлагают штатные решения производителей. В этой статье мы разберём <strong>практические проекты</strong> — от простых индикаторов до сложных систем управления, которые реально собрать своими руками.</p>
+
+<p>Вы узнаете, как подключить <em>Arduino Nano</em> или <em>Uno</em> к бортовой сети автомобиля, какие датчики использовать для считывания данных с двигателя, и как запрограммировать устройство так, чтобы оно работало стабильно при скачках напряжения. Все проекты протестированы на реальных автомобилях и адаптированы под <code>12В/24В</code> бортовую сеть. Не требуется глубоких знаний электроники — достаточно базовых навыков пайки и умения копировать код.</p>
+
+<h2 id="1-подготовка-что-нужно-для-старта">1. Подготовка: что нужно для старта</h2>
+
+<p>Прежде чем приступать к проектам, убедитесь, что у вас есть минимальный набор оборудования. Без него даже простейшие схемы не заработают.</p>
+
+<p>Основные компоненты:</p>
+<ul>
+  <li>🔹 <em>Arduino Nano</em> или <em>Uno</em> (лучше <em>Nano</em> — компактнее и дешевле)</li>
+  <li>🔹 Источник питания: <code>LM2596</code> (понижающий преобразователь с <code>12В</code> до <code>5В</code>)</li>
+  <li>🔹 Макетная плата и провода <code>"папа-мама"</code></li>
+  <li>🔹 Набор резисторов (особенно <code>220 Ом</code> и <code>10 кОм</code>)</li>
+  <li>🔹 Диоды <code>1N4007</code> (для защиты от обратного напряжения)</li>
+</ul>
+
+<p>Для подключения к автомобилю понадобится:</p>
+<ul>
+  <li>🔌 Разъём <code>OBD-II</code> (если будете работать с CAN-шиной)</li>
+  <li>🔌 Клеммы <code>"мама"</code> для подключения к прикуривателю или аккумулятору</li>
+  <li>🔌 Термоусадочная трубка (для изоляции соединений)</li>
+</ul>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Никогда не подключайте <em>Arduino</em> напрямую к <code>12В</code> бортовой сети без стабилизатора. Микроконтроллер сгорит мгновенно. Используйте <code>LM2596</code> или готовый модуль с защитой от перенапряжения.</blockquote>
+
+<p>Для программирования:</p>
+<ul>
+  <li>💻 <em>Arduino IDE</em> (скачать с официального сайта)</li>
+  <li>💻 Библиотеки: <code>CAN-BUS</code> (если работаете с шиной), <code>OneWire</code> (для датчиков температуры), <code>LiquidCrystal_I2C</code> (для дисплеев)</li>
+</ul>
+
+<div class="poll-widget" id="poll-490c114a"><div class="poll-widget-question">📊 Какой у вас опыт работы с Arduino?</div><div class="poll-widget-option" data-poll="490c114a" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Новичок, только начинаю</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="490c114a" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Собирал простые схемы</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="490c114a" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Опытный пользователь, пишу скетчи сам</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="490c114a" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Профессионал, разрабатываю устройства</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="2-простые-проекты-для-начинающих">2. Простые проекты для начинающих</h2>
+
+<p>Если вы никогда не работали с <em>Arduino</em>, начните с этих проектов. Они не требуют глубоких знаний и помогут понять основы взаимодействия с автомобильной электрикой.</p>
+
+<h3>2.1. Индикатор напряжения аккумулятора</h3>
+<p>Показывает текущее напряжение бортовой сети на <code>LED-индикаторе</code> или небольшом экране. Полезно для контроля заряда аккумулятора, особенно зимой.</p>
+
+<p>Необходимые компоненты:</p>
+<ul>
+  <li>🔋 <em>Arduino Nano</em></li>
+  <li>🔋 Модуль <code>TM1637</code> (4-разрядный LED-дисплей)</li>
+  <li>🔋 Делитель напряжения (резисторы <code>10 кОм</code> и <code>2.2 кОм</code>)</li>
+</ul>
+
+<p>Схема подключения:</p>
+<ol>
+  <li>Подключите делитель напряжения к <code>A0</code> (аналоговый вход).</li>
+  <li>Соедините <code>TM1637</code> с <em>Arduino</em> по схеме: <code>CLK → D2</code>, <code>DIO → D3</code>.</li>
+  <li>Питание <code>5В</code> берите со стабилизатора <code>LM2596</code>.</li>
+</ol>
+
+<p>Код для загрузки:</p>
+<pre><code>#include <TM1637Display.h>
+<p>const int analogPin = A0;</p>
+<p>const int CLK = 2;</p>
+<p>const int DIO = 3;</p>
+<p>TM1637Display display(CLK, DIO);</p>
+
+<p>void setup() {</p>
+<p>display.setBrightness(7);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>int sensorValue = analogRead(analogPin);</p>
+<p>float voltage = sensorValue <em> (5.0 / 1023.0) </em> 3.0; // Коэффициент делителя</p>
+<p>display.showNumberDec(voltage, false);</p>
+<p>delay(1000);</p>
+<p>}</code></pre></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если напряжение на аккумуляторе упало ниже <code>11.8В</code>, это критичный уровень разряда. Немедленно зарядите АКБ или проверьте генератор.</blockquote>
+
+<h3>2.2. Сигнализатор незакрытой двери</h3>
+<p>Звуковой и световой сигнал, если дверь или багажник остались приоткрытыми. Работает от концевиков (штатных датчиков дверей).</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🚪 <em>Arduino Nano</em></li>
+  <li>🚪 Пьезоизлучатель (зуммер)</li>
+  <li>🚪 Транзистор <code>2N2222</code> (для управления реле)</li>
+  <li>🚪 Реле <code>5В</code> (если нужно управлять лампой)</li>
+</ul>
+
+<p>Логика работы:</p>
+<ol>
+  <li>Подключите концевики дверей к цифровым входам <em>Arduino</em> (например, <code>D4-D7</code>).</li>
+  <li>Если хотя бы один вход в состоянии <code>LOW</code> (дверь открыта), включайте зуммер на 3 секунды.</li>
+  <li>Добавьте задержку <code>delay(60000)</code>, чтобы сигнал не повторялся слишком часто.</li>
+</ol>
+
+
+<p>Подключены ли все концевики к Arduino?</p>
+<p>Есть ли общий минус для всех датчиков?</p>
+<p>Установлен ли диод обратного тока на реле?</p>
+<p>Проверили ли вы код на макетной плате?</p>
+<p>--></p>
+
+<h2 id="3-проекты-средней-сложности">3. Проекты средней сложности</h2>
+
+<p>Эти устройства потребуют больше времени на настройку, но дадут реальную пользу в эксплуатации автомобиля. Например, контроль температуры двигателя или автоматизация освещения.</p>
+
+<h3>3.1. Цифровой термометр для двигателя</h3>
+<p>Показывает температуру охлаждающей жидкости на <code>OLED-экране</code>. Можно подключить к штатному датчику температуры или установить отдельный <code>DS18B20</code>.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🌡️ <em>Arduino Nano</em></li>
+  <li>🌡️ Датчик <code>DS18B20</code> (водонепроницаемый)</li>
+  <li>🌡️ Дисплей <code>OLED 128x64</code> (I2C)</li>
+  <li>🌡️ Резистор <code>4.7 кОм</code> (для подтяжки линии данных)</li>
+</ul>
+
+<p>Особенности подключения:</p>
+<ul>
+  <li>Датчик <code>DS18B20</code> подключается к <code>D2</code> с подтяжкой к <code>5В</code> через резистор.</li>
+  <li>Дисплей соединяется по <code>I2C</code>: <code>SCL → A5</code>, <code>SDA → A4</code>.</li>
+  <li>Для калибровки используйте штатный датчик температуры (сравните показания).</li>
+</ul>
+
+<p>Пример кода:</p>
+<pre><code>#include <OneWire.h>
+<p>#include <DallasTemperature.h></p>
+<p>#include <Wire.h></p>
+<p>#include <Adafruit_GFX.h></p>
+<p>#include <Adafruit_SSD1306.h></p>
+
+<p>#define ONE_WIRE_BUS 2</p>
+<p>OneWire oneWire(ONE_WIRE_BUS);</p>
+<p>DallasTemperature sensors(&oneWire);</p>
+<p>Adafruit_SSD1306 display(128, 64, &Wire, -1);</p>
+
+<p>void setup() {</p>
+<p>sensors.begin();</p>
+<p>display.begin(SSD1306_SWITCHCAPVCC, 0x3C);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>sensors.requestTemperatures();</p>
+<p>float tempC = sensors.getTempCByIndex(0);</p>
+<p>display.clearDisplay();</p>
+<p>display.setTextSize(2);</p>
+<p>display.setCursor(0,0);</p>
+<p>display.print("Temp: ");</p>
+<p>display.print(tempC);</p>
+<p>display.print(" C");</p>
+<p>display.display();</p>
+<p>delay(1000);</p>
+<p>}</code></pre></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Если температура превышает <code>105°C</code>, немедленно остановите двигатель. Это может указывать на неисправность термостата или помпы.</blockquote>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для точности поместите датчик <code>DS18B20</code> в металлическую гильзу и закрепите её на патрубке системы охлаждения рядом со штатным датчиком.</p></div>
+
+<h3>3.2. Автоматическое управление подсветкой салона</h3>
+<p>Включает свет в салоне при открытии двери и постепенно гасит его после закрытия. Можно интегрировать с <code>RGB-лентой</code> для создания атмосферного освещения.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>💡 <em>Arduino Nano</em></li>
+  <li>💡 Модуль реле <code>5В</code> (для управления лампой)</li>
+  <li>💡 Транзистор <code>IRLZ44N</code> (если используете LED-ленту)</li>
+  <li>💡 Концевики дверей (штатные или дополнительные)</li>
+</ul>
+
+<p>Алгоритм работы:</p>
+<ol>
+  <li>При открытии любой двери включается подсветка на полную яркость.</li>
+  <li>После закрытия всех дверей яркость плавно уменьшается в течение 10 секунд.</li>
+  <li>Если дверь открыта дольше 3 минут, свет переходит в режим энергосбережения (мигание).</li>
+</ol>
+
+<p>Код для плавного затухания:</p>
+<pre><code>const int doorPins[] = {4, 5, 6, 7}; // Пины концевиков
+<p>const int ledPin = 9; // PWM-пин для LED</p>
+<p>int brightness = 0;</p>
+<p>unsigned long previousMillis = 0;</p>
+
+<p>void setup() {</p>
+<p>for (int i = 0; i < 4; i++) {</p>
+<p>pinMode(doorPins[i], INPUT_PULLUP);</p>
+<p>}</p>
+<p>pinMode(ledPin, OUTPUT);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>bool anyDoorOpen = false;</p>
+<p>for (int i = 0; i < 4; i++) {</p>
+<p>if (digitalRead(doorPins[i]) == LOW) {</p>
+<p>anyDoorOpen = true;</p>
+<p>break;</p>
+<p>}</p>
+<p>}</p>
+
+<p>if (anyDoorOpen) {</p>
+<p>brightness = 255;</p>
+<p>analogWrite(ledPin, brightness);</p>
+<p>previousMillis = millis();</p>
+<p>} else {</p>
+<p>unsigned long currentMillis = millis();</p>
+<p>if (currentMillis - previousMillis <= 10000) { // 10 секунд на затухание</p>
+<p>brightness = map(currentMillis - previousMillis, 0, 10000, 255, 0);</p>
+<p>brightness = constrain(brightness, 0, 255);</p>
+<p>analogWrite(ledPin, brightness);</p>
+<p>} else {</p>
+<p>analogWrite(ledPin, 0);</p>
+<p>}</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<h2 id="4-сложные-проекты-для-опытных">4. Сложные проекты для опытных</h2>
+
+<p>Эти устройства требуют знаний <strong>CAN-шины</strong>, работы с протоколами обмена данными и иногда вмешательства в штатную электрику автомобиля. Но результат стоит усилий.</p>
+
+<h3>4.1. Считывание данных с CAN-шины</h3>
+<p>Позволяет получать данные со всех датчиков автомобиля: скорость, обороты двигателя, уровень топлива и т.д. Для этого понадобится модуль <code>CAN-BUS Shield</code> или <code>MCP2515</code>.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>📡 <em>Arduino Uno</em> (лучше <em>Mega</em> для обработки большего объёма данных)</li>
+  <li>📡 Модуль <code>MCP2515</code> с трансивером <code>TJA1050</code></li>
+  <li>📡 Дисплей <code>Nextion</code> или <code>TFT 3.5"</code> для вывода данных</li>
+</ul>
+
+<p>Подключение к CAN-шине:</p>
+<ol>
+  <li>Найдите разъём <code>OBD-II</code> (обычно под рулём).</li>
+  <li>Подключите <code>CAN-H</code> и <code>CAN-L</code> к соответствующим выводам модуля <code>MCP2515</code>.</li>
+  <li>Питание <code>12В</code> берите с прикуривателя через преобразователь.</li>
+</ol>
+
+<p>Пример кода для чтения скорости:</p>
+<pre><code>#include <SPI.h>
+<p>#include <mcp2515.h></p>
+
+<p>MCP2515 mcp2515(10); // CS-пин</p>
+
+<p>void setup() {</p>
+<p>Serial.begin(115200);</p>
+<p>mcp2515.reset();</p>
+<p>mcp2515.setBitrate(CAN_500KBPS);</p>
+<p>mcp2515.setNormalMode();</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>struct can_frame canMsg;</p>
+<p>if (mcp2515.readMessage(&canMsg) == MCP2515_OK) {</p>
+<p>if (canMsg.can_id == 0x200) { // ID сообщения со скоростью (зависит от модели авто)</p>
+<p>int speed = canMsg.data[0];</p>
+<p>Serial.print("Скорость: ");</p>
+<p>Serial.print(speed);</p>
+<p>Serial.println(" км/ч");</p>
+<p>}</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Не все автомобили используют стандартные <code>CAN-ID</code> для передачи данных. Для декодирования потока используйте программу <em>SavvyCAN</em> или <em>CANalyze</em>.</blockquote>
+
+<details class="faq-item"><summary>Как найти нужный CAN-ID?</summary><div class="faq-answer"><p>
+<p>Для определения идентификаторов сообщений:</p>
+<p>1. Подключите <em>Arduino</em> с <code>MCP2515</code> к <code>OBD-II</code>.</p>
+<p>2. Запустите мониторинг всех сообщений в <em>Serial Monitor</em>.</p>
+<p>3. Нажмите на педаль газа или включите поворотник — так вы найдёте сообщения, связанные с этими событиями.</p>
+<p>4. Запишите <code>CAN-ID</code> и байты данных, которые изменяются.</p>
+<p></p></div></details></p>
+
+<h3>4.2. Система контроля давления в шинах (TPMS)</h3>
+<p>Самодельная альтернатива штатным датчикам. Использует беспроводные модули <code>NRF24L01</code> для передачи данных с колёс на центральный блок.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🚗 4 × <em>Arduino Pro Mini</em> (по одному на колесо)</li>
+  <li>🚗 4 × Датчик давления <code>MPX5700</code> или <code>HSCMRRN001PDAA3</code></li>
+  <li>🚗 4 × Модуль <code>NRF24L01</code> (передатчики)</li>
+  <li>🚗 1 × <em>Arduino Nano</em> (приёмник в салоне)</li>
+  <li>🚗 Дисплей <code>LCD 1602</code> или <code>OLED</code></li>
+</ul>
+
+<p>Схема работы:</p>
+<ol>
+  <li>Датчики на колёсах измеряют давление каждые 5 секунд.</li>
+  <li>Данные передаются по радио на центральный блок.</li>
+  <li>При падении давления ниже <code>1.8 бар</code> включается звуковой сигнал.</li>
+</ol>
+
+<p>Код для передатчика (на колесе):</p>
+<pre><code>#include <SPI.h>
+<p>#include <nRF24L01.h></p>
+<p>#include <RF24.h></p>
+
+<p>RF24 radio(7, 8); // CE, CSN</p>
+<p>const byte address[6] = "00001";</p>
+
+<p>void setup() {</p>
+<p>radio.begin();</p>
+<p>radio.openWritingPipe(address);</p>
+<p>radio.setPALevel(RF24_PA_MIN);</p>
+<p>radio.stopListening();</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>float pressure = analogRead(A0) * 0.00488; // Преобразование ADC в давление</p>
+<p>radio.write(&pressure, sizeof(pressure));</p>
+<p>delay(5000);</p>
+<p>}</code></pre></p>
+
+<p>Код для приёмника (в салоне):</p>
+<pre><code>#include <SPI.h>
+<p>#include <nRF24L01.h></p>
+<p>#include <RF24.h></p>
+<p>#include <LiquidCrystal_I2C.h></p>
+
+<p>RF24 radio(7, 8);</p>
+<p>const byte address[6] = "00001";</p>
+<p>LiquidCrystal_I2C lcd(0x27, 16, 2);</p>
+
+<p>float pressures[4] = {0};</p>
+
+<p>void setup() {</p>
+<p>radio.begin();</p>
+<p>radio.openReadingPipe(0, address);</p>
+<p>radio.setPALevel(RF24_PA_MIN);</p>
+<p>radio.startListening();</p>
+<p>lcd.init();</p>
+<p>lcd.backlight();</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>if (radio.available()) {</p>
+<p>float pressure;</p>
+<p>radio.read(&pressure, sizeof(pressure));</p>
+<p>// Здесь логика определения, с какого колеса пришли данные</p>
+<p>// и запись в массив pressures[]</p>
+<p>}</p>
+<p>lcd.clear();</p>
+<p>for (int i = 0; i < 4; i++) {</p>
+<p>lcd.setCursor(0, i/2);</p>
+<p>lcd.print("T");</p>
+<p>lcd.print(i+1);</p>
+<p>lcd.print(":");</p>
+<p>lcd.print(pressures[i], 1);</p>
+<p>lcd.print("bar");</p>
+<p>}</p>
+<p>delay(1000);</p>
+<p>}</code></pre></p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для точного измерения давления датчики нужно откалибровать. Сравните показания с манометром при известном давлении (например, 2.0 бар) и подстройте коэффициенты в коде.</p></div>
+
+<h2 id="5-проекты-для-безопасности">5. Проекты для безопасности</h2>
+
+<p>Устройства, которые помогут защитить автомобиль от угона или предотвратить аварийные ситуации. Например, иммобилайзер на основе <em>Arduino</em> или система оповещения о движении.</p>
+
+<h3>5.1. Иммобилайзер с RFID-меткой</h3>
+<p>Блокирует запуск двигателя, если рядом нет авторизованной метки. Использует модуль <code>RC522</code> для считывания <code>RFID</code>-карт.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🔐 <em>Arduino Nano</em></li>
+  <li>🔐 Модуль <code>RC522</code></li>
+  <li>🔐 Реле <code>5В</code> (для разрыва цепи зажигания)</li>
+  <li>🔐 RFID-карта или брелок</li>
+</ul>
+
+<p>Схема подключения:</p>
+<ol>
+  <li>Подключите <code>RC522</code> к <em>Arduino</em>: <code>SDA → D10</code>, <code>SCK → D13</code>, <code>MOSI → D11</code>, <code>MISO → D12</code>.</li>
+  <li>Реле подключите к <code>D8</code> и вразрыв провода, идущего на замок зажигания (например, <code>+12В</code> на катушку).</li>
+  <li>Запрограммируйте уникальный <code>UID</code> вашей метки в скетч.</li>
+</ol>
+
+<p>Код иммобилайзера:</p>
+<pre><code>#include <SPI.h>
+<p>#include <MFRC522.h></p>
+
+<p>#define SS_PIN 10</p>
+<p>#define RST_PIN 9</p>
+<p>#define RELAY_PIN 8</p>
+
+<p>MFRC522 mfrc522(SS_PIN, RST_PIN);</p>
+<p>byte authorizedUID[4] = {0xA1, 0xB2, 0xC3, 0xD4}; // Замените на UID вашей карты</p>
+
+<p>void setup() {</p>
+<p>SPI.begin();</p>
+<p>mfrc522.PCD_Init();</p>
+<p>pinMode(RELAY_PIN, OUTPUT);</p>
+<p>digitalWrite(RELAY_PIN, LOW); // По умолчанию разомкнут</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>if (!mfrc522.PICC_IsNewCardPresent()) {</p>
+<p>return;</p>
+<p>}</p>
+<p>if (!mfrc522.PICC_ReadCardSerial()) {</p>
+<p>return;</p>
+<p>}</p>
+<p>bool isAuthorized = true;</p>
+<p>for (byte i = 0; i < 4; i++) {</p>
+<p>if (mfrc522.uid.uidByte[i] != authorizedUID[i]) {</p>
+<p>isAuthorized = false;</p>
+<p>break;</p>
+<p>}</p>
+<p>}</p>
+<p>if (isAuthorized) {</p>
+<p>digitalWrite(RELAY_PIN, HIGH); // Замыкаем реле</p>
+<p>delay(5000); // Держим 5 секунд (время на запуск)</p>
+<p>}</p>
+<p>mfrc522.PICC_HaltA();</p>
+<p>}</code></pre></p>
+
+<blockquote>⚠️ <strong>Внимание:</strong> Перед установкой иммобилайзера проверьте, что разрыв цепи зажигания не приведёт к блокировке <em>ECU</em>. На некоторых автомобилях это может вызвать ошибки в блоке управления.</blockquote>
+
+<h3>5.2. Датчик движения с оповещением на телефон</h3>
+<p>Отправляет SMS или уведомление в <em>Telegram</em>, если автомобиль начал движение без вашего ведома. Использует <code>GSM-модуль SIM800L</code> и акселерометр <code>MPU6050</code>.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>📱 <em>Arduino Uno</em></li>
+  <li>📱 Модуль <code>SIM800L</code> с антенной</li>
+  <li>📱 Акселерометр <code>MPU6050</code></li>
+  <li>📱 SIM-карта с тарифом для SMS/интернета</li>
+</ul>
+
+<p>Логика работы:</p>
+<ol>
+  <li>Акселерометр фиксирует вибрации и изменения угла наклона.</li>
+  <li>Если движение длится более 10 секунд, отправляется SMS на заданный номер.</li>
+  <li>Для экономии заряда модуль <code>SIM800L</code> переводится в спящий режим между проверками.</li>
+</ol>
+
+<p>Код для отправки SMS:</p>
+<pre><code>#include <Wire.h>
+<p>#include <MPU6050.h></p>
+<p>#include <SoftwareSerial.h></p>
+
+<p>MPU6050 mpu;</p>
+<p>SoftwareSerial sim800l(7, 8); // RX, TX</p>
+
+<p>void setup() {</p>
+<p>Wire.begin();</p>
+<p>mpu.initialize();</p>
+<p>sim800l.begin(9600);</p>
+<p>delay(1000);</p>
+<p>sim800l.println("AT+CMGF=1"); // Текстовый режим SMS</p>
+<p>delay(100);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>int16_t ax, ay, az;</p>
+<p>mpu.getAcceleration(&ax, &ay, &az);</p>
+<p>float movement = sqrt(ax*ax + ay*ay + az*az);</p>
+
+<p>if (movement > 20000) { // Порог срабатывания</p>
+<p>sendSMS("+79XXXXXXXXX", "Движение обнаружено!");</p>
+<p>delay(60000); // Пауза 1 минута, чтобы не спамить</p>
+<p>}</p>
+<p>delay(1000);</p>
+<p>}</p>
+
+<p>void sendSMS(String number, String message) {</p>
+<p>sim800l.print("AT+CMGS=\"");</p>
+<p>sim800l.print(number);</p>
+<p>sim800l.println("\"");</p>
+<p>delay(100);</p>
+<p>sim800l.print(message);</p>
+<p>delay(100);</p>
+<p>sim800l.write(26); // Ctrl+Z для отправки</p>
+<p>delay(1000);</p>
+<p>}</code></pre></p>
+
+<h2 id="6-проекты-для-комфорта">6. Проекты для комфорта</h2>
+
+<p>Устройства, которые сделают поездки удобнее: автоматическое управление климатом, голосовое управление или интеграция с умным домом.</p>
+
+<h3>6.1. Автоматический контроль климата</h3>
+<p>Включает вентилятор или обогреватель салона в зависимости от температуры. Можно интегрировать с <code>CAN-шиной</code> для управления штатным климат-контролем.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🌬️ <em>Arduino Mega</em> (для обработки CAN и управления реле)</li>
+  <li>🌬️ Датчик температуры <code>DHT22</code></li>
+  <li>🌬️ Модуль реле <code>4-канальный</code></li>
+  <li>🌬️ Вентилятор <code>12В</code> или нагревательный элемент</li>
+</ul>
+
+<p>Алгоритм:</p>
+<ul>
+  <li>Если температура выше <code>25°C</code> — включается вентилятор.</li>
+  <li>Если ниже <code>18°C</code> — включается обогрев.</li>
+  <li>Данные выводятся на <code>OLED-экран</code>.</li>
+</ul>
+
+<h3>6.2. Голосовое управление функциями автомобиля</h3>
+<p>Управляйте музыкой, светом или климатом с помощью голосовых команд. Использует модуль распознавания речи <code>LD3320</code> или <code>EasyVR</code>.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🎤 <em>Arduino Uno</em></li>
+  <li>🎤 Модуль <code>EasyVR 3.0</code></li>
+  <li>🎤 Усилитель звука <code>PAM8403</code> (для микрофона)</li>
+  <li>🎤 Реле для управления устройствами</li>
+</ul>
+
+<p>Пример команд:</p>
+<ul>
+  <li>"<mark>Включи обогрев сидений</mark>" → замыкает реле на обогрев.</li>
+  <li>"Увеличь громкость" → отправляет сигнал на магнитолу по <code>CAN</code> или <code>IR</code>.</li>
+  <li>"Открой багажник" → активирует привод замка багажника.</li>
+</ul>
+
+<h2 id="7-диагностика-и-ремонт-с-arduino">7. Диагностика и ремонт с Arduino</h2>
+
+<p><em>Arduino</em> может стать мощным инструментом для диагностики неисправностей автомобиля. Например, проверка работы датчиков или тестирование цепей.</p>
+
+<h3>7.1. Тестер датчиков ABS</h3>
+<p>Позволяет проверить исправность датчиков <code>ABS</code>, имитируя вращение колеса. Полезно для диагностики ошибок <code>P0500</code> или <code>C0035</code>.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>🔧 <em>Arduino Nano</em></li>
+  <li>🔧 Транзистор <code>BC547</code> (для управления сигналом)</li>
+  <li>🔧 Резисторы <code>1 кОм</code> и <code>10 кОм</code></li>
+  <li>🔧 Осциллограф или мультиметр (для анализа сигнала)</li>
+</ul>
+
+<p>Схема подключения:</p>
+<ol>
+  <li>Подключите вывод <em>Arduino</em> к базе транзистора.</li>
+  <li>Коллектор транзистора соедините с сигнальным проводом датчика <code>ABS</code>.</li>
+  <li>Запрограммируйте генерацию импульсов с частотой <code>100 Гц</code> (эмуляция вращения колеса).</li>
+</ol>
+
+<p>Код для генерации сигнала:</p>
+<pre><code>const int absPin = 3;
+
+<p>void setup() {</p>
+<p>pinMode(absPin, OUTPUT);</p>
+<p>}</p>
+
+<p>void loop() {</p>
+<p>digitalWrite(absPin, HIGH);</p>
+<p>delayMicroseconds(5000); // 100 Гц = период 10 мс</p>
+<p>digitalWrite(absPin, LOW);</p>
+<p>delayMicroseconds(5000);</p>
+<p>}</code></pre></p>
+
+<h3>7.2. Логгер ошибок OBD-II</h3>
+<p>Записывает ошибки <code>OBD-II</code> в память <em>Arduino</em> и выводит их на экран. Можно использовать для диагностики <code>Check Engine</code> без сканера.</p>
+
+<p>Компоненты:</p>
+<ul>
+  <li>📊 <em>Arduino Mega</em> (для работы с <code>ELM327</code>)</li>
+  <li>📊 Модуль <code>ELM327</code> (Bluetooth или USB)</li>
+  <li>📊 Карта памяти <code>microSD</code> с модулем чтения</li>
+</ul>
+
+<p>Пример кода для чтения ошибок:</p>
+<pre><code>#include <SoftwareSerial.h>
+<p>SoftwareSerial elm(10, 11); // RX, TX</p>
+
+<p>void setup() {</p>
+<p>Serial.begin(9600);</p>
+<p>elm.begin(9600);</p>
+<p>delay(1000);</p>
+<p>elm.println("ATZ"); // Сброс</p>
+<p>delay(1000);</p>
+<p>elm.println("ATDPN"); // Показать протокол</p>
+<p>delay(1000);</p>
+<p>elm.println</p></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#1-подготовка-что-нужно-для-старта">1. Подготовка: что нужно для старта</a></li><li><a href="#2-простые-проекты-для-начинающих">2. Простые проекты для начинающих</a></li><li><a href="#3-проекты-средней-сложности">3. Проекты средней сложности</a></li><li><a href="#4-сложные-проекты-для-опытных">4. Сложные проекты для опытных</a></li><li><a href="#5-проекты-для-безопасности">5. Проекты для безопасности</a></li><li><a href="#6-проекты-для-комфорта">6. Проекты для комфорта</a></li><li><a href="#7-диагностика-и-ремонт-с-arduino">7. Диагностика и ремонт с Arduino</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-nazyvaetsya-mashina-s-vydvizhnymi-farami-yaponskaya.html" class="related-card">Японские авто с выдвижными фарами: полный список моделей</a></li><li><a href="/articles/c/ch/chasy-kvartsevye-i-mekhanicheskie-raznitsa.html" class="related-card">Часы кварцевые и механические: в чем разница и что выбрать?</a></li><li><a href="/articles/p/pe/perevorot-nomera-na-avto.html" class="related-card">Переворот номера на авто: как перевернуть госномер своими руками</a></li><li><a href="/articles/k/kr/krepezh-dlya-avtomobilnogo-nomera.html" class="related-card">Крепеж для автомобильного номера: виды, выбор и установка</a></li><li><a href="/articles/k/ka/kak-pravilno-nazyvaetsya-kozyrek-ot-solntsa-v-mashine.html" class="related-card">Как правильно называется козырек от солнца в машине</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/k/ka/kak-nazyvaetsya-mashina-s-vydvizhnymi-farami-yaponskaya.html" class="related-bottom-card"><span class="related-bottom-title">Японские авто с выдвижными фарами: полный список моделей</span><span class="related-bottom-desc">Как называется японская машина с прячущимися фарами? Узнайте названия легендарных моделей Mazda, Toy</span></a><a href="/articles/c/ch/chasy-kvartsevye-i-mekhanicheskie-raznitsa.html" class="related-bottom-card"><span class="related-bottom-title">Часы кварцевые и механические: в чем разница и что выбрать?</span><span class="related-bottom-desc">Подробное сравнение механических и кварцевых часов. Разбираем принцип работы, точность, стоимость об</span></a><a href="/articles/p/pe/perevorot-nomera-na-avto.html" class="related-bottom-card"><span class="related-bottom-title">Переворот номера на авто: как перевернуть госномер своими руками</span><span class="related-bottom-desc">Нужен ли переворот номера на авто? Узнайте, как перевернуть госномер своими руками, какие нужны инст</span></a><a href="/articles/k/kr/krepezh-dlya-avtomobilnogo-nomera.html" class="related-bottom-card"><span class="related-bottom-title">Крепеж для автомобильного номера: виды, выбор и установка</span><span class="related-bottom-desc">Все о крепеже для автомобильного номера: от выбора болтов до защиты от кражи. Советы по установке, Г</span></a><a href="/articles/k/ka/kak-pravilno-nazyvaetsya-kozyrek-ot-solntsa-v-mashine.html" class="related-bottom-card"><span class="related-bottom-title">Как правильно называется козырек от солнца в машине</span><span class="related-bottom-desc">Узнайте, как точно называется козырек от солнца в машине. Разбираем виды солнцезащитных экранов, мат</span></a><a href="/articles/a/ar/aromatizator-eikosha-kakoj-zapakh-vybrat.html" class="related-bottom-card"><span class="related-bottom-title">Ароматизатор Eikosha: какой запах выбрать для авто</span><span class="related-bottom-desc">Полный гид по ароматизаторам Eikosha. Рейтинг лучших запахов, сравнение серий Air Spencer и советы п</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

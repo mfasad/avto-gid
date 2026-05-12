@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Поиск ПТС по VIN: полная проверка авто и владельца — Авто Гид</title>
+    <meta name="description" content="Как найти ПТС по VIN-коду? Полный гид по проверке истории, ограничений и статуса документов автомобиля онлайн.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/p/po/poisk-pts-po-vin.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Поиск ПТС по VIN: полная проверка авто и владельца">
+    <meta property="og:description" content="Как найти ПТС по VIN-коду? Полный гид по проверке истории, ограничений и статуса документов автомобиля онлайн.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Поиск ПТС по VIN: полная проверка авто и владельца</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Поиск ПТС по VIN: как узнать статус и историю автомобиля</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#что-такое-vin-код-и-где-его-искать">Что такое VIN-код и где его искать</a></li><li><a href="#официальные-источники-проверки-статуса-птс">Официальные источники проверки статуса ПТС</a></li><li><a href="#как-проверить-автомобиль-на-угон-и-ограничения">Как проверить автомобиль на угон и ограничения</a></li><li><a href="#проверка-истории-дтп-и-ремонтных-работ">Проверка истории ДТП и ремонтных работ</a></li><li><a href="#электронный-птс-особенности-и-проверка">Электронный ПТС: особенности и проверка</a></li><li><a href="#риски-покупки-автомобиля-с-дубликатом-птс">Риски покупки автомобиля с дубликатом ПТС</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Владение автомобилем — это не только удовольствие от вождения, но и постоянный контроль за юридической чистотой транспортного средства. Когда встает вопрос о покупке подержанной машины или необходимости восстановить утерянные документы, на первый план выходит <strong>поиск ПТС по VIN</strong>. Этот уникальный семнадцатизначный код содержит в себе всю ключевую информацию о «железном коне», позволяя заглянуть в его прошлое глубже, чем позволяют стандартные методы осмотра.</p>
+
+<p>Многие автолюбители ошибочно полагают, что проверка по номеру кузова дает лишь базовые технические характеристики. На самом деле, через специализированные базы данных можно получить доступ к архивам ГИБДД, сведениям о залоговых обязательствах и даже истории прохождения технических осмотров. Знание того, как правильно интерпретировать эти данные, может спасти покупателя от приобретения «проблемного» актива или избежать серьезных юридических осложнений в будущем.</p>
+
+<p>Современные цифровые сервисы сделали процесс получения информации максимально прозрачным. Однако обилие источников данных часто ставит пользователя в тупик: каким порталам доверять, какие данные являются достоверными, а где скрывается мошенническая информация? В этой статье мы разберем все нюансы работы с <em>VIN-кодами</em> и объясним, как легально и эффективно проверить статус паспорта транспортного средства.</p>
+
+<h2 id="что-такое-vin-код-и-где-его-искать">Что такое VIN-код и где его искать</h2>
+
+<em>VIN</em> (Vehicle Identification Number) представляет собой уникальный идентификационный номер транспортного средства. Он присваивается автомобилю заводом-изготовителем и остается с ним на протяжении всего жизненного цикла. Код состоит из 17 символов, включающих латинские буквы и цифры, исключая I, O и Q, чтобы избежать путаницы с единицей и нулем. Именно этот идентификатор позволяет проводить <strong>поиск ПТС по VIN</strong> в глобальных и локальных базах данных.
+
+<p>Расположение номера может варьироваться в зависимости от марки и модели автомобиля. Чаще всего его можно найти на специальной металлической табличке, закрепленной на кузове в моторном отсеке, на стойке водительской двери или в нижней части лобового стекла. Также номер обязательно выбит непосредственно на кузове или раме, что служит дополнительной защитой от угона и подделки документов.</p>
+
+<p>> <blockquote>⚠️ Внимание: Если вы обнаружили, что номера на кузове и в документах отличаются или имеют следы механического вмешательства, прекращайте сделку немедленно. Это верный признак того, что автомобиль может находиться в угоне или быть «конструктором».</blockquote></p>
+
+<p>Для точного считывания кода рекомендуется использовать чистую ветошь и хорошее освещение, так как грязь и коррозия могут исказить восприятие символов. Ошибка даже в одном знаке приведет к тому, что <strong>проверка авто</strong> выдаст информацию о совершенно другом транспортном средстве или не даст результатов вовсе.</p>
+
+<h2 id="официальные-источники-проверки-статуса-птс">Официальные источники проверки статуса ПТС</h2>
+
+<p>Наиболее достоверным источником информации о статусе документов автомобиля в России является официальный портал ГИБДД. Именно здесь содержится актуальная база данных о зарегистрированных транспортных средствах, находящихся в розыске или имеющих ограничения на регистрационные действия. Ввод <em>VIN-кода</em> в форму поиска на сайте ведомства позволяет мгновенно получить сведения о текущем владельце (если проверка проводится с его согласия), истории регистраций и наличии штрафов.</p>
+
+<p>Помимо сайта Госавтоинспекции, существует портал «Автокод», который агрегирует данные из различных государственных реестров, включая страховые компании и нотариальные базы залогов. Использование таких ресурсов позволяет комплексно оценить юридическую чистоту сделки. Однако стоит помнить, что доступ к полному функционалу часто требует авторизации через <strong>Госуслуги</strong>, что гарантирует защиту персональных данных.</p>
+
+<div class="poll-widget" id="poll-92e023f1"><div class="poll-widget-question">📊 Где вы чаще всего проверяете автомобиль перед покупкой?</div><div class="poll-widget-option" data-poll="92e023f1" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Сайт ГИБДД</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="92e023f1" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Сервисы-агрегаторы (Автокод и др.)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="92e023f1" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Проверяю только документы визуально</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="92e023f1" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Обращаюсь к юристам</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>В таблице ниже приведено сравнение основных источников информации для проверки автомобиля:</p>
+
+<table>
+<thead>
+<tr>
+<th>Источник</th>
+<th>Тип данных</th>
+<th>Доступность</th>
+<th>Стоимость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сайт ГИБДД</td>
+<td>Розыск, ограничения, история регистраций</td>
+<td>Открытый</td>
+<td>Бесплатно</td>
+</tr>
+<tr>
+<td>Реестр залогов (ФНП)</td>
+<td>Информация о залоге в банке</td>
+<td>Требуется VIN</td>
+<td>Бесплатно</td>
+</tr>
+<tr>
+<td>Коммерческие сервисы</td>
+<td>Полный отчет (ДТП, пробег, такси)</td>
+<td>Открытый</td>
+<td>Платно</td>
+</tr>
+<tr>
+<td>Сайт ФССП</td>
+<td>Долги владельца (косвенная проверка)</td>
+<td>По ФИО</td>
+<td>Бесплатно</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="как-проверить-автомобиль-на-угон-и-ограничения">Как проверить автомобиль на угон и ограничения</h2>
+
+<p>Одной из самых критичных процедур при покупке автомобиля является проверка на предмет угона. Если транспортное средство числится в федеральном розыске, оно будет изъято у нового владельца, а деньги вернуть практически невозможно. Поиск осуществляется по <strong>VIN-коду</strong>, номеру кузова или шасси через специализированные разделы на сайте МВД. Система автоматически сверяет введенные данные с базой угнанных автомобилей.</p>
+
+<p>Кроме прямого угона, существуют ограничения на регистрационные действия. Они могут быть наложены судебными приставами из-за долгов предыдущего владельца, таможенными органами или другими государственными структурами. Наличие таких ограничений означает, что вы не сможете переоформить автомобиль на себя, даже если продавец честно пробьет чеки и передаст ключи.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка перед покупкой</h4><label class="check-item"><input type="checkbox"><span>Проверить VIN на сайте ГИБДД</span></label><label class="check-item"><input type="checkbox"><span>Убедиться в отсутствии запретов на регистрацию</span></label><label class="check-item"><input type="checkbox"><span>Проверить владельца по базе ФССП</span></label><label class="check-item"><input type="checkbox"><span>Сверить номера агрегатов с документами</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>> <blockquote>⚠️ Внимание: Ограничения, наложенные приставами, часто носят временный характер и могут быть сняты сразу после оплаты долга. Однако полагаться на слово продавца нельзя — требуйте свежую справку об отсутствии ограничений непосредственно перед сделкой.</blockquote></p>
+
+<p>Важно различать ограничения на регистрацию и залог. Залоговый автомобиль юридически принадлежит банку до момента погашения кредита. Если владелец перестанет платить, банк имеет полное право изъять имущество, независимо от того, кто фактически пользуется машиной. Проверка через <em>Реестр уведомлений о залоге движимого имущества</em> является обязательной процедурой.</p>
+
+<h2 id="проверка-истории-дтп-и-ремонтных-работ">Проверка истории ДТП и ремонтных работ</h2>
+
+<p>Техническое состояние автомобиля напрямую влияет на безопасность эксплуатации. Знание истории аварий позволяет понять, насколько качественно был произведен ремонт и не нарушена ли геометрия кузова. Данные о ДТП, оформленных с участием инспекторов ГИБДД, попадают в общую базу и становятся доступны при проверке по <strong>VIN-коду</strong>.</p>
+
+<p>Однако стоит учитывать, что в базу попадают только те аварии, которые были официально зафиксированы. Мелкие столкновения, «парковочные» ДТП, оформленные по европротоколу без вызова полиции, или повреждения, устраненные владельцем самостоятельно, могут отсутствовать в официальных отчетах. Поэтому отсутствие записей о ДТП не гарантирует идеальное техническое состояние.</p>
+
+<details class="faq-item"><summary>Скрытые повреждения</summary><div class="faq-answer"><p>Даже если в базе нет крупных аварий, автомобиль мог получить серьезные повреждения в результате града, падения деревьев или транспортировки, о которых владелец мог не сообщать в страховую, чтобы не терять скидку.</p></div></details>
+
+<p>Коммерческие сервисы проверки часто используют данные от страховых компаний и станций технического обслуживания, что позволяет расширить картину. Они могут показать, обращался ли автомобиль на сервис с повреждениями, характерными для ударов, даже если страховая выплата не производилась. Это помогает выявить скрытые дефекты, такие как крашеные элементы или замененные подушки безопасности.</p>
+
+<h2 id="электронный-птс-особенности-и-проверка">Электронный ПТС: особенности и проверка</h2>
+
+<p>Современная тенденция в автомобильной индустрии — переход на <em>электронные паспорта транспортных средства (ЭПТС)</em>. С 1 ноября 2020 года в России прекращена выдача бумажных ПТС для новых автомобилей. Электронный документ имеет ту же юридическую силу, что и бумажный, но хранится в единой базе данных оператора системы электронных паспортов.</p>
+
+<p>Проверка статуса ЭПТС осуществляется через портал системы электронных паспортов. Здесь можно увидеть не только текущего владельца, но и всю историю смены собственников, если они вносились в систему. Это значительно упрощает процесс <strong>поиска ПТС по VIN</strong> и делает цепочку владения прозрачной.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>При покупке автомобиля с ЭПТС обязательно проверьте статус документа в системе. Он должен иметь статус «Действующий». Статусы «Незавершенный» или «Аннулированный» говорят о проблемах с оформлением.</p></div>
+
+<p>Владельцы бумажных ПТС также имеют возможность перейти на электронный формат по собственному желанию. Это исключает риск потери или порчи физического документа, а также упрощает процедуру продажи автомобиля, так как все данные вносятся в систему удаленно. Однако при сделках с ЭПТС важно убедиться, что продавец имеет действующую учетную запись в системе и может подтвердить свои права на распоряжение транспортным средством.</p>
+
+<h2 id="риски-покупки-автомобиля-с-дубликатом-птс">Риски покупки автомобиля с дубликатом ПТС</h2>
+
+<p>Покупка автомобиля, на который выдан дубликат ПТС, всегда несет в себе повышенные риски. Дубликат выдается в случае утери оригинала, изменения данных владельца или нехватки места для записей. Однако часто дубликаты получают мошенники, чтобы скрыть наличие залога или других ограничений, которые были отмечены в оригинальном документе.</p>
+
+<p>Если вы видите в графе «Особые отметки» запись о выдаче дубликата, необходимо проявить максимальную бдительность. Нужно выяснить причину выдачи. Если причина — «утерян», это повод насторожиться, так как оригинал может находиться у банка в залоге. В таком случае <strong>поиск ПТС по VIN</strong> через реестр залогов становится критически важным.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Покупка авто с дубликатом ПТС безопасна только при условии тщательной проверки истории владения и отсутствия записей о залоге в реестре ФНП.</p></div>
+
+<p>В случае, если продавец не может внятно объяснить причину получения дубликата или отказывается предоставлять дополнительные документы, подтверждающие чистоту сделки, от покупки лучше воздержаться. Восстановление прав на автомобиль, оказавшийся в залоге у банка, может занять годы и потребовать значительных финансовых вложений в судебные процессы.</p>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли по VIN-коду узнать фамилию текущего владельца?</summary>
+<p>Напрямую через открытые базы данных (сайт ГИБДД) получить фамилию, имя и отчество текущего владельца нельзя из-за закона о персональных данных. Однако, если вы находитесь рядом с автомобилем и у вас есть законные основания (например, он припаркован неправильно и мешает), вы можете воспользоваться сервисом «Народный инспектор» или вызвать эвакуатор, в процессе чего данные могут быть озвучены оператором. Также данные доступны страховым компаниям и нотариусам при оформлении наследственных дел.</p>
+</details>
+
+<details>
+<summary>Что делать, если проверка показала ограничение на регистрацию?</summary>
+<p>Необходимо выяснить причину ограничения. Если это долг по штрафам или алиментам, владелец может погасить его, и ограничение снимут через несколько дней. Если же автомобиль находится в залоге или розыске, сделку проводить категорически нельзя. Требуйте от продавца справку об отсутствии задолженностей непосредственно в день покупки.</p>
+</details>
+
+<details>
+<summary>Как проверить, не был ли автомобиль в такси?</summary>
+<p>Информация о работе в такси часто отражается в базах коммерческих сервисов проверки истории. Кроме того, косвенными признаками могут быть большие пробеги за короткий срок, большое количество записей о ТО и специфические повреждения салона. Официально статус лицензии такси можно попробовать проверить через региональные реестры лицензий, сопоставив номер автомобиля.</p>
+</details>
+
+<details>
+<summary>Сколько действует справка об отсутствии ограничений?</summary>
+<p>Юридически срок действия такой справки не регламентирован жестко, однако базы данных обновляются в реальном времени. Ограничение могут наложить в любой момент после выписки справки. Поэтому наиболее безопасно проверять автомобиль непосредственно перед подписанием договора купли-продажи и передачей денег.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#что-такое-vin-код-и-где-его-искать">Что такое VIN-код и где его искать</a></li><li><a href="#официальные-источники-проверки-статуса-птс">Официальные источники проверки статуса ПТС</a></li><li><a href="#как-проверить-автомобиль-на-угон-и-ограничения">Как проверить автомобиль на угон и ограничения</a></li><li><a href="#проверка-истории-дтп-и-ремонтных-работ">Проверка истории ДТП и ремонтных работ</a></li><li><a href="#электронный-птс-особенности-и-проверка">Электронный ПТС: особенности и проверка</a></li><li><a href="#риски-покупки-автомобиля-с-дубликатом-птс">Риски покупки автомобиля с дубликатом ПТС</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/h/ho/hotpoint-ariston-lsf-7237.html" class="related-card">Hotpoint Ariston LSF 7237: обзор, характеристики, ремонт и отзывы</a></li><li><a href="/articles/c/ch/chto-znachit-tatu-999.html" class="related-card">Тату 999: значение, история и смысл символа</a></li><li><a href="/articles/o/ot/otets-khottabycha-5-bukv.html" class="related-card">Отец Хоттабыча 5 букв: разгадка кроссворда и история персонажа</a></li><li><a href="/articles/z/zh/zhiguli-kak-nazyvaetsya-po-drugomu.html" class="related-card">Жигули: как называется по-другому, все имена и коды ВАЗ</a></li><li><a href="/articles/1/1-/1-bar-eto-skolko-metrov-vodyanogo-stolba.html" class="related-card">1 бар это сколько метров водяного столба: точный расчет и таблицы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/h/ho/hotpoint-ariston-lsf-7237.html" class="related-bottom-card"><span class="related-bottom-title">Hotpoint Ariston LSF 7237: обзор, характеристики, ремонт и отзывы</span><span class="related-bottom-desc">Подробный гайд по стиральной машине Hotpoint Ariston LSF 7237: технические параметры, частые неиспра</span></a><a href="/articles/c/ch/chto-znachit-tatu-999.html" class="related-bottom-card"><span class="related-bottom-title">Тату 999: значение, история и смысл символа</span><span class="related-bottom-desc">Подробно разбираем, что значит тату 999. Символизм числа, связь с Juice WRLD, эзотерическое толкован</span></a><a href="/articles/o/ot/otets-khottabycha-5-bukv.html" class="related-bottom-card"><span class="related-bottom-title">Отец Хоттабыча 5 букв: разгадка кроссворда и история персонажа</span><span class="related-bottom-desc">Ищете ответ на вопрос &#x27;Отец Хоттабыча 5 букв&#x27;? Полный разбор кроссворда, анализ имени Вольпер, истор</span></a><a href="/articles/z/zh/zhiguli-kak-nazyvaetsya-po-drugomu.html" class="related-bottom-card"><span class="related-bottom-title">Жигули: как называется по-другому, все имена и коды ВАЗ</span><span class="related-bottom-desc">Полный гид по названиям ВАЗ-2101–2107. Почему Жигули переименовали в Ладу? Таблица соответствия инде</span></a><a href="/articles/1/1-/1-bar-eto-skolko-metrov-vodyanogo-stolba.html" class="related-bottom-card"><span class="related-bottom-title">1 бар это сколько метров водяного столба: точный расчет и таблицы</span><span class="related-bottom-desc">Узнайте, сколько метров водяного столба в 1 баре. Точные формулы перевода, таблица значений и особен</span></a><a href="/articles/s/sr/srednij-razgon-do-100-u-mashin.html" class="related-bottom-card"><span class="related-bottom-title">Средний разгон до 100 км/ч: нормы для авто всех классов</span><span class="related-bottom-desc">Какой средний разгон до 100 км/ч считается нормальным? Таблицы динамики по классам, влияние массы и </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

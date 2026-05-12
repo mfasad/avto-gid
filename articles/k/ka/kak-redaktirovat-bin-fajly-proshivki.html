@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Как редактировать bin файлы прошивки: полное руководство — Авто Гид</title>
+    <meta name="description" content="Узнайте, как редактировать bin файлы прошивки: инструменты, структура hex-кода, правка таблиц и восстановление устройства после сбоя.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/k/ka/kak-redaktirovat-bin-fajly-proshivki.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как редактировать bin файлы прошивки: полное руководство">
+    <meta property="og:description" content="Узнайте, как редактировать bin файлы прошивки: инструменты, структура hex-кода, правка таблиц и восстановление устройства после сбоя.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/garazh-i-instrument/">Гараж и Инструмент</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Как редактировать bin файлы прошивки: полное руководство</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как редактировать bin файлы прошивки: инструменты и методы</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#структура-бинарного-файла-и-адресация-памяти">Структура бинарного файла и адресация памяти</a></li><li><a href="#необходимый-инструментарий-для-работы-с-прошивками">Необходимый инструментарий для работы с прошивками</a></li><li><a href="#поиск-и-модификация-строк-и-параметров">Поиск и модификация строк и параметров</a></li><li><a href="#работа-с-таблицами-и-контрольными-суммами">Работа с таблицами и контрольными суммами</a></li><li><a href="#анализ-заголовка-и-сигнатур-производителей">Анализ заголовка и сигнатур производителей</a></li><li><a href="#восстановление-после-неудачного-редактирования">Восстановление после неудачного редактирования</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Работа с бинарными файлами прошивок — это высший пилотаж в мире модификации электроники. <strong>Bin-файл</strong> представляет собой прямое отображение содержимого памяти устройства, будь то микроконтроллер, роутер или автомобильный ЭБУ. Редактирование таких файлов требует глубокого понимания архитектуры процессора и файловой системы, так как любая ошибка может привести к необратимым последствиям.</p>
+
+<p>В отличие от текстовых конфигураций, бинарный код не прощает лишних байтов. Изменение одного бита по неправильному адресу может сместить всю таблицу адресации, превратив устройство в «кирпич». Однако для энтузиастов это открывает двери к разблокировке скрытых функций, изменению региональных ограничений или оптимизации работы железа.</p>
+
+<p>Прежде чем приступать к редактированию, необходимо осознать риски. <em>Hex-редакторы</em> дают доступ к «внутренностям» системы, но не имеют встроенных механизмов защиты от глупых ошибок пользователя. Если вы планируете вмешиваться в структуру прошивки, убедитесь, что у вас есть доступ к аппаратному программатору или отладчику, чтобы восстановить устройство в случае неудачи.</p>
+
+<h2 id="структура-бинарного-файла-и-адресация-памяти">Структура бинарного файла и адресация памяти</h2>
+
+<p>Бинарный файл — это последовательность байтов, где каждый байт имеет свой уникальный адрес, начинающийся с нуля. При открытии файла в <strong>hex-редакторе</strong> вы видите три колонки: смещение (адрес), шестнадцатеричное значение байта и его текстовое представление. Понимание того, как данные упакованы в память, является фундаментом для безопасного редактирования.</p>
+
+<p>Особое внимание следует уделить заголовкам и контрольным суммам. Многие производители вшивают в начало файла <em>bootloader</em> или таблицу разделов, которая указывает, где заканчивается один блок данных и начинается другой. Изменение размера файла (добавление или удаление байтов) сдвинет все последующие адреса, что гарантированно нарушит работу системы.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не изменяйте размер бинарного файла добавлением или удалением байтов, если вы не планируете полностью перекомпилировать структуру памяти. Все правки должны производиться методом замены байт на байт.</p>
+</blockquote>
+
+<p>Для навигации по большим объемам данных используйте функцию поиска по маске. Это позволяет находить повторяющиеся последовательности байтов, которые часто указывают на начало важных структур или текстовых строк. Адреса в памяти обычно представляются в шестнадцатричном формате, например, <code>0x00004A00</code>.</p>
+
+<details class="faq-item"><summary>Что такое Endianness (порядок байтов)?</summary><div class="faq-answer"><p>Порядок байтов определяет, как многобайтовые числа хранятся в памяти. В формате Big Endian старший байт идет первым, в Little Endian — последним. Неправильная интерпретация порядка байтов приведет к чтению совершенно неверных значений адресов или параметров.</p></div></details>
+
+<h2 id="необходимый-инструментарий-для-работы-с-прошивками">Необходимый инструментарий для работы с прошивками</h2>
+
+<p>Для качественной работы стандартного блокнота недостаточно. Вам потребуется специализированный софт, способный корректно отображать и редактировать бинарные данные. Лидером в этой области считается <em>Hex Workshop</em> или бесплатный <strong>HxD</strong>, который обладает мощным функционалом для анализа файлов.</p>
+
+<p>Помимо редактора, часто требуется инструмент для вычисления контрольных сумм (Checksum). Прошивка может содержать встроенный механизм проверки целостности, и если после редактирования сумма не совпадет с записанной в заголовке, устройство откажется загружаться. Для этих целей используются утилиты вроде <code>Checksum Calculator</code> или встроенные плагины в продвинутых редакторах.</p>
+
+<p>Также не обойтись без эмуляторов или симуляторов, если речь идет о сложных архитектурах. Они позволяют запустить код в виртуальной среде и отследить, как изменения в бинарном файле влияют на логику работы программы. Это особенно актуально при патчинге логики принятия решений в firmware.</p>
+
+<div class="poll-widget" id="poll-0ee19108"><div class="poll-widget-question">📊 Какой HEX-редактор вы используете чаще всего?</div><div class="poll-widget-option" data-poll="0ee19108" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">HxD</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="0ee19108" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Hex Workshop</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="0ee19108" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">010 Editor</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="0ee19108" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Notepad++ (плагин)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="0ee19108" data-idx="4" onclick="pbPollVote(this)"><span class="poll-widget-label">Другой</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<p>Важно иметь под рукой документацию на конкретный процессор или чипсет. Спецификации <em>datasheet</em> помогут понять, какие адреса памяти зарезервированы, а какие доступны для пользовательских данных. Без технической документации редактирование превращается в гадание на кофейной гуще.</p>
+
+<h2 id="поиск-и-модификация-строк-и-параметров">Поиск и модификация строк и параметров</h2>
+
+<p>Самый простой способ начать редактирование — поиск текстовых строк. Часто производители оставляют в коде версии прошивки, URLs для обновлений или системные сообщения. Найдя строку, вы можете изменить её, но должны строго соблюдать длину. Замена слова <code>Version 1.0</code> на <code>Version 2.0</code> безопасна, так как длина одинакова.</p>
+
+<p>Если необходимо вписать более длинный текст, придется использовать трюки с кодировкой или искать неиспользуемые области памяти (padding), заполненные нулями <code>00</code> или единицами <code>FF</code>. В эти области можно «переехать», изменив указатель в коде, но это требует навыков ассемблера и понимания структуры переходов.</p>
+
+<ul>
+    <li>🔍 Используйте поиск ASCII и Unicode, так как строки могут быть закодированы по-разному.</li>
+    <li>📏 Всегда сохраняйте резервную копию оригинального файла перед внесением любых изменений.</li>
+    <li>🛠 Заменяйте символы только на эквивалентные по длине или используйте символ-заполнитель (например, пробел).</li>
+</ul>
+
+<p>При изменении числовых параметров, таких как таймауты или лимиты мощности, важно понимать систему счисления. Значение <code>10</code> в десятичной системе — это <code>0A</code> в шестнадцатеричной. Ошибка в конвертации может установить таймаут в 10 миллисекунд вместо 10 секунд, что вызовет мгновенный сбой.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте функцию "Compare Files" в hex-редакторе. Сравните оригинальную прошивку и модифицированную, чтобы визуально убедиться, что изменились только нужные байты и ничего не сместилось.</p></div>
+
+<h2 id="работа-с-таблицами-и-контрольными-суммами">Работа с таблицами и контрольными суммами</h2>
+
+<p>Многие прошивки используют таблицы для хранения конфигурации параметров. Эти таблицы могут иметь фиксированный размер или динамическую структуру. При редактировании значений в таблице необходимо пересчитывать контрольную сумму, которая часто располагается в конце блока или в специальном заголовке файла.</p>
+
+<p>Алгоритмы контрольных сумм варьируются: от простой суммы всех байтов (<strong>Checksum</strong>) до более сложных циклических избыточных кодов (<em>CRC16, CRC32</em>). Если алгоритм неизвестен, устройство не примет модифицированный файл. Существуют утилиты для автоматического поиска алгоритма проверки на основе анализа оригинального файла.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Тип проверки</th>
+            <th>Описание</th>
+            <th>Сложность подбора</th>
+        </tr>
+        <tr>
+            <td>Simple Sum</td>
+            <td>Сумма всех байтов модулю 256</td>
+            <td>Низкая</td>
+        </tr>
+        <tr>
+            <td>XOR Checksum</td>
+            <td>Побитовое исключающее ИЛИ</td>
+            <td>Низкая</td>
+        </tr>
+        <tr>
+            <td>CRC16/32</td>
+            <td>Циклический избыточный код</td>
+            <td>Средняя</td>
+        </tr>
+        <tr>
+            <td>Hash (SHA)</td>
+            <td>Криптографическая хэш-сумма</td>
+            <td>Высокая</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Применение</td>
+            <td>Простые микроконтроллеры</td>
+            <td>Бытовая электроника</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>В некоторых случаях контрольная сумма рассчитывается только для определенного диапазона адресов. Попытка пересчитать сумму для всего файла, когда нужно было только для сектора данных, приведет к ошибкам. Внимательно изучайте структуру файла, чтобы определить границы блоков.</p>
+
+<div class="checklist-block"><h4>☑️ Проверка перед записью прошивки</h4><label class="check-item"><input type="checkbox"><span>Сделана полная копия оригинала</span></label><label class="check-item"><input type="checkbox"><span>Изменен только необходимый участок</span></label><label class="check-item"><input type="checkbox"><span>Контрольная сумма пересчитана</span></label><label class="check-item"><input type="checkbox"><span>Размер файла не изменился</span></label><label class="check-item"><input type="checkbox"><span>Проверена целостность загрузчика</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<h2 id="анализ-заголовка-и-сигнатур-производителей">Анализ заголовка и сигнатур производителей</h2>
+
+<p>Каждый производитель электроники добавляет в прошивку уникальные сигнатуры. Это может быть текстовая строка в начале файла, например, <code>U-Boot</code> или логотип компании в виде байтов. Наличие таких сигнатур помогает идентифицировать происхождение firmware и подобрать правильный метод распаковки или редактирования.</p>
+
+<p>Заголовок файла часто содержит версию компилятора, дату сборки и целевую платформу. Эти данные полезны при поиске соответствующей документации или инструментов для отладки. Игнорирование сигнатур может привести к попытке прошить incompatible firmware, что фатально для устройства.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Некоторые устройства имеют защиту от записи (write protection) на уровне загрузчика. Даже если вы правильно отредактируете bin-файл, устройство может отказаться его принимать, если цифровая подпись не совпадает с ключом производителя.</p>
+</blockquote>
+
+<p>Для анализа сигнатур используйте команду <code>file</code> в Linux-подобных системах или специализированные базы данных сигнатур. Это позволит быстро определить тип файловой системы внутри бинарника, будь то <em>SquashFS</em>, <strong>JFFS2</strong> или проприетарный формат.</p>
+
+<h2 id="восстановление-после-неудачного-редактирования">Восстановление после неудачного редактирования</h2>
+
+<p>Если после редактирования устройство перестало реагировать, не паникуйте. Во многих случаях спасает режим восстановления (Recovery Mode). Для входа в него часто требуется зажать определенную кнопку при включении питания или подать сигнал на конкретный пин платы.</p>
+
+<p>Если программная recovery не работает, потребуется аппаратный вмешательство. Использование <strong>UART</strong> (консольный порт) позволит увидеть логи загрузки и понять, на каком этапе происходит ошибка. Это даст подсказку, какой именно блок прошивки был поврежден при редактировании.</p>
+
+<p>В крайнем случае поможет перепайка чипа памяти или использование программатора, подключаемого напрямую к контактам чипа (SPI, JTAG). Это единственный способ восстановить устройство, если был поврежден загрузчик (bootloader), который не имеет механизмов самовосстановления.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Наличие дампа чистой, рабочей прошивки — единственный гарант того, что вы сможете вернуть устройство к жизни после экспериментов с бинарным кодом.</p></div>
+
+<details>
+    <summary>Можно ли редактировать bin файлы обычным текстовым редактором?</summary>
+    <p>Нет, текстовые редакторы предназначены для символьной информации. Открытие бинарного файла в таком редакторе приведет к искажению данных, так как он попытается интерпретировать управляющие байты как текст, что необратимо повредит структуру файла.</p>
+</details>
+
+<details>
+    <summary>Что делать, если после правки устройство не включается?</summary>
+    <p>Необходимо войти в режим Recovery или Bootloader и залить резервную копию оригинальной прошивки. Если программный метод недоступен, потребуется разборка устройства и использование аппаратного программатора для прямой записи в чип памяти.</p>
+</details>
+
+<details>
+    <summary>Как найти нужный параметр в hex-коде?</summary>
+    <p>Используйте поиск по известным текстовым строкам, окружающим искомый параметр, или анализируйте изменения в файле после изменения настройки в работающем устройстве (сравнение дампов памяти до и после).</p>
+</details>
+
+<details>
+    <summary>Безопасно ли менять контрольные суммы вручную?</summary>
+    <p>Вручную это сделать практически невозможно из-за сложности алгоритмов. Используйте автоматические калькуляторы checksum, встроенные в hex-редакторы или отдельные утилиты, специально разработанные для вашей модели устройства.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#структура-бинарного-файла-и-адресация-памяти">Структура бинарного файла и адресация памяти</a></li><li><a href="#необходимый-инструментарий-для-работы-с-прошивками">Необходимый инструментарий для работы с прошивками</a></li><li><a href="#поиск-и-модификация-строк-и-параметров">Поиск и модификация строк и параметров</a></li><li><a href="#работа-с-таблицами-и-контрольными-суммами">Работа с таблицами и контрольными суммами</a></li><li><a href="#анализ-заголовка-и-сигнатур-производителей">Анализ заголовка и сигнатур производителей</a></li><li><a href="#восстановление-после-неудачного-редактирования">Восстановление после неудачного редактирования</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/s/sh/shchitok-v-garazhe-skhema-montazha.html" class="related-card">Щиток в гараже: схема монтажа и подключения своими руками</a></li><li><a href="/articles/k/ka/kak-nazyvaetsya-mashina-kotoraya-rushit-doma-s-sharom.html" class="related-card">Как называется машина с шаром для сноса: виды и устройство</a></li><li><a href="/articles/k/ko/kotel-v-banyu-iz-diskov.html" class="related-card">Котел для бани из дисков: как сделать своими руками (2026)</a></li><li><a href="/articles/r/re/remen-profil-a-i-b-v-chem-otlichie.html" class="related-card">Ремень профиль А и Б: в чем разница и как не перепутать</a></li><li><a href="/articles/s/sh/shvejnaya-mashinka-dlya-brezenta-i-tentov-kupit.html" class="related-card">Швейная машинка для брезента и тентов купить: рейтинг и советы</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/s/sh/shchitok-v-garazhe-skhema-montazha.html" class="related-bottom-card"><span class="related-bottom-title">Щиток в гараже: схема монтажа и подключения своими руками</span><span class="related-bottom-desc">Пошаговая инструкция по сборке и установке электрического щитка в гараже: схемы, выбор оборудования,</span></a><a href="/articles/k/ka/kak-nazyvaetsya-mashina-kotoraya-rushit-doma-s-sharom.html" class="related-bottom-card"><span class="related-bottom-title">Как называется машина с шаром для сноса: виды и устройство</span><span class="related-bottom-desc">Узнайте, как правильно называется машина, которая рушит дома шаром. Описание кранов-разрушителей, их</span></a><a href="/articles/k/ko/kotel-v-banyu-iz-diskov.html" class="related-bottom-card"><span class="related-bottom-title">Котел для бани из дисков: как сделать своими руками (2026)</span><span class="related-bottom-desc">Пошаговая инструкция по изготовлению котла для бани из автомобильных дисков: чертежи, материалы, сов</span></a><a href="/articles/r/re/remen-profil-a-i-b-v-chem-otlichie.html" class="related-bottom-card"><span class="related-bottom-title">Ремень профиль А и Б: в чем разница и как не перепутать</span><span class="related-bottom-desc">Подробное сравнение клиновых ремней профилей А и Б. Размеры, маркировка, области применения и таблиц</span></a><a href="/articles/s/sh/shvejnaya-mashinka-dlya-brezenta-i-tentov-kupit.html" class="related-bottom-card"><span class="related-bottom-title">Швейная машинка для брезента и тентов купить: рейтинг и советы</span><span class="related-bottom-desc">Какую швейную машинку для брезента выбрать и купить? Обзор промышленных моделей для тентов, параметр</span></a><a href="/articles/k/kr/krimpovochnaya-matritsa-dlya-chego-nuzhna.html" class="related-bottom-card"><span class="related-bottom-title">Кримповочная матрица: для чего нужна и как выбрать</span><span class="related-bottom-desc">Узнайте, зачем нужна кримповочная матрица, как она работает и почему важно подбирать её строго по се</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

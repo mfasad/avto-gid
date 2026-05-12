@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Моделирование машины в Blender: пошаговое руководство — Авто Гид</title>
+    <meta name="description" content="Как создать 3D-модель авто в Blender? Полигональное моделирование, настройка материалов и рендеринг для начинающих.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/m/mo/modelirovanie-mashiny-v-blender.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Моделирование машины в Blender: пошаговое руководство">
+    <meta property="og:description" content="Как создать 3D-модель авто в Blender? Полигональное моделирование, настройка материалов и рендеринг для начинающих.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/aksessuary-i-tyuning/">Аксессуары и Тюнинг</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Моделирование машины в Blender: пошаговое руководство</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Создание 3D-модели автомобиля в Blender с нуля</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-рабочего-пространства-и-референсов">Подготовка рабочего пространства и референсов</a></li><li><a href="#блокинг-создание-базовой-формы-кузова">Блокинг: создание базовой формы кузова</a></li><li><a href="#детализация-геометрии-и-hard-surface">Детализация геометрии и hard surface</a></li><li><a href="#работа-с-материалами-и-текстурами">Работа с материалами и текстурами</a></li><li><a href="#настройка-освещения-и-окружения">Настройка освещения и окружения</a></li><li><a href="#рендеринг-и-постобработка">Рендеринг и постобработка</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Трёхмерная графика открывает безграничные возможности для визуализации концептов, тюнинга и детального изучения конструкции транспортных средств. <strong>Blender</strong> является одним из самых мощных бесплатных инструментов, позволяющих воссоздать любую машину с фотографической точностью. Процесс создания сложной техники требует терпения, понимания принципов построения форм и работы с геометрией.</p>
+
+<p>В этой статье мы разберем основные этапы, от поиска референсов до финального рендеринга. Вы узнаете, как правильно настроить рабочее пространство и какие инструменты станут вашими основными помощниками. <em>Hard Surface</em> моделирование — это именно тот навык, который позволит вам создавать реалистичные автомобили для игр, рекламы или личного портфолио.</p>
+
+<p>Прежде чем приступить к работе, важно подготовить программное обеспечение и определиться с моделью автомобиля. Не стоит пытаться сразу воссоздать сложный гиперкар без опыта — начните с простых форм кузова. Понимание того, как свет взаимодействует с поверхностью металла, станет ключевым фактором успеха вашего проекта.</p>
+
+<h2 id="подготовка-рабочего-пространства-и-референсов">Подготовка рабочего пространства и референсов</h2>
+
+<p>Первым шагом в любом проекте по моделированию является сбор качественных исходных материалов. Вам понадобятся чертежи автомобиля в трех проекциях: вид спереди, сбоку и сзади. Эти изображения необходимо загрузить в <em>Blender</em> и настроить их в качестве фона для ортогональных видов. Без точных пропорций конечная модель будет выглядеть неестественно.</p>
+
+<p>Настройте рабочее окружение так, чтобы ничего не отвлекало от процесса. Откройте настройки системы и убедитесь, что для рендеринга выбран движок <strong>Cycles</strong> или <strong>E-Eevee</strong>, в зависимости от ваших требований к скорости и качеству. Для работы с чертежами используйте панель <code>N</code> и вкладку <code>Background Images</code>, где можно задать прозрачность и смещение изображений.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Убедитесь, что все референсные изображения имеют одинаковый масштаб. Если пропорции на чертежах сбоку и спереди не совпадают, модель получится перекошенной, и исправить это на поздних этапах будет крайне сложно.</p>
+</blockquote>
+
+<p>Организация сцены также играет важную роль. Создайте отдельные коллекции для референсов, кузова, интерьера и колес. Это поможет не запутаться в объектах, когда их количество начнет исчисляться десятками. Используйте горячие клавиши для быстрого переключения между видами, например, <code>Numpad 1</code>, <code>3</code> и <code>7</code> для переключения между осями.</p>
+
+<div class="poll-widget" id="poll-15e004ba"><div class="poll-widget-question">📊 Какой движок рендера вы предпочитаете для авто?</div><div class="poll-widget-option" data-poll="15e004ba" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Cycles (реализм)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="15e004ba" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Eevee (скорость)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="15e004ba" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Workbench (черновик)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="15e004ba" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не знаю, только учусь</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="блокинг-создание-базовой-формы-кузова">Блокинг: создание базовой формы кузова</h2>
+
+<p>Процесс начинается с создания примитива, обычно это куб или плоскость, которые будут служить основой. Ваша задача — грубо повторить silhouette автомобиля, не вдаваясь в мелкие детали. На этом этапе важно соблюдать общие пропорции и габариты. Используйте модификатор <strong>Mirror</strong>, чтобы моделировать только одну половину машины, что сэкономит время и гарантирует симметрию.</p>
+
+<p>Работайте с минимальным количеством полигонов, добавляя разрезы (<em>Loop Cuts</em>) только там, где это необходимо для изменения формы. Основные линии кузова, такие как линия окон и колесные арки, должны быть намечены уже сейчас. Для выравнивания вершин используйте функцию <code>Snap to Grid</code> или <code>Snap to Vertex</code>, активируемую зажатием клавиши <code>Ctrl</code>.</p>
+
+<p>Постепенно наращивайте геометрию, следуя контурам референсов. Не стремитесь к идеальной гладкости на этом этапе, сосредоточьтесь на правильном распределении топологии. Квадратные полигоны (<em>quads</em>) предпочтительнее треугольников, так как они лучше поддаются сглаживанию. В будущем это позволит применить модификатор <strong>Subdivision Surface</strong> без артефактов.</p>
+
+<div class="checklist-block"><h4>☑️ Этапы блокинга</h4><label class="check-item"><input type="checkbox"><span>Загрузка референсов:Настройка фона:Создание куба:Вытягивание формы</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+
+<h2 id="детализация-геометрии-и-hard-surface">Детализация геометрии и hard surface</h2>
+
+<p>После утверждения базовой формы начинается этап детализации. Здесь вам предстоит создать фары, бамперы, дверные ручки и воздухозаборники. Для вырезания отверстий в кузове часто используется булева операция (<strong>Boolean Modifier</strong>), однако она может создавать грязную топологию. Более профессиональный подход — вручную вписывать новые полигоны в существующую сетку.</p>
+
+<p>Особое внимание уделите колесным аркам и переходам между плоскостями. Металл кузова не имеет острых граней в реальности, поэтому все углы должны быть слегка скруглены. Для этого используйте модификатор <strong>Bevel</strong>, который добавляет фаски к ребрам. Настройка параметра <code>Limit Method</code> позволит контролировать, какие именно ребра будут скруглены, основываясь на угле или весе.</p>
+
+<p>Сложные элементы, такие как решетка радиатора или сложные составные фары, лучше моделировать как отдельные объекты. Это упростит текстурирование и анимацию в будущем. Если вы создаете интерьер, помните, что видимость деталей зависит от ракурса камеры. Для внешних рендеров можно упростить салон, оставив только видимые через окна элементы.</p>
+
+<details class="faq-item"><summary>Секрет чистых линий</summary><div class="faq-answer"><p>Используйте поддерживающие петли (support loops) рядом с острыми гранями. Это позволит модификатору Subdivision Surface сохранять четкость формы, не размывая острые углы кузова.</p></div></details>
+
+<p>В процессе детализации постоянно переключайтесь между режимами отображения. Режим <code>Wireframe</code> поможет увидеть структуру сетки, а <code>Solid</code> с включенной опцией <em>Cavity</em> покажет, как свет ложится на поверхность. Это помогает выявить вмятины или неравномерности, которые не видны в обычном режиме.</p>
+
+<h2 id="работа-с-материалами-и-текстурами">Работа с материалами и текстурами</h2>
+
+<p>Реалистичность автомобиля на 80% зависит от качества материалов. Кузовная краска — это сложная многослойная структура. В <em>Shader Editor</em> вам потребуется создать материал, имитирующий слой грунта, базовый цвет, металлик и лак. Использование узла <strong>Principled BSDF</strong> позволяет настроить шероховатость (<em>Roughness</em>) и металличность (<em>Metallic</em>) с высокой точностью.</p>
+
+<p>Для создания эффекта "металлик" или "перламутр" часто используют дополнительные слои или процедурные текстуры шума. Настройте карту нормалей (<em>Normal Map</em>), чтобы добавить микрорельеф, характерный для заводской покраски. Без этого кузов будет выглядеть как пластик, а не как металл.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр материала</th>
+<th>Значение для кузова</th>
+<th>Значение для стекол</th>
+<th>Значение для резины</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Metallic</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>Roughness</td>
+<td>0.1 - 0.3</td>
+<td>0.05</td>
+<td>0.6 - 0.8</td>
+</tr>
+<tr>
+<td>Transmission</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>IOR (Преломление)</td>
+<td>1.45</td>
+<td>1.52</td>
+<td>1.4</td>
+</tr>
+</tbody>
+</table>
+
+<p>Не забудьте про второстепенные материалы: хром, пластик бамперов, резиновые уплотнители. Каждый из них должен иметь уникальные свойства отражения. Хром должен быть почти идеально гладким, в то время как черный пластик бамперов имеет матовую, зернистую поверхность. Разница в отражениях создает визуальное разнообразие.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Избегайте использования чистого черного (0,0,0) или чистого белого (1,1,1) цветов в материалах. В реальном мире абсолютно черных объектов не существует, и использование таких значений делает объект "дырой" в сцене, которая не отражает свет.</p>
+</blockquote>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для быстрого поиска настроек материалов используйте библиотеку Poly Haven или встроенную библиотеку Blender, адаптируя готовые пресеты под свои нужды.</p></div>
+
+<h2 id="настройка-освещения-и-окружения">Настройка освещения и окружения</h2>
+
+<p>Правильное освещение способно скрыть мелкие недостатки модели или, наоборот, подчеркнуть их. Для автомобильной визуализации стандартом де-факто является использование HDRI-карт. Они обеспечивают реалистичные отражения на глянцевых поверхностях кузова. Загрузите качественную HDRI-карту в мир сцены через вкладку <code>World Properties</code>.</p>
+
+<p>Однако одной HDRI часто недостаточно. Для выделения контуров и создания драматичного эффекта используются источники света типа <strong>Area Light</strong>. Расположите их так, чтобы на боковинах автомобиля появлялись длинные блики, повторяющие изгибы кузова. Это называется "световые короба" и является классическим приемом автомобильной фотографии.</p>
+
+<p>Настройте экспозицию и баланс белого в настройках камеры. Цветовая температура света должна соответствовать времени суток, которое вы имитируете. Теплый свет заката или холодный свет пасмурного дня кардинально меняют восприятие цвета краски. Экспериментируйте с мощностью источников, чтобы избежать пересветов (<em>clipping</em>) в важных областях.</p>
+
+<p>Глубина резкости (<em>Depth of Field</em>) может добавить кинематографичности рендеру. Настройте фокус на центральной части автомобиля, размыв передний и задний план. Это помогает направить внимание зрителя на конкретные детали, такие как фары или логотип.</p>
+
+<h2 id="рендеринг-и-постобработка">Рендеринг и постобработка</h2>
+
+<p>Финальный этап — это рендеринг изображения. В настройках рендера выберите разрешение, кратное стандартным видеоформатам, например, <code>1920x1080</code> или <code>3840x2160</code>. Увеличьте количество семплов (<em>Samples</em>) до 500-1000 для снижения шума, особенно если вы используете движок Cycles. Включение функции <strong>Denoise</strong> значительно ускорит процесс и улучшит качество картинки.</p>
+
+<p>После получения raw-изобраения не спешите считать работу законченной. Постобработка в <em>Compositor</em> или внешних редакторах (Photoshop, DaVinci Resolve) необходима для цветокоррекции. Добавьте легкую виньетку, настройте кривые (<em>Curves</em>) для контраста и насыщенности. Часто требуется немного повысить резкость (<em>Sharpening</em>), чтобы детали выглядели четче.</p>
+
+<p>Сохраняйте итоговое изображение в форматах без потерь, таких как PNG или TIFF, если планируете дальнейшую обработку. Для публикации в веб-формате можно использовать сжатый JPG, но следите за артефактами сжатия на градиентах неба или кузова.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Качество финального рендера зависит не только от мощности компьютера, но и от грамотной настройки шумоподавления и правильной экспозиции сцены.</p></div>
+
+<details>
+<summary>Какой компьютер нужен для моделирования машин в Blender?</summary>
+<p>Для комфортной работы с детализированными моделями автомобилей рекомендуется процессор с высоким количеством ядер (Ryzen 7/9 или Intel i7/i9) и видеокарту NVIDIA с объемом памяти от 8 ГБ (RTX 3060 и выше). Оперативной памяти должно быть не менее 32 ГБ.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать готовые модели колес?</summary>
+<p>Да, это распространенная практика. Колеса имеют сложную геометрию протектора, и их создание с нуля занимает много времени. Использование качественных ассетов позволяет сосредоточиться на кузове и интерьере, экономя время проекта.</p>
+</details>
+
+<details>
+<summary>Как избежать ряби на поверхности при сглаживании?</summary>
+<p>Рябь возникает из-за неравномерной топологии. Старайтесь, чтобы сетка состояла преимущественно из четырехугольников одинакового размера. Избегайте "звезд" (вершин, где сходится более 4-х ребер) на видимых поверхностях кузова.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#подготовка-рабочего-пространства-и-референсов">Подготовка рабочего пространства и референсов</a></li><li><a href="#блокинг-создание-базовой-формы-кузова">Блокинг: создание базовой формы кузова</a></li><li><a href="#детализация-геометрии-и-hard-surface">Детализация геометрии и hard surface</a></li><li><a href="#работа-с-материалами-и-текстурами">Работа с материалами и текстурами</a></li><li><a href="#настройка-освещения-и-окружения">Настройка освещения и окружения</a></li><li><a href="#рендеринг-и-постобработка">Рендеринг и постобработка</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/p/pr/presety-dlya-avtomobilej-lightroom.html" class="related-card">Пресеты для автомобилей в Lightroom: полный гид по настройке</a></li><li><a href="/articles/m/ma/mashina-so-vstroennym-telefonom.html" class="related-card">Машина со встроенным телефоном: что это, как работает и стоит ли покупать</a></li><li><a href="/articles/n/na/nasos-dlya-nakachki-shin-avtomobilya-ot-prikurivatelya.html" class="related-card">Насос для шин от прикуривателя: как выбрать и пользоваться в 2026</a></li><li><a href="/articles/p/pl/ploskij-boks-na-kryshu-avtomobilya.html" class="related-card">Плоский бокс на крышу: выбор и установка аэродинамического багажника</a></li><li><a href="/articles/l/la/lazer-linzy-dlya-avto.html" class="related-card">Лазерные линзы в авто: выбор, установка и характеристики</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/p/pr/presety-dlya-avtomobilej-lightroom.html" class="related-bottom-card"><span class="related-bottom-title">Пресеты для автомобилей в Lightroom: полный гид по настройке</span><span class="related-bottom-desc">Как создать и настроить пресеты для авто в Lightroom? Секреты обработки, работа с отражениями и мета</span></a><a href="/articles/m/ma/mashina-so-vstroennym-telefonom.html" class="related-bottom-card"><span class="related-bottom-title">Машина со встроенным телефоном: что это, как работает и стоит ли покупать</span><span class="related-bottom-desc">Полный гид по автомобилям со встроенным телефоном: eSIM, Android Automotive, Apple CarPlay. Плюсы и </span></a><a href="/articles/n/na/nasos-dlya-nakachki-shin-avtomobilya-ot-prikurivatelya.html" class="related-bottom-card"><span class="related-bottom-title">Насос для шин от прикуривателя: как выбрать и пользоваться в 2026</span><span class="related-bottom-desc">Рейтинг лучших компрессоров для подкачки шин от прикуривателя, критерии выбора, инструкция по эксплу</span></a><a href="/articles/p/pl/ploskij-boks-na-kryshu-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">Плоский бокс на крышу: выбор и установка аэродинамического багажника</span><span class="related-bottom-desc">Плоский бокс на крышу автомобиля: особенности конструкции, влияние на расход топлива, сравнение с ка</span></a><a href="/articles/l/la/lazer-linzy-dlya-avto.html" class="related-bottom-card"><span class="related-bottom-title">Лазерные линзы в авто: выбор, установка и характеристики</span><span class="related-bottom-desc">Полный гид по лазерным линзам для авто. Сравнение Bi-LED и ксенона, правила установки, юридические а</span></a><a href="/articles/k/ka/kak-pravilno-nazyvaetsya-rul.html" class="related-bottom-card"><span class="related-bottom-title">Как правильно называется руль: терминология и устройство</span><span class="related-bottom-desc">Разбираем, как правильно называется руль в ПДД, из каких элементов состоит рулевой механизм и какие </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

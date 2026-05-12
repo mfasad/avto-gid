@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>VirtualBox: как создать виртуальную машину — пошаговая инструкция — Авто Гид</title>
+    <meta name="description" content="Узнайте, как создать виртуальную машину в VirtualBox. Подробный гид по настройке, установке ОС и оптимизации гостевой системы для Windows и Linux.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/v/vi/virtualbox-kak-sozdat-virtualnuyu-mashinu.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="VirtualBox: как создать виртуальную машину — пошаговая инструкция">
+    <meta property="og:description" content="Узнайте, как создать виртуальную машину в VirtualBox. Подробный гид по настройке, установке ОС и оптимизации гостевой системы для Windows и Linux.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">VirtualBox: как создать виртуальную машину — пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Как создать виртуальную машину в VirtualBox: полное руководство</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-и-установка-oracle-vm-virtualbox">Подготовка и установка Oracle VM VirtualBox</a></li><li><a href="#настройка-параметров-новой-виртуальной-машины">Настройка параметров новой виртуальной машины</a></li><li><a href="#выбор-и-подключение-образа-операционной-системы">Выбор и подключение образа операционной системы</a></li><li><a href="#процесс-установки-гостевой-ос-и-первичная-настройка">Процесс установки гостевой ОС и первичная настройка</a></li><li><a href="#установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</a></li><li><a href="#настройка-общих-папок-и-сетевого-взаимодействия">Настройка общих папок и сетевого взаимодействия</a></li><li><a href="#оптимизация-производительности-и-сохранение-состояния">Оптимизация производительности и сохранение состояния</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>Современные пользователи часто сталкиваются с необходимостью тестирования программного обеспечения в изолированной среде или запуска приложений, предназначенных для других операционных систем. <strong>Виртуализация</strong> позволяет решить эту задачу без риска для основной системы, предоставляя полноценный компьютер внутри вашего текущего интерфейса. Одним из самых популярных и доступных инструментов для этого является <em>Oracle VM VirtualBox</em>.</p>
+<p>Процесс создания новой виртуальной среды может показаться сложным новичку из-за обилия настроек, однако последовательное выполнение шагов гарантирует успешный результат. В этой статье мы детально разберем, как правильно инсталлировать программное обеспечение, настроить параметры железа и установить операционную систему <em>Windows</em> или <em>Linux</em>. Вы научитесь избегать распространенных ошибок и оптимизируете работу гостевой ОС.</p>
+<p>Для начала работы вам потребуется компьютер с достаточным количеством оперативной памяти и свободного места на диске. Важно, чтобы в BIOS была активирована технология виртуализации, иначе программа просто не сможет запустить гостевую систему. Далее мы рассмотрим каждый этап настройки максимально подробно.</p>
+
+<h2 id="подготовка-и-установка-oracle-vm-virtualbox">Подготовка и установка Oracle VM VirtualBox</h2>
+<p>Первым шагом является загрузка установочного файла с официального сайта разработчика. Не стоит использовать сторонние ресурсы, так как это может привести к заражению системы вредоносным кодом или установке устаревшей версии. После скачивания необходимо запустить инсталлятор и следовать инструкциям мастера установки, принимая условия лицензионного соглашения.</p>
+<p>В процессе инсталляции система может запросить разрешение на установку сетевых драйверов. <strong>Сетевой адаптер</strong> критически важен для обеспечения доступа виртуальной машины к интернету и локальной сети. Если вы пропустите этот момент, гостевая ОС останется изолированной, что в некоторых сценариях использования может быть нежелательно.</p>
+<blockquote>
+<p>⚠️ Внимание: Во время установки может появиться предупреждение о разрыве сетевого соединения. Это нормальное поведение, так как VirtualBox создает виртуальный сетевой мост. Не прерывайте процесс, дождитесь окончания настройки сетевых компонентов.</p>
+</blockquote>
+<p>После завершения установки рекомендуется перезагрузить компьютер, чтобы все системные изменения вступили в силу. Запустить программу можно через меню «Пуск» или ярлык на рабочем столе. Интерфейс приложения интуитивно понятен и содержит все необходимые инструменты для управления виртуальными средами в левой панели и списке запущенных машин.</p>
+
+<h2 id="настройка-параметров-новой-виртуальной-машины">Настройка параметров новой виртуальной машины</h2>
+<p>Для создания нового объекта нажмите кнопку «Создать» в главном меню программы. Вам будет предложено ввести имя машины, которое также станет именем папки для хранения файлов образа. Программа автоматически определит тип и версию операционной системы, которую вы планируете устанавливать, на основе введенного названия, но эти параметры можно изменить вручную в выпадающих списках.</p>
+<p>Следующим этапом идет распределение ресурсов <strong>оперативной памяти</strong>. Ползунок позволяет выбрать объем RAM, который будет зарезервирован для гостевой системы. Не рекомендуется отдавать под виртуализацию более 50% доступной памяти вашего физического компьютера, иначе основная система начнет работать медленно и возможны зависания.</p>
+<div class="poll-widget" id="poll-1a95e405"><div class="poll-widget-question">📊 Какой объем RAM вы планируете выделить виртуальной машине?</div><div class="poll-widget-option" data-poll="1a95e405" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">2 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1a95e405" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">4 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1a95e405" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">8 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="1a95e405" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Более 8 ГБ</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+<p>Далее необходимо создать или выбрать виртуальный жесткий диск. Система предложит создать новый диск, и здесь важно выбрать формат файла. Наиболее универсальным и рекомендуемым форматом является <em>VDI (VirtualBox Disk Image)</em>. Также вам предложат выбрать между динамическим и фиксированным размером.</p>
+<p>Динамический диск занимает место на физическом носителе только по мере заполнения данными, что экономит пространство. Фиксированный диск сразу резервирует весь заявленный объем, что может обеспечить чуть более высокую производительность, но менее гибко в использовании.</p>
+
+<h2 id="выбор-и-подключение-образа-операционной-системы">Выбор и подключение образа операционной системы</h2>
+<p>Сама по себе виртуальная машина — это просто «железо» без программного обеспечения. Для ее оживления необходим установочный образ операционной системы в формате <em>ISO</em>. Вы можете использовать оригинальный диск с Windows, дистрибутив Linux или любой другой загрузочный образ, совместимый с архитектурой процессора.</p>
+<p>Чтобы машина «увидела» установщик, нужно смонтировать ISO-образ в виртуальный привод. В настройках созданной машины перейдите в раздел «Носители» (Storage). В списке устройств найдите значок оптического диска со надписью «Пусто» и нажмите на него.</p>
+<p>Справа появится меню, где нужно выбрать файл образа. Нажмите на значок диска и выберите пункт «Выбрать файл диска...». Найдите на своем компьютере заранее скачанный <strong>ISO-файл</strong> и подтвердите выбор. После этого в дереве устройств вместо слова «Пусто» отобразится название вашей операционной системы.</p>
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Для установки Windows 10 или 11 можно использовать официальную утилиту Media Creation Tool от Microsoft для создания ISO-образа, что гарантирует отсутствие вирусов и актуальность версий.</p></div>
+<p>Теперь, когда образ подключен, можно переходить к непосредственному запуску. Нажмите кнопку «Запустить» (зеленая стрелка) в главном окне программы. Откроется отдельное окно, и начнется процесс загрузки, аналогичный включению нового компьютера.</p>
+
+<h2 id="процесс-установки-гостевой-ос-и-первичная-настройка">Процесс установки гостевой ОС и первичная настройка</h2>
+<p>После старта виртуальная машина считает данные с подключенного ISO-образа и запустит установщик операционной системы. Дальнейшие действия полностью повторяют стандартную процедуру установки Windows или Linux на физический компьютер: выбор языка, разметка диска и копирование файлов.</p>
+<p>При выборе диска для установки операционная система увидит тот самый виртуальный жесткий диск, который вы создали ранее. Если это чистый диск, просто выберите его и нажмите «Далее» или «Установить». Процесс может занять от 10 до 40 минут в зависимости от мощности вашего хост-компьютера и веса устанавливаемой ОС.</p>
+<div class="checklist-block"><h4>☑️ Чек-лист успешной установки</h4><label class="check-item"><input type="checkbox"><span>Выбран правильный ISO-образ</span></label><label class="check-item"><input type="checkbox"><span>Выделено достаточно RAM</span></label><label class="check-item"><input type="checkbox"><span>Подтверждена установка драйверов сети</span></label><label class="check-item"><input type="checkbox"><span>Завершена установка ОС в гостевой системе</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+<p>Во время установки система несколько раз может перезагрузиться. В этот момент важно не прерывать работу окна виртуальной машины. После завершения установки и первичной настройки (создание пользователя, выбор региона) вы попадете на рабочий стол гостевой системы.</p>
+<p>На этом этапе разрешение экрана, скорее всего, будет низким, а интерфейс — неадаптивным. Это происходит потому, что гостевая ОС пока не знает, как правильно взаимодействовать с виртуальным видеоадаптером и другими устройствами хоста. Для исправления ситуации необходима установка дополнений.</p>
+
+<h2 id="установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</h2>
+<p>Дополнения гостевой ОС — это набор драйверов и системных утилит, которые значительно улучшают взаимодействие между хостом и гостем. Они обеспечивают поддержку общего буфера обмена, перетаскивание файлов (Drag'n'Drop), автоматическое изменение разрешения экрана и улучшенную производительность графики.</p>
+<p>Для установки в меню окна работающей виртуальной машины выберите пункт «Устройства» → «Подключить образ диска Дополнений гостевой ОС». Внутри гостевой системы появится новый CD-диск. Откройте его через «Мой компьютер» (в Windows) или смонтируйте (в Linux) и запустите установочный скрипт.</p>
+<blockquote>
+<p>⚠️ Внимание: В гостевых системах Windows при установке дополнений экран может мигнуть и на несколько секунд стать черным. Это нормальная реакция видеодрайвера при переключении режимов. Дождитесь появления окна установщика.</p>
+</blockquote>
+<p>После завершения установки дополнений необходимо обязательно перезагрузить виртуальную машину. После рестарта вы заметите, что разрешение экрана автоматически подстроилось под размер окна, а курсор мыши стал свободно перемещаться между окнами без необходимости захвата клавишей.</p>
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Установка Guest Additions является обязательным шагом для комфортной работы, так как без них виртуальная машина работает в базовом режиме эмуляции с низкой производительностью графики.</p></div>
+
+<h2 id="настройка-общих-папок-и-сетевого-взаимодействия">Настройка общих папок и сетевого взаимодействия</h2>
+<p>Одной из главных задач виртуализации является обмен данными между основной и виртуальной системами. Простой способ — создание общей папки. В настройках виртуальной машины перейдите в раздел «Общие папки», добавьте новую папку и укажите путь к директории на вашем реальном компьютере.</p>
+<p>Поставьте галочку «Авто-подключение», чтобы папка появлялась в гостевой системе автоматически при каждом запуске. В Windows-госте она отобразится как сетевой диск, в Linux будет доступна по пути <code>/media/sf_ИмяПапки</code>. Для доступа могут потребоваться права администратора или добавление пользователя в соответствующую группу.</p>
+<p>Сетевые настройки по умолчанию работают в режиме NAT, что означает, что виртуальная машина имеет доступ в интернет через хост, но скрыта от внешней сети. Если вам нужно, чтобы виртуальная машина была видна другим устройствам в локальной сети, переключите тип подключения в настройках сети на «Сетевой мост» (Bridged Adapter).</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим NAT</th>
+<th>Сетевой мост</th>
+<th>Внутренняя сеть</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Доступ в Интернет</td>
+<td>Есть (через хост)</td>
+<td>Есть (прямой)</td>
+<td>Нет (только между VM)</td>
+</tr>
+<tr>
+<td>Видимость в LAN</td>
+<td>Скрыта</td>
+<td>Видна как отдельный ПК</td>
+<td>Видна только внутри VirtualBox</td>
+</tr>
+<tr>
+<td>Безопасность</td>
+<td>Высокая</td>
+<td>Средняя</td>
+<td>Максимальная изоляция</td>
+</tr>
+<tr>
+<td>Использование IP</td>
+<td>Отдельный от хоста</td>
+<td>Из той же подсети, что хост</td>
+<td>Задается вручную или DHCP</td>
+</tr>
+</tbody>
+</table>
+<p>Выбор режима сети зависит от ваших задач. Для простого серфинга достаточно NAT, для тестирования сетевых сервисов или серверов лучше подойдет Сетевой мост.</p>
+
+<h2 id="оптимизация-производительности-и-сохранение-состояния">Оптимизация производительности и сохранение состояния</h2>
+<p>Для комфортной работы важно правильно настроить количество процессоров. В разделе «Система» → «Процессор» можно увеличить количество ядер, выделяемых виртуальной машине. Однако не стоит выделять все доступные ядра, оставьте хотя бы одно-два для работы основной операционной системы, иначе компьютер может полностью «встать».</p>
+<p>VirtualBox позволяет делать снимки состояния системы (Snapshots). Это уникальная функция, позволяющая зафиксировать состояние машины в определенный момент времени. Если после установки какого-то софта или обновления система перестанет работать, вы сможете мгновенно откатиться к предыдущей точке восстановления.</p>
+<details class="faq-item"><summary>В чем разница между сохранением состояния и выключением?</summary><div class="faq-answer"><p>Сохранение состояния (Save State) оставляет все запущенные программы открытыми. При следующем запуске вы продолжите работу ровно с того места, где остановились. Выключение (Power Off) закрывает все программы и требует полной загрузки ОС при старте.</p></div></details>
+<p>Использование <strong>снапшотов</strong> особенно полезно при тестировании подозрительных программ или настройке сложных конфигураций. Делайте снимок перед каждым рискованным действием. Управление снимками доступно через меню «Машина» → «Снимки» или соответствующую кнопку на панели инструментов.</p>
+<p>Регулярно проверяйте обновления самого VirtualBox и пакета дополнений. Новые версии часто содержат исправления ошибок безопасности и улучшения совместимости с новыми версиями операционных систем. Следите за официальным сайтом разработчика для получения актуальной информации.</p>
+
+<details>
+<summary>Можно ли запустить VirtualBox на слабом компьютере?</summary>
+<p>Запуск возможен, но производительность будет низкой. Минимальные требования включают наличие хотя бы 4 ГБ оперативной памяти на хосте (2 ГБ для системы и 2 ГБ для виртуалки) и двухъядерного процессора. Для слабых ПК рекомендуется использовать легкие дистрибутивы Linux в качестве гостевой ОС вместо тяжелых Windows.</p>
+</details>
+
+<details>
+<summary>Почему виртуальная машина работает медленно?</summary>
+<p>Основные причины: не установлена технология виртуализации в BIOS (VT-x/AMD-V), выделено мало оперативной памяти, используется динамический диск на фрагментированном HDD или не установлены Дополнения гостевой ОС. Также скорость зависит от нагрузки на основной компьютер.</p>
+</details>
+
+<details>
+<summary>Как передать файл большого размера в виртуальную машину?</summary>
+<p>Самый быстрый способ — настроить общую папку. Drag'n'Drop может работать нестабильно с очень большими файлами. Альтернативный вариант — создать ISO-образ с данными и подключить его как виртуальный CD/DVD диск, либо использовать сетевое взаимодействие по FTP/SMB.</p>
+</details>
+
+<details>
+<summary>Безопасно ли запускать вирусы в VirtualBox?</summary>
+<p>Виртуальная машина изолирована от основной системы, но не на 100%. При правильной настройке (отключенные общие папки, режим сети NAT) риск минимален. Однако существуют вирусы, способные эксплуатировать уязвимости самой платформы виртуализации, поэтому соблюдайте осторожность и держите VirtualBox обновленным.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#подготовка-и-установка-oracle-vm-virtualbox">Подготовка и установка Oracle VM VirtualBox</a></li><li><a href="#настройка-параметров-новой-виртуальной-машины">Настройка параметров новой виртуальной машины</a></li><li><a href="#выбор-и-подключение-образа-операционной-системы">Выбор и подключение образа операционной системы</a></li><li><a href="#процесс-установки-гостевой-ос-и-первичная-настройка">Процесс установки гостевой ОС и первичная настройка</a></li><li><a href="#установка-дополнений-гостевой-ос-guest-additions">Установка дополнений гостевой ОС (Guest Additions)</a></li><li><a href="#настройка-общих-папок-и-сетевого-взаимодействия">Настройка общих папок и сетевого взаимодействия</a></li><li><a href="#оптимизация-производительности-и-сохранение-состояния">Оптимизация производительности и сохранение состояния</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/m/ma/mashina-na-avtomate-do-150000.html" class="related-card">Машина на автомате до 150000 рублей: топ надежных вариантов</a></li><li><a href="/articles/v/vi/vidy-poezdov-moskovskogo-metro.html" class="related-card">Виды поездов московского метро: от А до И</a></li><li><a href="/articles/s/st/stiralnaya-mashina-bosh-otklyuchaetsya-vo-vremya-stirki-prichiny.html" class="related-card">Стиральная машина Bosch отключается: причины и ремонт</a></li><li><a href="/articles/a/a0/a006mr97-aurus-kto-ezdit.html" class="related-card">А006МР97 АУРУС: Кто владеет и характеристики авто</a></li><li><a href="/articles/c/ch/chislo-sobstvennykh-legkovykh-avtomobilej-na-1000-chelovek-naseleniya.html" class="related-card">Число легковых авто на 1000 человек: анализ и статистика</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/m/ma/mashina-na-avtomate-do-150000.html" class="related-bottom-card"><span class="related-bottom-title">Машина на автомате до 150000 рублей: топ надежных вариантов</span><span class="related-bottom-desc">Какую машину с АКПП купить до 150000 рублей? Обзор надежных моделей, советы по выбору и скрытые дефе</span></a><a href="/articles/v/vi/vidy-poezdov-moskovskogo-metro.html" class="related-bottom-card"><span class="related-bottom-title">Виды поездов московского метро: от А до И</span><span class="related-bottom-desc">Полный гид по подвижному составу метро Москвы. Разбираем отличия вагонов А, Б, В, Г, Д, Е, Ж, И. Узн</span></a><a href="/articles/s/st/stiralnaya-mashina-bosh-otklyuchaetsya-vo-vremya-stirki-prichiny.html" class="related-bottom-card"><span class="related-bottom-title">Стиральная машина Bosch отключается: причины и ремонт</span><span class="related-bottom-desc">Почему стиральная машина Бош выключается сама? Полный разбор причин, кодов ошибок и методов диагност</span></a><a href="/articles/a/a0/a006mr97-aurus-kto-ezdit.html" class="related-bottom-card"><span class="related-bottom-title">А006МР97 АУРУС: Кто владеет и характеристики авто</span><span class="related-bottom-desc">А006МР97 АУРУС: кто ездит? Полный разбор автомобиля с данным номером, технические особенности Aurus </span></a><a href="/articles/c/ch/chislo-sobstvennykh-legkovykh-avtomobilej-na-1000-chelovek-naseleniya.html" class="related-bottom-card"><span class="related-bottom-title">Число легковых авто на 1000 человек: анализ и статистика</span><span class="related-bottom-desc">Глубокий анализ показателя: количество собственных легковых автомобилей на 1000 человек населения. С</span></a><a href="/articles/s/se/serial-2-kholma-otzyvy.html" class="related-bottom-card"><span class="related-bottom-title">Сериал 2 холма: отзывы, разбор сюжета и персонажей</span><span class="related-bottom-desc">Честные отзывы на сериал 2 холма. Анализ сюжета, сильные и слабые стороны, мнения зрителей о финале </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

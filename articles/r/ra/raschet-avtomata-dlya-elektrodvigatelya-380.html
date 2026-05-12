@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Расчет автомата для электродвигателя 380В: формулы и таблицы — Авто Гид</title>
+    <meta name="description" content="Как правильно рассчитать и выбрать автоматический выключатель для двигателя 380В. Формулы, пусковые токи, таблицы номиналов и защита от КЗ.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/r/ra/raschet-avtomata-dlya-elektrodvigatelya-380.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Расчет автомата для электродвигателя 380В: формулы и таблицы">
+    <meta property="og:description" content="Как правильно рассчитать и выбрать автоматический выключатель для двигателя 380В. Формулы, пусковые токи, таблицы номиналов и защита от КЗ.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/elektrika-i-svet/">Электрика и Свет</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Расчет автомата для электродвигателя 380В: формулы и таблицы</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Расчет автомата для электродвигателя 380В: пошаговая инструкция</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#определение-номинального-тока-двигателя">Определение номинального тока двигателя</a></li><li><a href="#учет-пусковых-токов-и-время-токовой-характеристики">Учет пусковых токов и время-токовой характеристики</a></li><li><a href="#выбор-теплового-расцепителя-и-перегрузки">Выбор теплового расцепителя и перегрузки</a></li><li><a href="#защита-от-короткого-замыкания">Защита от короткого замыкания</a></li><li><a href="#мотор-автоматы-против-связки-автомат-контактор">Мотор-автоматы против связки «Автомат + Контактор»</a></li><li><a href="#частые-ошибки-при-монтаже-и-эксплуатации">Частые ошибки при монтаже и эксплуатации</a></li><li><a href="#вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+
+<p>Правильный выбор автоматического выключателя для трехфазного электродвигателя — это критически важный этап проектирования электропроводки, который напрямую влияет на безопасность всего оборудования. Ошибка в расчетах может привести к двум сценариям: либо автомат будет постоянно выбивать при запуске, останавливая производственный процесс, либо он не сработает при перегрузке, что грозит перегревом обмоток и дорогостоящим ремонтом. В данной статье мы разберем физику процесса, формулы и нюансы подбора защиты для асинхронных двигателей, работающих от сети 380 вольт.</p>
+
+<p>Основная сложность заключается в том, что электродвигатель в момент пуска потребляет ток, в 5–7 раз превышающий его номинальное значение. Обычный автомат защиты, подобранный просто по мощности, воспримет этот скачок как короткое замыкание и мгновенно отключит цепь. Именно поэтому стандартные бытовые алгоритмы подбора здесь не работают, и требуется специализированный подход с учетом <strong>пусковых токов</strong> и <strong>тепловых характеристик</strong>.</p>
+
+<p>Для начала вам необходимо точно знать паспортные данные вашего оборудования. Обычно они указаны на металлической бирке, закрепленной на корпусе <em>асинхронного двигателя</em>. Нас интересуют такие параметры, как номинальная мощность (кВт), напряжение (380В или 220/380В), коэффициент полезного действия (КПД) и, самое главное, коэффициент мощности (cos φ). Без этих цифр дальнейшие вычисления будут носить исключительно гадательный характер.</p>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> Никогда не подбирайте автоматический выключатель «на глаз» или просто по мощности в киловаттах без учета пускового тока. Использование автоматов с характеристикой B для мощных двигателей гарантированно приведет к ложным срабатываниям в момент старта.</p>
+</blockquote>
+
+<p>Расчет начинается с определения номинального тока двигателя ($I_{ном}$), который протекает по обмоткам в рабочем режиме. Для трехфазной сети 380В используется классическая формула, учитывающая мощность, напряжение, КПД и косинус фи. Подставив значения из паспорта, вы получите базовую цифру, от которой будем отталкиваться при выборе номинала автомата. </p>
+
+<h2 id="определение-номинального-тока-двигателя">Определение номинального тока двигателя</h2>
+
+<p>Первым шагом является точный расчет рабочего тока. Для трехфазных двигателей переменного тока применяется следующая формула: $I = P / (1.73 \times U \times \cos\phi \times \eta)$. Здесь $P$ — мощность в Ваттах, $U$ — напряжение (380В), $\cos\phi$ — коэффициент мощности, а $\eta$ — КПД. Если данные о КПД и косинусе фи отсутствуют, для грубой прикидки часто используют упрощенное правило: 1 кВт мощности примерно равен 2 Амперам тока, но для профессионального монтажа такой метод недопустим.</p>
+
+<p>Рассмотрим пример для двигателя мощностью 5.5 кВт. Предположим, что $\cos\phi = 0.85$, а $\eta = 0.8$. Переводим киловатты в ватты (5500 Вт) и подставляем в формулу. Получаем значение около 11.5 Ампер. Именно этот ток будет протекать по кабелю и контактам автомата в нормальном режиме работы. На основе этой цифры выбирается сечение кабеля, но не сам автомат, так как впереди у нас пусковой режим.</p>
+
+<p>Важно учитывать, что реальный ток может отличаться от расчетного из-за качества электроэнергии в сети. Если напряжение в вашей сети часто просаживается ниже 380В, то ток потребления двигателя возрастет для компенсации потери мощности. Это может привести к нагреву <strong>теплового расцепителя</strong> и ложному отключению, если запас по току будет минимальным.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Используйте токоизмерительные клещи для замера реального тока работающего двигателя под нагрузкой. Паспортные данные могут отличаться от реальности на 5-10% из-за износа подшипников или изменения характеристик сети.</p></div>
+
+<h2 id="учет-пусковых-токов-и-время-токовой-характеристики">Учет пусковых токов и время-токовой характеристики</h2>
+
+<p>Самый ответственный момент — выбор время-токовой характеристики (ВТХ) автоматического выключателя. Для электродвигателей категорически не подходят автоматы с характеристикой «B» (ток мгновенного расцепления 3-5$I_{ном}$). При пуске двигатель кратковременно потребляет ток, кратный 6-8 номиналам, что для характеристики «B» является коротким замыканием.</p>
+
+<p>Для защиты двигателей 380В стандартом являются автоматы с характеристикой «D» (ток мгновенного расцепления 10-14$I_{ном}$) или, в некоторых случаях, «C» (5-10$I_{ном}$), если пуск легкий и недолгий. Характеристика «D» позволяет автомату «проскочить» пусковой бросок тока без срабатывания электромагнитного расцепителя, обеспечивая запуск ротора.</p>
+
+<p>Рассмотрим логику выбора на примере нашего 11.5-амперного двигателя. Пусковой ток может достигать $11.5 \times 7 = 80.5$ Ампер. Автомат с характеристикой «C» с номиналом 16А сработает при токе $16 \times 5 = 80$А. Мы находимся на грани срабатывания. Поэтому часто приходится брать автомат с большим номиналом или строго характеристику «D», чтобы обеспечить надежный старт без ложных отключений.</p>
+
+<details class="faq-item"><summary>Почему нельзя ставить автомат слишком большим номиналом?</summary><div class="faq-answer"><p>Если вы возьмете автомат с большим запасом (например, 32А вместо 16А) ради избежания ложных пусков, вы потеряете защиту от перегрузки. При заклинивании ротора ток вырастет, скажем, до 25А. Двигатель сгорит, а автомат даже не щелкнет, так как для него 25А — это рабочий режим.</p></div></details>
+
+<h2 id="выбор-теплового-расцепителя-и-перегрузки">Выбор теплового расцепителя и перегрузки</h2>
+
+<p>Номинальный ток самого автоматического выключателя ($I_n$) выбирается исходя из рабочего тока двигателя ($I_{дв}$). Согласно правилам, $I_n$ должен быть больше или равен $I_{дв}$. Однако, чтобы избежать ложных срабатываний от теплового расцепителя при длительной работе на пределе, рекомендуется брать автомат с номиналом на 10-15% выше расчетного тока двигателя.</p>
+
+<p>Тепловой расцепитель (билическая пластина) отвечает за защиту от перегрузки. Он инерционен и не реагирует на кратковременные скачки, но надежно отключает цепь при длительном превышении тока. Важно понимать, что автомат защищает в первую очередь кабель, а не двигатель. Для полноценной защиты самого мотора от перегрузки и работы на «две фазы» (перекос фаз) лучше использовать отдельное <strong>тепловое реле</strong> или мотор-автомат.</p>
+
+<p>При выборе учитывайте температуру окружающей среды. Если двигатель и автомат находятся в жарком цеху, тепловая защита сработает раньше. В таких случаях существуют температурные коэффициенты пересчета, но на практике часто просто увеличивают номинал автомата на одну ступень вверх, контролируя нагрев кабеля.</p>
+
+<div class="poll-widget" id="poll-9268f112"><div class="poll-widget-question">📊 С какой проблемой вы сталкивались чаще всего при запуске двигателей?</div><div class="poll-widget-option" data-poll="9268f112" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Автомат выбивает сразу при пуске</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="9268f112" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Автомат греется и отключает через время</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="9268f112" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Двигатель гудит, но не крутится</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="9268f112" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Все работает нормально</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="защита-от-короткого-замыкания">Защита от короткого замыкания</h2>
+
+<p>Электромагнитный расцепитель внутри автомата отвечает за мгновенное отключение при коротком замыкании (КЗ). Для двигателя 380В важно, чтобы ток отсечки автомата был выше пускового тока, но ниже предельной токовой способности кабеля и самого двигателя. Это тонкий баланс, который обеспечивается правильным выбором характеристики (C или D).</p>
+
+<p>Если автомат подобран неверно и его ток отсечки слишком низок, он будет воспринимать пуск двигателя как аварию. Если слишком высок — при реальном коротком замыкании в обмотках или клеммной коробке автомат может не сработать мгновенно, что приведет к разрушительным последствиям и пожару. Поэтому таблица ниже является обязательной к изучению.</p>
+
+<table>
+<thead>
+<tr>
+<th>Мощность (кВт)</th>
+<th>Ток двигателя (А)</th>
+<th>Пусковой ток (А, x7)</th>
+<th>Рекомендуемый автомат (А)</th>
+<th>Характеристика</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.5</td>
+<td>3.2</td>
+<td>22.4</td>
+<td>6-10</td>
+<td>C или D</td>
+</tr>
+<tr>
+<td>3.0</td>
+<td>6.5</td>
+<td>45.5</td>
+<td>10-13</td>
+<td>C или D</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td>11.5</td>
+<td>80.5</td>
+<td>16-20</td>
+<td>D</td>
+</tr>
+<tr>
+<td>7.5</td>
+<td>15.0</td>
+<td>105.0</td>
+<td>20-25</td>
+<td>D</td>
+</tr>
+<tr>
+<td>11.0</td>
+<td>22.0</td>
+<td>154.0</td>
+<td>25-32</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+
+<p>Обратите внимание на столбец с характеристикой. Для мощностей до 3-4 кВт часто хватает характеристики «C», но начиная с 5.5 кВт и выше, риск ложного срабатывания резко возрастает, и переход на характеристику «D» становится необходимостью. Данные в таблице приведены для стандартных условий эксплуатации.</p>
+
+<h2 id="мотор-автоматы-против-связки-автомат-контактор">Мотор-автоматы против связки «Автомат + Контактор»</h2>
+
+<p>В современной автоматизации все чаще используются мотор-автоматы (автоматы защиты двигателя), которые объединяют в одном корпусе функции защиты от КЗ, перегрузки и ручного выключателя. Они имеют более точную настройку теплового расцепителя, которую можно регулировать в небольших пределах прямо на корпусе.</p>
+
+<p>Классическая схема «Автомат + Контактор + Тепловое реле» более громоздка, но гибка. Она позволяет реализовать сложные схемы управления (реверс, пуск звезда-треугольник) и дистанционное управление. Мотор-автомат идеален для прямых пусков насосов, вентиляторов и компрессоров, где не требуется частое включение/выключение.</p>
+
+<p>При использовании мотор-автоматов важно правильно выставить уставку тока. Она должна соответствовать току, указанному на бирке двигателя. Это избавляет от необходимости подбирать «плавающий» номинал обычного автомата. Мотор-автомат <em>ABB MS132</em> или <em>IEK ПДЭ</em> — типичные примеры таких устройств.</p>
+
+<blockquote>
+<p>⚠️ <strong>Внимание:</strong> Мотор-автоматы не предназначены для частых коммутаций под нагрузкой. Если вам нужно часто включать и выключать двигатель, обязательно используйте контактор, а мотор-автомат оставьте только для защиты цепи.</p>
+</blockquote>
+
+<div class="checklist-block"><h4>☑️ Проверка перед первым пуском</h4><label class="check-item"><input type="checkbox"><span>Затяжка всех клемм в автомате и двигателе</span></label><label class="check-item"><input type="checkbox"><span>Проверка сопротивления изоляции мегаомметром</span></label><label class="check-item"><input type="checkbox"><span>Свободное проворачивание вала рукой</span></label><label class="check-item"><input type="checkbox"><span>Соответствие схемы подключения (Звезда/Треугольник)</span></label><label class="check-item"><input type="checkbox"><span>Проверка фазировки (направление вращения)</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<h2 id="частые-ошибки-при-монтаже-и-эксплуатации">Частые ошибки при монтаже и эксплуатации</h2>
+
+<p>Одной из распространенных ошибок является использование старых автоматов серии <em>А3700</em> или <em>АВМ</em> без ревизии. Их тепловые расцепители могли «устать» за десятилетия работы и не обеспечивать заявленную защиту. Современная модульная автоматика надежнее и компактнее, но требует правильного монтажа.</p>
+
+<p>Еще одна ошибка — игнорирование перекоса фаз. Если на одной из фаз напряжение значительно ниже (например, 350В против 380В), ток в этой фазе возрастет, что приведет к перегреву двигателя. Обычный трехполюсный автомат может не сработать сразу, так как ток в других фазах будет в норме, но двигатель выйдет из строя.</p>
+
+<p>Также часто забывают про качество соединения. Плохой контакт в клеммах автомата вызывает локальный нагрев, который передается на соседние полюса и может вызвать ложное срабатывание теплового расцепителя. Используйте динамометрические отвертки для затяжки клемм согласно паспорту устройства.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Главное правило: Автомат защищает кабель от перегрева и КЗ. Для защиты самого двигателя от перегрузки (заклинивания) предпочтительнее использовать специализированное тепловое реле или мотор-автомат с точной уставкой.</p></div>
+
+<h2 id="вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</h2>
+
+<details>
+<summary>Можно ли использовать однофазный автомат для трехфазного двигателя?</summary>
+<p>Категорически нет. Для трехфазного двигателя 380В необходим трехполюсный (3P) или четырехполюсный (4P) автомат. Использование одного или двух полюсов не обеспечит одновременного разрыва всех фаз при аварии, что приведет к работе двигателя на двух фазах и его сгоранию.</p>
+</details>
+
+<details>
+<summary>Почему автомат выбивает только в момент запуска?</summary>
+<p>Это классический признак неверно выбранной время-токовой характеристики. Скорее всего, у вас стоит автомат типа «B» или «C» с низким номиналом, который воспринимает пусковой ток как короткое замыкание. Решение: заменить автомат на модель с характеристикой «D» или увеличить номинал, проверив сечение кабеля.</p>
+</details>
+
+<details>
+<summary>Нужно ли ставить автомат перед частотным преобразователем (ЧП)?</summary>
+<p>Да, автоматический выключатель перед ЧП обязателен. Он защищает входные цепи преобразователя и питающий кабель от короткого замыкания. Однако для защиты самого двигателя, подключенного к выходу ЧП, этот автомат не подходит — защиту двигателя в этом случае программирует сам частотник.</p>
+</details>
+
+<details>
+<summary>Как влияет температура в щите на работу автомата?</summary>
+<p>Тепловые расцепители зависят от температуры окружающей среды. Если щит стоит в жарком помещении или рядом с другими греющимися приборами, автомат может отключаться при токе ниже номинального. В таких случаях применяют автоматы с температурной компенсацией или увеличивают номинал с учетом поправочных коэффициентов.</p>
+</details>
+
+<details>
+<summary>Можно ли защитить двигатель только тепловым реле без автомата?</summary>
+<p>Нет. Тепловое реле не может разорвать цепь при коротком замыкании — оно просто слишком инерционно и не имеет достаточной отключающей способности. Перед тепловым реле всегда должен стоять автоматический выключатель или предохранители для защиты от КЗ.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#определение-номинального-тока-двигателя">Определение номинального тока двигателя</a></li><li><a href="#учет-пусковых-токов-и-время-токовой-характеристики">Учет пусковых токов и время-токовой характеристики</a></li><li><a href="#выбор-теплового-расцепителя-и-перегрузки">Выбор теплового расцепителя и перегрузки</a></li><li><a href="#защита-от-короткого-замыкания">Защита от короткого замыкания</a></li><li><a href="#мотор-автоматы-против-связки-автомат-контактор">Мотор-автоматы против связки «Автомат + Контактор»</a></li><li><a href="#частые-ошибки-при-монтаже-и-эксплуатации">Частые ошибки при монтаже и эксплуатации</a></li><li><a href="#вопросы-и-ответы-faq">Вопросы и ответы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/u/us/ustanovka-razmykatelya-massy-na-avto.html" class="related-card">Установка размыкателя массы на авто: схема, выбор и монтаж</a></li><li><a href="/articles/k/ka/kak-usilit-svet-far-na-avto.html" class="related-card">Как усилить свет фар на авто: 8 проверенных способов (2026)</a></li><li><a href="/articles/n/no/nominalnaya-otklyuchayushchaya-sposobnost-ka-chto-eto.html" class="related-card">Номинальная отключающая способность КА: что это такое</a></li><li><a href="/articles/m/ma/mashina-s-farami-glazami.html" class="related-card">Машина с фарами глазами: почему горят и как устранить</a></li><li><a href="/articles/a/az/azy-avtoelektrika-dlya-nachinayushchikh.html" class="related-card">Азы автоэлектрики для начинающих: с чего начать и как не навредить</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/u/us/ustanovka-razmykatelya-massy-na-avto.html" class="related-bottom-card"><span class="related-bottom-title">Установка размыкателя массы на авто: схема, выбор и монтаж</span><span class="related-bottom-desc">Подробная инструкция по установке размыкателя массы на автомобиль. Выбор устройства, схемы подключен</span></a><a href="/articles/k/ka/kak-usilit-svet-far-na-avto.html" class="related-bottom-card"><span class="related-bottom-title">Как усилить свет фар на авто: 8 проверенных способов (2026)</span><span class="related-bottom-desc">Слабый свет фар? Узнайте, как улучшить освещение без штрафов: от регулировки до установки LED. Пошаг</span></a><a href="/articles/n/no/nominalnaya-otklyuchayushchaya-sposobnost-ka-chto-eto.html" class="related-bottom-card"><span class="related-bottom-title">Номинальная отключающая способность КА: что это такое</span><span class="related-bottom-desc">Что такое номинальная отключающая способность КА автомата? Объясняем значение параметра, стандарты I</span></a><a href="/articles/m/ma/mashina-s-farami-glazami.html" class="related-bottom-card"><span class="related-bottom-title">Машина с фарами глазами: почему горят и как устранить</span><span class="related-bottom-desc">Разбираем причины эффекта глаз на фарах. Почему машина моргает, как устранить запотевание и окислени</span></a><a href="/articles/a/az/azy-avtoelektrika-dlya-nachinayushchikh.html" class="related-bottom-card"><span class="related-bottom-title">Азы автоэлектрики для начинающих: с чего начать и как не навредить</span><span class="related-bottom-desc">Пошаговое руководство по основам автоэлектрики: инструменты, схемы, диагностика и ремонт для новичко</span></a><a href="/articles/c/ch/chto-takoe-avtosvet-v-avtomobile.html" class="related-bottom-card"><span class="related-bottom-title">Что такое автосвет: типы, настройки и регулировка фар</span><span class="related-bottom-desc">Полный гид по автосвету: виды ламп, правила регулировки, настройки ближнего света и выбор оптимально</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

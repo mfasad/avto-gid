@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>Интерлизинг: реализация залогового имущества и авто — Авто Гид</title>
+    <meta name="description" content="Как проходит реализация залогового имущества в Интерлизинге. Процедура продажи, аукционы, права лизингополучателя и способы выкупа.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/i/in/interlizing-realizatsiya-zalogovogo-imushchestva.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Интерлизинг: реализация залогового имущества и авто">
+    <meta property="og:description" content="Как проходит реализация залогового имущества в Интерлизинге. Процедура продажи, аукционы, права лизингополучателя и способы выкупа.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/pokupka-i-prodazha/">Покупка и Продажа</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Интерлизинг: реализация залогового имущества и авто</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>Реализация залогового имущества в Интерлизинге: пошаговый алгоритм</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#юридические-основания-для-изъятия-техники">Юридические основания для изъятия техники</a></li><li><a href="#процедура-изъятия-и-оформления-документации">Процедура изъятия и оформления документации</a></li><li><a href="#оценка-стоимости-и-подготовка-к-продаже">Оценка стоимости и подготовка к продаже</a></li><li><a href="#методы-реализации-аукционы-и-прямые-продажи">Методы реализации: аукционы и прямые продажи</a></li><li><a href="#финансовые-расчеты-и-распределение-выручки">Финансовые расчеты и распределение выручки</a></li><li><a href="#права-лизингополучателя-и-способы-защиты">Права лизингополучателя и способы защиты</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>Ситуация, когда лизингополучатель не справляется с графиком платежей, часто приводит к необходимости <strong>реализации залогового имущества</strong>. В контексте деятельности компании «Интерлизинг» этот процесс строго регламентирован законодательством РФ и условиями договора финансовой аренды. Понимание механизмов изъятия и последующей продажи техники позволяет участникам рынка минимизировать финансовые потери.</p>
+
+<p>В данной статье мы детально разберем, как происходит процедура изъятия, какие права есть у должника и как формируется итоговая стоимость транспортного средства при продаже третьим лицам. <mark>Ключевым моментом является то, что реализация начинается только после официальной расторжения договора лизинга в одностороннем порядке.</mark> Это юридически значимое действие, без которого любые попытки изъятия техники являются незаконными.</p>
+
+<p>Для владельцев бизнеса и частных лиц важно осознавать разницу между временной задержкой платежа и системным дефолтом. <em>Интерлизинг</em>, как крупный игрок рынка, имеет отлаженные юридические и технические департаменты для работы с проблемной дебиторской задолженностью. Однако, даже в критической ситуации у клиента остаются рычаги влияния на процесс.</p>
+
+<h2 id="юридические-основания-для-изъятия-техники">Юридические основания для изъятия техники</h2>
+<p>Процесс <strong>реализации залогового имущества</strong> не начинается спонтанно. Ему предшествует длительный период накопления просроченной задолженности. Лизингодатель обязан уведомить клиента о нарушении условий договора. Обычно это происходит после пропуска двух и более платежей подряд, что прописано в стандартных условиях <em>Интерлизинга</em>.</p>
+
+<p>С юридической точки зрения, основанием служит статья 619 ГК РФ, позволяющая расторгнуть договор досрочно по требованию арендодателя. Важно отметить, что просто так забрать машину сотрудники компании не могут. Требуется либо добровольная передача, либо решение суда, либо действие специального пункта в договоре, позволяющего <strong>самовольное изъятие</strong> при определенных условиях (например, угон или попытка скрыть имущество).</p>
+
+<blockquote>⚠️ Внимание: Самовольное изъятие техники без уведомления и акта приема-передачи может быть расценено правоохранительными органами как самоуправство или даже кража, если не соблюдены процессуальные нормы, прописанные в договоре.</blockquote>
+
+<p>Если лизингополучатель игнорирует претензии, <em>Интерлизинг</em> направляет официальное уведомление о расторжении договора. С момента получения этого документа (или с даты, указанной в нем) начисление лизинговых платежей прекращается, но начинает течь срок для возврата имущества. Именно с этого момента стартует механизм подготовки к <strong>реализации</strong>.</p>
+
+<div class="poll-widget" id="poll-db2becd8"><div class="poll-widget-question">📊 На какой стадии находится ваш договор лизинга?</div><div class="poll-widget-option" data-poll="db2becd8" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Только планирую сделку</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="db2becd8" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Есть небольшие просрочки</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="db2becd8" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Получено уведомление о расторжении</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="db2becd8" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Имущество уже изъято</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+
+<h2 id="процедура-изъятия-и-оформления-документации">Процедура изъятия и оформления документации</h2>
+<p>После принятия решения об изъятии, служба безопасности и юридический отдел <em>Интерлизинга</strong> инициируют выезд на местонахождение техники. Целью является составление акта осмотра и фактическое изъятие ключей и документов. На этом этапе крайне важно присутствие владельца или его доверенного лица.</p>
+
+<p>В процессе оформления фиксируется техническое состояние автомобиля. Это необходимо для оценки остаточной стоимости и выявления возможных повреждений, которые не были зафиксированы ранее. <strong>Акт приема-передачи</strong> становится главным документом, подтверждающим возврат имущества лизингодателю.</p>
+
+<p>Если клиент отказывается пускать представителей компании или скрывает местонахождение техники, процесс переходит в судебную плоскость или подключаются частные охранные предприятия (в рамках закона). В этом случае <strong>реализация залогового имущества</strong> может затянуться на несколько месяцев.</p>
+
+<div class="checklist-block"><h4>☑️ Документы для проверки при изъятии</h4><label class="check-item"><input type="checkbox"><span>Паспорт представителя лизингодателя</span></label><label class="check-item"><input type="checkbox"><span>Доверенность на изъятие техники</span></label><label class="check-item"><input type="checkbox"><span>Оригинал договора лизинга (копия)</span></label><label class="check-item"><input type="checkbox"><span>Бланк акта приема-передачи</span></label><label class="check-item"><input type="checkbox"><span>Протокол осмотра технического состояния</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<p>Стоит учитывать, что вместе с автомобилем изымаются все комплекты ключей, сервисные книжки и вторые комплекты документов. Отсутствие любого элемента может быть расценено как ущерб, который будет включен в итоговый расчет задолженности перед <strong>реализацией</em>.</p>
+
+<h2 id="оценка-стоимости-и-подготовка-к-продаже">Оценка стоимости и подготовка к продаже</h2>
+<p>После того как техника оказалась на стоянке <em>Интерлизинга</em>, начинается этап оценки. Это критически важный момент для формирования цены будущей продажи. Оценку проводят независимые эксперты или внутренний департамент оценки, опираясь на рыночные данные и состояние конкретного экземпляра.</p>
+
+<p>В расчет берутся множество факторов: год выпуска, пробег, наличие повреждений кузова и салона, техническая исправность узлов и агрегатов. <strong>Рыночная стоимость</strong> на момент продажи может существенно отличаться от балансовой стоимости, указанной в бухгалтерии лизинговой компании.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр оценки</th>
+<th>Влияние на цену</th>
+<th>Комментарий эксперта</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Техническое состояние</td>
+<td>Высокое</td>
+<td>Требуется диагностика двигателя и КПП</td>
+</tr>
+<tr>
+<td>Внешний вид (ЛКП)</td>
+<td>Среднее</td>
+<td>Царапины и вмятины снижают привлекательность</td>
+</tr>
+<tr>
+<td>Комплектация</td>
+<td>Низкое</td>
+<td>Отсутствие запасного колеса критично</td>
+</tr>
+<tr>
+<td>Юридическая чистота</td>
+<td>Критичное</td>
+<td>Проверка на угон и залоги в других банках</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если выявляются скрытые дефекты, стоимость может быть скорректирована в меньшую сторону. <em>Интерлизинг</em> заинтересован в максимальной выручке, чтобы покрыть убытки, поэтому предпродажная подготовка (мойка, мелкий ремонт) часто проводится за счет лизингополучателя, если это предусмотрено договором.</p>
+
+<details class="faq-item"><summary>Как происходит торг на аукционе?</summary><div class="faq-answer"><p>Торг проходит в несколько этапов. Начальная цена устанавливается на уровне 80-90% от оценочной стоимости. Если в первый день продаж покупателей нет, цена снижается на 10-15% каждые 5-7 дней до тех пор, пока не появится покупатель или цена не достигнет минимального порога.</p></div></details>
+
+<h2 id="методы-реализации-аукционы-и-прямые-продажи">Методы реализации: аукционы и прямые продажи</h2>
+<p>Основным инструментом продажи изъятой техники являются специализированные торговые площадки и аукционы. <em>Интерлизинг</em>, как и многие крупные компании, использует прозрачные механизмы продаж, чтобы избежать обвинений в сговоре или занижении цены. <strong>Реализация залогового имущества</strong> через открытые торги позволяет получить рыночную цену.</p>
+
+<ul>
+<li>🏷️ <strong>Электронные торги:</strong> проводятся на специализированных площадках, где любой желающий может подать заявку и предложить свою цену.</li>
+<li>🤝 <strong>Прямая продажа:</strong> возможна, если есть конкретный покупатель, готовый заплатить оценочную стоимость без проведения длительного аукциона.</li>
+<li>🔨 <strong>Комиссионная продажа:</strong> передача техники дилерским центрам для реализации через их каналы сбыта за комиссионное вознаграждение.</li>
+</ul>
+
+<p>Преимущество аукционного метода в его прозрачности. Все этапы торгов фиксируются, и у бывшего лизингополучателя есть возможность отслеживать, за сколько была продана его бывшая собственность. Это важно для финального <strong>финансового расчета</strong>.</p>
+
+<p>Прямые продажи часто применяются к уникальной или дорогостоящей спецтехнике, где круг покупателей узок. В случае с легковыми автомобилями массового сегмента <em>Интерлизинг</em> предпочитает массовые онлайн-аукционы для ускорения процесса оборачиваемости активов.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Следите за лотами на официальных площадках лизинговой компании. Часто технику можно купить дешевле рыночной стоимости именно на этапе реализации залогового имущества, так как цель лизингодателя — быстрый возврат денег, а не максимальная прибыль.</p></div>
+
+<h2 id="финансовые-расчеты-и-распределение-выручки">Финансовые расчеты и распределение выручки</h2>
+<p>После успешной продажи техники начинается самый сложный этап — распределение вырученных средств. Деньги от <strong>реализации</strong> идут в первую очередь на погашение задолженности перед лизингодателем. Сюда входит тело долга, накопленные пени, штрафы за просрочку и расходы на содержание и продажу автомобиля.</p>
+
+<p>Формула расчета выглядит следующим образом: Выручка минус (Остаток долга + Штрафы + Расходы на реализацию) = Итоговый баланс. Если сумма положительная, остаток возвращается лизингополучателю. Если отрицательная — долг сохраняется, и <em>Интерлизинг</em> вправе взыскать разницу через суд.</p>
+
+<blockquote>⚠️ Внимание: Расходы на хранение техники на штрафстоянке и расходы на проведение торгов могут быть весьма существенными. Они полностью ложатся на плечи должника и вычитаются из итоговой суммы продажи.</blockquote>
+
+<p>Многие ошибочно полагают, что продажа машины автоматически закрывает все вопросы. Это не так. Если вырученных денег не хватило на покрытие долга, у клиента остается <strong>кредиторская задолженность</strong>. В этом случае лизинговая компания может инициировать процедуру банкротства физического или юридического лица.</p>
+
+<h2 id="права-лизингополучателя-и-способы-защиты">Права лизингополучателя и способы защиты</h2>
+<p>Даже в ситуации изъятия у клиента есть права. Во-первых, лизингополучатель имеет право присутствовать при осмотре и оценке техники. Во-вторых, он может оспорить оценочную стоимость, если считает ее заниженной, через независимую экспертизу. <strong>Реализация залогового имущества</strong> не должна нарушать законные интересы должника.</p>
+
+<p>Также существует право на выкуп. На любом этапе до момента продажи третьему лицу лизингополучатель может погасить задолженность и вернуть технику. Иногда <em>Интерлизинг</em> идет навстречу и предлагает реструктуризацию долга, чтобы избежать costly процедуры изъятия и продажи.</p>
+
+<ul>
+<li>📝 Право на получение копий всех актов и протоколов осмотра.</li>
+<li>⚖️ Право на судебное оспаривание суммы задолженности перед продажей.</li>
+<li>💰 Право на получение остатка средств после погашения долга и расходов.</li>
+</ul>
+
+<p>Важно вести переписку с лизинговой компанией в письменном виде. Все обещания менеджеров «подождать» или «не начислять пени» должны быть зафиксированы в <strong>дополнительных соглашениях</strong>. Устные договоренности в сфере лизинга не имеют юридической силы.</p>
+
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Самый эффективный способ сохранить актив — не допускать просрочки более 30 дней. На ранней стадии диалог с лизингодателем гораздо эффективнее, чем борьба с уже запущенным механизмом реализации.</p></div>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли вернуть машину после изъятия, но до продажи?</summary>
+<p>Да, это возможно. Если вы погасите всю сумму задолженности, включая штрафы и расходы на хранение/оценку, до момента заключения договора купли-продажи с третьим лицом, <em>Интерлизинг</em> обязан вернуть вам технику. Однако сумма для возврата может быть существенно выше первоначального долга.</p>
+</details>
+
+<details>
+<summary>Что будет, если машина продана дешевле, чем мой долг?</summary>
+<p>Образовавшаяся разница становится вашим обычным денежным долгом перед лизинговой компанией. <em>Интерлизинг</em> будет требовать ее погашения в добровольном порядке, а в случае отказа — подаст иск в суд. После получения исполнительного листа дело может быть передано судебным приставам.</p>
+</details>
+
+<details>
+<summary>Как долго длится процедура реализации?</summary>
+<p>С момента изъятия до продажи обычно проходит от 1 до 3 месяцев. Этот срок включает в время на оценку, выставление на торги и ожидание покупателя. Если техника ликвидная (популярная модель), процесс может занять всего пару недель.</p>
+</details>
+
+<details>
+<summary>Имею ли я право купить свою же машину на аукционе?</summary>
+<p>Формально закон не запрещает бывшему лизингополучателю участвовать в торгах. Однако на практике это редкость, так как для этого нужно сначала погасить долг (или иметь средства на покупку), а затем выкупать технику. Проще договориться о прямом выкупе до аукциона.</p>
+</details>
+
+<details>
+<summary>Кто несет риски повреждения машины на стоянке лизингодателя?</summary>
+<p>С момента подписания акта приема-передачи и фактического нахождения машины на охраняемой стоянке <em>Интерлизинга</em>, ответственность за сохранность несет лизингодатель. Однако, если повреждения возникли до изъятия, они будут зафиксированы в акте и их стоимость вычтут из выручки.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#юридические-основания-для-изъятия-техники">Юридические основания для изъятия техники</a></li><li><a href="#процедура-изъятия-и-оформления-документации">Процедура изъятия и оформления документации</a></li><li><a href="#оценка-стоимости-и-подготовка-к-продаже">Оценка стоимости и подготовка к продаже</a></li><li><a href="#методы-реализации-аукционы-и-прямые-продажи">Методы реализации: аукционы и прямые продажи</a></li><li><a href="#финансовые-расчеты-и-распределение-выручки">Финансовые расчеты и распределение выручки</a></li><li><a href="#права-лизингополучателя-и-способы-защиты">Права лизингополучателя и способы защиты</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/a/av/avto-s-probegom-do-600000-rublej.html" class="related-card">Авто с пробегом до 600000 рублей: топ моделей 2026</a></li><li><a href="/articles/m/ma/marki-bolshikh-mashin-inomarok.html" class="related-card">Марки больших иномарок: обзор моделей и классификация</a></li><li><a href="/articles/p/pr/proverka-komplektatsii-mashiny-po-vin-kodu.html" class="related-card">Проверка комплектации по VIN коду: расшифровка опций</a></li><li><a href="/articles/b/ba/baza-gibdd-proverka-avto-po-gos-nomeru-besplatno-bez-registratsii.html" class="related-card">Проверка авто по госномеру в базе ГИБДД: бесплатно и без регистрации</a></li><li><a href="/articles/v/vy/vypuskaetsya-li-sejchas-oka.html" class="related-card">Выпускается ли сейчас Ока: история, и современность</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/a/av/avto-s-probegom-do-600000-rublej.html" class="related-bottom-card"><span class="related-bottom-title">Авто с пробегом до 600000 рублей: топ моделей 2026</span><span class="related-bottom-desc">Какой автомобиль с пробегом до 600000 рублей купить в 2026 году? Обзор надежных моделей, скрытых деф</span></a><a href="/articles/m/ma/marki-bolshikh-mashin-inomarok.html" class="related-bottom-card"><span class="related-bottom-title">Марки больших иномарок: обзор моделей и классификация</span><span class="related-bottom-desc">Полный гид по маркам больших иномарок. Сравнение полноразмерных SUV, седанов и минивэнов. Технически</span></a><a href="/articles/p/pr/proverka-komplektatsii-mashiny-po-vin-kodu.html" class="related-bottom-card"><span class="related-bottom-title">Проверка комплектации по VIN коду: расшифровка опций</span><span class="related-bottom-desc">Как узнать комплектацию машины по VIN коду. Подробная инструкция по проверке, расшифровка кодов опци</span></a><a href="/articles/b/ba/baza-gibdd-proverka-avto-po-gos-nomeru-besplatno-bez-registratsii.html" class="related-bottom-card"><span class="related-bottom-title">Проверка авто по госномеру в базе ГИБДД: бесплатно и без регистрации</span><span class="related-bottom-desc">Как проверить историю автомобиля по госномеру через базу ГИБДД онлайн? Легальные способы бесплатной </span></a><a href="/articles/v/vy/vypuskaetsya-li-sejchas-oka.html" class="related-bottom-card"><span class="related-bottom-title">Выпускается ли сейчас Ока: история, и современность</span><span class="related-bottom-desc">Ответ на вопрос: выпускается ли сейчас Ока? История модели ВАЗ-1111, причины прекращения производств</span></a><a href="/articles/p/pl/platitsya-li-nalog-s-pokupki-mashiny.html" class="related-bottom-card"><span class="related-bottom-title">Нужно ли платить налог при покупке машины в 2026 году? Разбираемся по закону</span><span class="related-bottom-desc">Платится ли налог с покупки автомобиля в России? Кто освобождается от НДФЛ, как рассчитывается налог</span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

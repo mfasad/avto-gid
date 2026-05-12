@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>">
+    <title>PWM на вентиляторах: что это и как работает — Авто Гид</title>
+    <meta name="description" content="Узнайте, что означает PWM на кулерах, чем он отличается от DC-регулировки и как правильно настроить охлаждение ПК для тишины.">
+    <link rel="canonical" href="https://avto-gid.vercel.app/articles/c/ch/chto-oznachaet-pwm-na-ventilyatorakh.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="PWM на вентиляторах: что это и как работает">
+    <meta property="og:description" content="Узнайте, что означает PWM на кулерах, чем он отличается от DC-регулировки и как правильно настроить охлаждение ПК для тишины.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1778602686">
+    <style>
+    .site-footer-premium {
+        margin-top: 60px; padding: 40px 0 0; background: #1e293b; color: #94a3b8;
+    }
+    .footer-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+        padding-bottom: 32px; border-bottom: 1px solid #334155;
+    }
+    .footer-brand { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .footer-about { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .footer-updated { font-size: 0.8rem; color: #64748b; }
+    .footer-col h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #60a5fa; }
+    .footer-bottom { padding: 20px 0; text-align: center; font-size: 0.85rem; }
+    @media (max-width: 640px) {
+        .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .cookie-popup {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; color: #fff;
+        padding: 16px; transition: transform 0.5s ease; z-index: 9999; border-top: 2px solid #2563eb;
+        transform: translateY(100%);
+    }
+    .cookie-popup.visible { transform: translateY(0); }
+    .cookie-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 0.9rem; }
+    .cookie-btn { background: #2563eb; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cookie-btn:hover { background: #1d4ed8; }
+    @media (max-width: 640px) {
+        .cookie-inner { flex-direction: column; text-align: center; }
+    }
+</style>
+    
+    <!--#include virtual="/ssi/head.html" -->
+</head>
+<body>
+        <!--#include virtual="/ssi/body_top.html" -->
+    <style>
+    .nav-dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle {
+        background: none; border: none; cursor: pointer;
+        font: inherit; color: inherit; padding: 8px 12px;
+        border-radius: 8px; transition: background 0.2s;
+    }
+    .dropdown-toggle:hover { background: rgba(0,0,0,0.05); }
+    .dropdown-menu {
+        display: none; position: absolute; right: 0; top: 100%;
+        min-width: 240px; max-height: 70vh; overflow-y: auto;
+        background: var(--card-bg, #fff); border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        padding: 8px 0; z-index: 1000;
+    }
+    .nav-dropdown::after {
+        content: ''; position: absolute; left: 0; right: 0;
+        top: 100%; height: 12px;
+    }
+    .nav-dropdown:hover .dropdown-menu,
+    .nav-dropdown:focus-within .dropdown-menu { display: block; }
+    .dropdown-item {
+        display: block; padding: 10px 20px; color: var(--text, #1f2937);
+        text-decoration: none; font-size: 0.95rem; transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .dropdown-item:hover { background: rgba(37,99,235,0.06); color: var(--primary, #2563eb); }
+    @media (max-width: 768px) {
+        .main-nav > .nav-link { display: none; }
+        .dropdown-toggle { display: none; }
+        .dropdown-menu {
+            display: block !important; position: static;
+            box-shadow: none; border: none; border-radius: 0;
+            min-width: auto; max-height: none; padding: 0;
+            background: transparent;
+        }
+        .dropdown-item {
+            padding: 8px 0; font-size: 1rem;
+        }
+    }
+    </style>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">🚗</span>
+                <span>Авто Гид</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Меню" id="menuBtn">☰</button>
+            <nav class="main-nav" id="mainNav">
+                <a href="/category/pokupka-i-prodazha/" class="nav-link">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="nav-link">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="nav-link">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="nav-link">👶 Детская Безопасность</a>
+<div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="dropdown-menu"><a href="/category/pokupka-i-prodazha/" class="dropdown-item">🤝 Покупка и Продажа</a>
+<a href="/category/registratsiya-i-dokumenty/" class="dropdown-item">📄 Регистрация и Документы</a>
+<a href="/category/zakony-i-shtrafy/" class="dropdown-item">⚖️ Законы и Штрафы</a>
+<a href="/category/detskaya-bezopasnost/" class="dropdown-item">👶 Детская Безопасность</a>
+<a href="/category/remont-dvigatelya/" class="dropdown-item">🔧 Ремонт Двигателя</a>
+<a href="/category/elektrika-i-svet/" class="dropdown-item">⚡ Электрика и Свет</a>
+<a href="/category/kuzov-i-okraska/" class="dropdown-item">🎨 Кузов и Окраска</a>
+<a href="/category/ukhod-i-mojka/" class="dropdown-item">🧼 Уход и Мойка</a>
+<a href="/category/aksessuary-i-tyuning/" class="dropdown-item">🛠️ Аксессуары и Тюнинг</a>
+<a href="/category/zimnyaya-ekspluatatsiya/" class="dropdown-item">❄️ Зимняя Эксплуатация</a>
+<a href="/category/garazh-i-instrument/" class="dropdown-item">🏠 Гараж и Инструмент</a>
+<a href="/category/puteshestviya-i-dorogi/" class="dropdown-item">🗺️ Путешествия и Дороги</a>
+<a href="/category/bezopasnost-i-zdorove/" class="dropdown-item">🚑 Безопасность и Здоровье</a>
+<a href="/category/drugoe/" class="dropdown-item">📁 Другое</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <div class="container"><a href="/">Главная</a><span class="breadcrumb-sep">›</span><a href="/category/drugoe/">Другое</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">PWM на вентиляторах: что это и как работает</span></div>
+    </nav>
+
+    <main class="site-main">
+        <div class="container">
+            <div class="article-layout">
+                <article class="article-main">
+                    
+                    <h1>PWM на вентиляторах: расшифровка и принципы работы</h1>
+                    <nav class="mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#физический-принцип-работы-широтно-импульсной-модуляции">Физический принцип работы широтно-импульсной модуляции</a></li><li><a href="#конструктивные-отличия-3-pin-против-4-pin-разъемов">Конструктивные отличия: 3-pin против 4-pin разъемов</a></li><li><a href="#сравнительная-таблица-pwm-против-dc-регулирования">Сравнительная таблица: PWM против DC регулирования</a></li><li><a href="#настройка-кривых-вращения-в-bios-и-uefi">Настройка кривых вращения в BIOS и UEFI</a></li><li><a href="#проблемы-совместимости-и-типичные-ошибки">Проблемы совместимости и типичные ошибки</a></li><li><a href="#влияние-технологии-на-срок-службы-оборудования">Влияние технологии на срок службы оборудования</a></li></ul></details></nav>
+                    <!--#include virtual="/ssi/article_before.html" -->
+                    <div class="article-body">
+<p>Современные системы охлаждения компьютеров и ноутбуков перестали быть просто шумными турбинами, гоняющими воздух на постоянной скорости. Сегодня от пользователя требуется тонкая настройка, баланс между эффективностью отвода тепла и акустическим комфортом. Именно здесь на сцену выходит технология <strong>PWM</strong>, ставшая стандартом де-факто для управления скоростью вращения лопастей в подавляющем большинстве системных блоков.</p>
+<p>Аббревиатура происходит от английского Pulse Width Modulation, что в переводе означает <em>широтно-импульсная модуляция</em>. Этот метод позволяет подавать питание на двигатель вентилятора прерывистыми импульсами, благодаря чему удается регулировать скорость вращения даже при низких оборотах, когда стандартные методы управления напряжением уже неэффективны.</p>
+<p>Понимание принципов работы этой технологии необходимо не только энтузиастам, собирающим бесшумные сборки, но и каждому, кто хочет продлить срок службы своего оборудования. В этой статье мы детально разберем физические основы метода, отличия от аналоговых аналогов и практические аспекты настройки.</p>
+
+<h2 id="физический-принцип-работы-широтно-импульсной-модуляции">Физический принцип работы широтно-импульсной модуляции</h2>
+<p>В основе метода лежит переключение подачи напряжения между состояниями «включено» и «выключено» с высокой частотой. Если представить себе классическое управление напряжением (DC) как уменьшение напора воды в кране, то <strong>PWM</strong> больше похоже на очень быстрое открытие и закрытие крана полным напором. Чем дольше открыт «кран» в каждом цикле, тем выше средняя скорость вращения мотора.</p>
+<p>Ключевым параметром здесь является скважность сигнала, часто выражаемая в процентах заполнения (Duty Cycle). При 100% заполнении напряжение подается постоянно, и вентилятор крутится на максимальной скорости. При 20% — импульсы короткие, и мотор еле вращается, но получает полные 12 вольт в момент импульса, что позволяет ему не глохнуть.</p>
+<p>Частота переключения обычно составляет 25 кГц, что находится за пределами слышимости человеческого уха. Это избавляет пользователя от неприятного высокочастотного писка, который иногда возникает при использовании дешевых регуляторов напряжения. Именно поэтому <em>4-контактные вентиляторы</em> с поддержкой PWM считаются более совершенными с акустической точки зрения.</p>
+<p>Важно отметить, что контроллер на материнской плате генерирует управляющий сигнал, но не подает питание напрямую. Питание 12 вольт идет по отдельной линии, а управляющий импульс лишь сообщает драйверу внутри самого вентилятора, с какой скоростью нужно вращаться.</p>
+
+<h2 id="конструктивные-отличия-3-pin-против-4-pin-разъемов">Конструктивные отличия: 3-pin против 4-pin разъемов</h2>
+<p>Визуально отличить вентилятор с поддержкой широтно-импульсной модуляции можно по количеству контактов в разъеме подключения. Стандартные модели используют 3-пиновый коннектор, в то время как продвинутые версии оснащены 4-пиновым разъемом. Это не просто маркетинговый ход, а техническая необходимость для реализации разных схем управления.</p>
+<p>В трехпроводной схеме все функции завязаны на изменение напряжения: два провода отвечают за питание (плюс и минус), а третий передает тахометрический сигнал о скорости вращения. Регулировка здесь происходит путем снижения напряжения на питающих проводах, что имеет свои физические ограничения.</p>
+<p>Четырехпроводная схема добавляет четвертый контакт, который как раз и предназначен для приема управляющего <strong>PWM</strong>-сигнала. Первые три контакта остаются идентичными: земля, питание 12В и тахометр. Четвертый провод позволяет материнской плате «общаться» с вентилятором, не трогая линии питания.</p>
+<div class="poll-widget" id="poll-aa7e7bdb"><div class="poll-widget-question">📊 Какой тип вентиляторов установлен в вашем ПК?</div><div class="poll-widget-option" data-poll="aa7e7bdb" data-idx="0" onclick="pbPollVote(this)"><span class="poll-widget-label">Только 3-pin (DC)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="aa7e7bdb" data-idx="1" onclick="pbPollVote(this)"><span class="poll-widget-label">Только 4-pin (PWM)</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="aa7e7bdb" data-idx="2" onclick="pbPollVote(this)"><span class="poll-widget-label">Смешанный вариант</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div><div class="poll-widget-option" data-poll="aa7e7bdb" data-idx="3" onclick="pbPollVote(this)"><span class="poll-widget-label">Не знаю / Не смотрел</span><span class="poll-widget-bar"></span><span class="poll-widget-pct"></span></div></div>
+<ul>
+<li>🔌 <strong>3-pin (DC)</strong>: Управление скоростью возможно только путем изменения напряжения, минимальная скорость обычно ограничена 50-60% от максимума.</li>
+<li>⚡ <strong>4-pin (PWM)</strong>: Позволяет опускать скорость вращения до 20-30% и ниже без остановки мотора благодаря импульсной подаче полного напряжения.</li>
+<li>🔄 <strong>Совместимость</strong>: 4-пиновый вентилятор можно подключить в 3-пиновый разъем, но он будет работать только в режиме DC (если не переключить настройки в BIOS).</li>
+</ul>
+<p>Существует распространенное заблуждение, что 4-пиновые модели всегда тише. Это не совсем так: тишина зависит от качества подшипника и формы лопастей, а не только от типа подключения. Однако возможность работать на очень низких оборотах действительно делает их более гибкими в настройке.</p>
+
+<h2 id="сравнительная-таблица-pwm-против-dc-регулирования">Сравнительная таблица: PWM против DC регулирования</h2>
+<p>Чтобы окончательно разобраться в преимуществах и недостатках, стоит обратиться к цифрам и фактам. Различия кроются не только в способе передачи сигнала, но и в поведении системы при резких скачках температуры процессора.</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>DC (3-pin)</th>
+<th>PWM (4-pin)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Метод управления</td>
+<td>Изменение напряжения (7-12В)</td>
+<td>Импульсный сигнал при 12В</td>
+</tr>
+<tr>
+<td>Минимальная скорость</td>
+<td>~50-60% от максимума</td>
+<td>До 20% и ниже</td>
+</tr>
+<tr>
+<td>Точность контроля</td>
+<td>Низкая, зависит от нагрузки</td>
+<td>Высокая, стабильная частота</td>
+</tr>
+<tr>
+<td>Энергопотребление</td>
+<td>Снижается при уменьшении скорости</td>
+<td>Остается практически неизменным</td>
+</tr>
+</tbody>
+</table>
+<p>Обратите внимание на строку энергопотребления. В режиме DC при снижении напряжения падает и потребляемая мощность, что теоретически экономичнее. Однако в контексте ПК экономия нескольких ватт несущественна по сравнению с преимуществами стабильного охлаждения, которые дает <strong>широтно-импульсная модуляция</strong>.</p>
+<p>Также стоит упомянуть о совместимости. Материнские платы с 4-пиновыми разъемами умеют работать и с 3-пиновыми вентиляторами, переключаясь в режим DC автоматически или по настройке пользователя. Обратная совместимость тоже работает, но с потерей функционала управления скоростью.</p>
+<div class="attention-box attention-tip"><span class="attention-icon">💡</span><p>Если вы подключили 4-пиновый вентилятор в 3-пиновый разъем, он будет крутиться на полной скорости. Для снижения шума используйте переходник-резистор или настройте BIOS, если плата позволяет эмулировать DC.</p></div>
+
+<h2 id="настройка-кривых-вращения-в-bios-и-uefi">Настройка кривых вращения в BIOS и UEFI</h2>
+<p>Попасть в «мозги» системы охлаждения можно только через BIOS или UEFI материнской платы. Именно здесь задаются алгоритмы поведения вентиляторов в зависимости от температуры процессора или чипсета. Интерфейсы у разных производителей (ASUS, Gigabyte, MSI, ASRock) отличаются, но логика едина.</p>
+<p>Вам необходимо найти раздел, обычно называемый <code>Hardware Monitor</code>, <code>Q-Fan Control</code> или <code>Smart Fan</code>. Здесь отображаются текущие обороты (RPM) и температура. Первым делом убедитесь, что для 4-пиновых разъемов выбран режим <code>PWM</code>, а для 3-пиновых — <code>DC</code> или <code>Voltage</code>.</p>
+<blockquote>⚠️ Внимание: Неправильная настройка минимальных оборотов может привести к перегреву системы в простое или, наоборот, к постоянному шуму. Убедитесь, что выбранный профиль соответствует типу вашего кулера.</blockquote>
+<p>Современные системы позволяют строить графики, где по оси X отложена температура, а по оси Y — процент скорости вращения. Вы можете создатьную кривую, чтобы вентилятор начинал раскручиваться только при достижении, например, 50 градусов Цельсия.</p>
+<div class="checklist-block"><h4>☑️ Настройкаов в BIOS</h4><label class="check-item"><input type="checkbox"><span>Зайти в BIOS (Del/F2)</span></label><label class="check-item"><input type="checkbox"><span>Найти раздел Hardware Monitor</span></label><label class="check-item"><input type="checkbox"><span>Выбрать режим PWM/DC</span></label><label class="check-item"><input type="checkbox"><span>Построить кривую скорости</span></label><label class="check-item"><input type="checkbox"><span>Сохранить и выйти (F10)</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+<p>Не бойтесь экспериментировать с профилями. Стандартный режим «Silent» часто бывает слишком консервативным и допускает нагрев, а «Turbo» создает шум даже при офисной работе. Ручная настройка позволяет найти золотую середину.</p>
+
+<h2 id="проблемы-совместимости-и-типичные-ошибки">Проблемы совместимости и типичные ошибки</h2>
+<p>Несмотря на стандартизацию, пользователи часто сталкиваются с ситуациями, когда система ведет себя неадекватно. Вентилятор может гудеть, дергаться или вовсе не реагировать на изменения температуры. Чаще всего проблема кроется в mismatch (несоответствии) типа разъема и настроек контроллера.</p>
+<p>Если вы подключили 3-пиновый вентилятор, а в BIOS жестко задан режим <strong>PWM</strong>, он будет работать на полных оборотах постоянно. И наоборот: 4-пиновая модель в режиме DC может не запуститься или работать нестабильно, если материнская плата не может опустить напряжение ниже определенного порога.</p>
+<p>Еще одна частая проблема — использование дешевых разветвителей (splitters). Если вы подключаете пять вентиляторов в один 4-пиновый разъем через китайский переходник, суммарный ток может превысить допустимый для материнской платы (обычно 1 Ампер). Это чревато выгоранием контроллера на плате.</p>
+<details class="faq-item"><summary>Почему гудят старые вентиляторы на PWM?</summary><div class="faq-answer"><p>Дешевые моторы с подшипниками скольжения могут издавать гул на низких оборотах из-за резонанса частоты PWM с механическими частями. Решение — поднять минимальный порог оборотов или заменить кулер на модель с гидродинамическим подшипником.</p></div></details>
+<p>Всегда проверяйте спецификации разветвителей. Для мощных систем лучше использовать отдельные контроллеры вентиляторов, запитываемые напрямую от блока питания через SATA или Molex, оставляя на материнской плате только управляющий сигнал.</p>
+
+<h2 id="влияние-технологии-на-срок-службы-оборудования">Влияние технологии на срок службы оборудования</h2>
+<p>Постоянная работа на максимальных оборотах — главный враг подшипников вентилятора. Механический износ, высыхание смазки и накопление пыли происходят значительно быстрее, когда ротор вращается со скоростью 1500-2000 оборотов в минуту круглосуточно.</p>
+<p>Использование <em>широтно-импульсной модуляции</strong> позволяет системе большую часть времени находиться в щадящем режиме. При серфинге в интернете или работе с документами кулеры могут крутиться на 600-800 оборотах, что практически не изнашивает механику.</p>
+<ul>
+<li>📉 <strong>Снижение износа</strong>: Меньше оборотов — меньше трение и нагрев подшипника.</li>
+<li>🧹 <strong>Меньше пыли</strong>: На низких скоростях воздушный поток слабее засасывает пыль внутрь корпуса и самого вентилятора.</li>
+<li>🔇 <strong>Акустика</em>: Отсутствие постоянного воя продлевает не только жизнь железу, но и ваши нервы.</li>
+</ul>
+<p>Таким образом, грамотная настройка PWM — это инвестиция в долговечность системы охлаждения. Если ваш процессор холодный, нет смысла гонять воздух на полной мощности. Современные алгоритмы делают это автоматически, но ручной контроль всегда дает лучший результат.</p>
+
+<details>
+<summary>Можно ли подключить 4-pin вентилятор в 3-pin разъем?</summary>
+<p>Да, можно. Вентилятор будет работать, но только в режиме постоянного напряжения (DC). Скорость либо будет максимальной, либо будет регулироваться материнской платой путем изменения напряжения, если она поддерживает такой режим для 3-пиновых разъемов. Функция PWM в этом случае работать не будет.</p>
+</details>
+<details>
+<summary>Почему вентилятор дергается на низких оборотах?</summary>
+<p>Это может происходить при использовании DC-регулировки на вентиляторах с плохими моторами, которым не хватает стартового напряжения. В случае PWM это может быть признаком слишком низкой частоты импульсов или конфликта с драйвером внутри кулера. Попробуйте повысить минимальный порог скорости в BIOS.</p>
+</details>
+<details>
+<summary>В чем разница между PWM и DC в BIOS?</summary>
+<p>PWM (Pulse Width Modulation) использует 4-й контакт для передачи сигнала управления при постоянном напряжении 12В. DC (Direct Current) меняет напряжение на питающих контактах (2 и 3), что эффективно только для 3-пиновых вентиляторов или 4-пиновых в режиме совместимости.</p>
+</details>
+<details>
+<summary>Как узнать, поддерживает ли мой вентилятор PWM?</summary>
+<p>Посмотрите на количество проводов, выходящих из мотора, или на разъем. Если их 4 — поддержка PWM гарантирована стандартом. Если 3 — это DC-вентилятор. Также информация всегда есть на наклейке со стороны статора или в документации модели.</p>
+</details></div>
+                    <!--#include virtual="/ssi/article_after.html" -->
+
+                </article>
+                <aside class="article-sidebar"><!--#include virtual="/ssi/sidebar_top.html" --><nav class="sidebar-search"><div class="sidebar-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск статей..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav><!--#include virtual="/ssi/sidebar_before_toc.html" --><nav class="sidebar-toc" id="sidebarToc"><h3>Содержание</h3><ul><li><a href="#физический-принцип-работы-широтно-импульсной-модуляции">Физический принцип работы широтно-импульсной модуляции</a></li><li><a href="#конструктивные-отличия-3-pin-против-4-pin-разъемов">Конструктивные отличия: 3-pin против 4-pin разъемов</a></li><li><a href="#сравнительная-таблица-pwm-против-dc-регулирования">Сравнительная таблица: PWM против DC регулирования</a></li><li><a href="#настройка-кривых-вращения-в-bios-и-uefi">Настройка кривых вращения в BIOS и UEFI</a></li><li><a href="#проблемы-совместимости-и-типичные-ошибки">Проблемы совместимости и типичные ошибки</a></li><li><a href="#влияние-технологии-на-срок-службы-оборудования">Влияние технологии на срок службы оборудования</a></li></ul></nav><!--#include virtual="/ssi/sidebar_before_related.html" --><nav class="sidebar-related"><h3>Похожие статьи</h3><ul><li><a href="/articles/n/na/na-chto-vliyaet-razmer-kolesa-avtomobilya.html" class="related-card">На что влияет размер колеса автомобиля: влияние на динамику и расход</a></li><li><a href="/articles/a/av/avtomobilnye-vojska-prazdnik-kakogo-chisla.html" class="related-card">День автомобильных войск в 2026 году: дата, история и традиции</a></li><li><a href="/articles/s/st/stiralnaya-mashina-bosh-maks-5-otzyvy.html" class="related-card">Стиральная машина Бош Макс 5: отзывы, характеристики, плюсы и минусы</a></li><li><a href="/articles/u/us/ustrojstvo-avtomobilnogo-konditsionera-i-printsip-raboty.html" class="related-card">Устройство и принцип работы автомобильного кондиционера</a></li><li><a href="/articles/p/pe/pesni-kotorye-pugacheva-napisala-sama.html" class="related-card">Песни, которые Пугачева написала сама: полный список хитов</a></li></ul></nav><!--#include virtual="/ssi/sidebar_after_related.html" --></aside>
+            </div>
+        </div>
+    </main>
+
+    <!--#include virtual="/ssi/before_related_bottom.html" -->
+    <section class="related-bottom">
+        <div class="container">
+            <h2 class="related-bottom-heading">📖 Читайте также</h2>
+            <div class="related-bottom-grid"><a href="/articles/n/na/na-chto-vliyaet-razmer-kolesa-avtomobilya.html" class="related-bottom-card"><span class="related-bottom-title">На что влияет размер колеса автомобиля: влияние на динамику и расход</span><span class="related-bottom-desc">Узнайте, как размер колес влияет на разгон, расход топлива, клиренс и комфорт. Полный гид по выбору </span></a><a href="/articles/a/av/avtomobilnye-vojska-prazdnik-kakogo-chisla.html" class="related-bottom-card"><span class="related-bottom-title">День автомобильных войск в 2026 году: дата, история и традиции</span><span class="related-bottom-desc">Узнайте, какого числа отмечается День автомобильных войск в России, как возник этот праздник и какие</span></a><a href="/articles/s/st/stiralnaya-mashina-bosh-maks-5-otzyvy.html" class="related-bottom-card"><span class="related-bottom-title">Стиральная машина Бош Макс 5: отзывы, характеристики, плюсы и минусы</span><span class="related-bottom-desc">Подробный анализ стиральной машины Bosch Maxx 5. Реальные отзывы владельцев, разбор надежности, типи</span></a><a href="/articles/u/us/ustrojstvo-avtomobilnogo-konditsionera-i-printsip-raboty.html" class="related-bottom-card"><span class="related-bottom-title">Устройство и принцип работы автомобильного кондиционера</span><span class="related-bottom-desc">Подробно разбираем устройство автомобильного кондиционера. Принцип работы, схема циркуляции хладаген</span></a><a href="/articles/p/pe/pesni-kotorye-pugacheva-napisala-sama.html" class="related-bottom-card"><span class="related-bottom-title">Песни, которые Пугачева написала сама: полный список хитов</span><span class="related-bottom-desc">Разбираем лучшие композиции, написанные Аллой Пугачевой. Полный список хитов, где она выступила авто</span></a><a href="/articles/p/po/pochemu-mozhet-ne-rabotat-posudomoechnaya-mashina.html" class="related-bottom-card"><span class="related-bottom-title">Почему не работает посудомоечная машина: причины и ремонт</span><span class="related-bottom-desc">Почему не работает посудомоечная машина? Разбор основных неисправностей: не греет воду, не сливает, </span></a></div>
+        </div>
+    </section>
+    <!--#include virtual="/ssi/after_related_bottom.html" -->
+
+    <footer class="site-footer-premium">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">🚗 Авто Гид</div>
+                    <p class="footer-about">Полный справочник автомобилиста: от покупки и регистрации до ремонта и путешествий.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Разделы</h4>
+                    <ul><li><a href="/category/pokupka-i-prodazha/">🤝 Покупка и Продажа</a></li>
+<li><a href="/category/registratsiya-i-dokumenty/">📄 Регистрация и Документы</a></li>
+<li><a href="/category/zakony-i-shtrafy/">⚖️ Законы и Штрафы</a></li>
+<li><a href="/category/detskaya-bezopasnost/">👶 Детская Безопасность</a></li>
+<li><a href="/category/remont-dvigatelya/">🔧 Ремонт Двигателя</a></li>
+<li><a href="/category/elektrika-i-svet/">⚡ Электрика и Свет</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/about.html">О проекте</a></li>
+                        <li><a href="/categories.html">Все разделы</a></li>
+                        <li><a href="/contact.html">Контакты</a></li>
+                        <li><a href="/privacy.html">Конфиденциальность</a></li>
+                        <li><a href="/sitemap.xml">Карта сайта</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Авто Гид. Все права защищены.</p>
+                <!--LiveInternet counter--><div style="margin-top:10px;"><a href="https://www.liveinternet.ru/click"
+                target="_blank"><img id="licnt06C4" width="88" height="15" style="border:0" 
+                title="LiveInternet: показано число посетителей за сегодня"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                alt=""/></a><script>(function(d,s){d.getElementById("licnt06C4").src=
+                "https://counter.yadro.ru/hit?t26.5;r"+escape(d.referrer)+
+                ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                ";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)</script></div><!--/LiveInternet-->
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="cookie-popup">
+        <div class="cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            popup.classList.add('visible');
+            btn.onclick = () => {
+                localStorage.setItem('cookie-accepted', 'true');
+                popup.classList.remove('visible');
+            };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.poll-widget');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.poll-widget-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.poll-widget-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.poll-widget-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    <!--#include virtual="/ssi/body_bottom.html" -->
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>
